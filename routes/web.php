@@ -21,4 +21,4 @@ Route::view('/user/register', 'user.register.index');
 Route::view('/admin/template', 'welcome');
 Route::view('/user/datatable', 'user.log.index');
 Route::view('/admin/datatable', 'admin.data.index');
-Route::view('login', 'auth.index');
+Route::view('/login', 'auth.index');
