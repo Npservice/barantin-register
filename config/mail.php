@@ -43,6 +43,9 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+
+            'auth_mode' => null,
+            'verify_peer' => false,
         ],
 
         'ses' => [
@@ -86,6 +89,13 @@ return [
         ],
     ],
 
+    // 'stream' => [
+    //     'ssl' => [
+    //         'allow_self_signed' => true,
+    //         'verify_peer' => false,
+    //         'verify_peer_name' => false,
+    //     ],
+    // ],
     /*
     |--------------------------------------------------------------------------
     | Global "From" Address
