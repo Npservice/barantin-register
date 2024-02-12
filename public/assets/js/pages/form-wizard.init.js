@@ -3,7 +3,8 @@ $(document).ready(function () {
         tabClass: "nav nav-pills nav-justified",
         onLast: false,
         onNext: function (tab, navigation, index) {
-            if (index >= 3) {
+            console.log(navigation)
+            if (index >= 4) {
                 submitActive()
                 return
             }
@@ -23,7 +24,7 @@ triggerTabList.forEach(function (a, index) {
 
 $('.nav-link').click(function () {
     var tab = $(this).attr('href')
-    if (tab === '#confirm-detail') {
+    if (tab === '#dokumen-pendukung') {
         submitActive()
     } else {
         submitNonActive()

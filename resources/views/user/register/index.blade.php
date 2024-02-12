@@ -2,6 +2,7 @@
 @section('title', 'Register')
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/libs/twitter-bootstrap-wizard/prettify.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/libs/dropify/dist/dropify.min.css') }}">
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -47,6 +48,7 @@
 @push('js')
     <script src="{{ asset('assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
     <script src="{{ asset('assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
+    <script src="{{ asset('assets/libs/dropify/dist/dropify.min.js') }}"></script>
 @endpush
 @push('custom-js')
     <script>

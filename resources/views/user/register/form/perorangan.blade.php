@@ -25,6 +25,12 @@
                 <span class="step-title">Confirm Detail</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a href="#dokumen-pendukung" class="nav-link" data-toggle="tab">
+                <span class="step-number">05</span>
+                <span class="step-title">Dokumen Pendukung</span>
+            </a>
+        </li>
     </ul>
     <div class="tab-content twitter-bs-wizard-tab-content">
         <div class="tab-pane" id="seller-details">
@@ -226,6 +232,13 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane" id="dokumen-pendukung">
+            <div>
+                <div class="row mb-4">
+                    <input type="file" class="form-control" id="thumbnile" name="thumbnile" />
+                </div>
+            </div>
+        </div>
 
     </div>
     <ul class="pager wizard twitter-bs-wizard-pager-link">
@@ -236,3 +249,6 @@
 </div>
 
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
+<script>
+    $('#thumbnile').dropify()
+</script>
