@@ -3,26 +3,26 @@
         <li class="nav-item">
             <a href="#seller-details" class="nav-link" data-toggle="tab">
                 <span class="step-number">01</span>
-                <span class="step-title">Seller Details</span>
+                <span class="step-title">Register Pemohon</span>
             </a>
         </li>
         <li class="nav-item">
             <a href="#company-document" class="nav-link" data-toggle="tab">
                 <span class="step-number">02</span>
-                <span class="step-title">Company Document</span>
+                <span class="step-title">Kontak Person</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="#bank-detail" class="nav-link" data-toggle="tab">
                 <span class="step-number">03</span>
-                <span class="step-title">Bank Details</span>
+                <span class="step-title">Penandatangan</span>
             </a>
         </li>
         <li class="nav-item">
             <a href="#confirm-detail" class="nav-link" data-toggle="tab">
                 <span class="step-number">04</span>
-                <span class="step-title">Confirm Detail</span>
+                <span class="step-title">Yang Diberi Kuasa</span>
             </a>
         </li>
         <li class="nav-item">
