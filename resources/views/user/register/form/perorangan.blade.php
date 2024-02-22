@@ -34,110 +34,110 @@
     </ul>
     <div class="tab-content twitter-bs-wizard-tab-content">
         <div class="tab-pane" id="seller-details">
-            <form>
-                <div class="row mb-3">
-                    <label for="upt" class="col-sm-2 col-form-label">UPT</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="UPT" id="upt" name="upt">
-                    </div>
-                </div>
+            <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
+            <label for="" class="form-label fw-bold h6 mt-0 mb-0">Registrasi Pemohon</label>
+            <hr class="mt-0 mb-3">
 
-                <div class="row mb-3">
-                    <label for="jenis_identitas" class="col-sm-2 col-form-label">Jenis Identitas</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Jenis Identitas" id="jenis_identitas"
-                            name="jenis_identitas">
+            <form class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="row mb-3">
+                        <label for="upt" class="col-sm-3 col-form-label">UPT</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="UPT" id="upt" name="upt">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Alamat" id="alamat" name="alamat">
+                    <div class="row mb-3">
+                        <label for="jenis_identitas" class="col-md-3 col-sm-12 col-form-label">Jenis Identitas</label>
+                        <div class="col">
+                            <input class="form-control" type="text" placeholder="Jenis Identitas"
+                                id="jenis_identitas" name="jenis_identitas">
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" placeholder="Jenis Identitas"
+                                id="jenis_identitas" name="jenis_identitas">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="negara" class="col-sm-2 col-form-label">Negara</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Negara" id="negara" name="negara">
+                    <div class="row mb-3">
+                        <label for="telephone" class="col-sm-3 col-form-label">Telephone</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Telephone" id="telephone"
+                                name="telephone">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="provinsi" class="col-sm-2 col-form-label">Provinsi</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Provinsi" id="provinsi"
-                            name="provinsi">
+                    <div class="row mb-3">
+                        <label for="fax" class="col-sm-3 col-form-label">Fax</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Fax" id="fax" name="fax">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="kota" class="col-sm-2 col-form-label">Kota</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Kota" id="kota" name="kota">
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="email" placeholder="Email" id="email"
+                                name="email">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="kecamatan" class="col-sm-2 col-form-label">Kecamatan</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Kecamatan" id="kecamatan"
-                            name="kecamatan">
+                    <div class="row mb-3">
+                        <label for="lingkup_akivitas" class="col-sm-3 col-form-label">Lingkup Akivitas</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="lingkup_akivitas" rows="3"
+                                placeholder="Lingkup Akivitas" name="lingkup_akivitas">
+                        </div>
                     </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="telephone" class="col-sm-2 col-form-label">Telephone</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Telephone" id="telephone"
-                            name="telephone">
+                    <div class="row mb-3">
+                        <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="status_import" name="status_import">
+                                <option selected disabled>Pilih Status</option>
+                                <option value="import">Import</option>
+                                <option value="tidak_import">Tidak Import</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label for="fax" class="col-sm-2 col-form-label">Fax</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="text" placeholder="Fax" id="fax" name="fax">
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="row mb-3">
+                        <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Alamat" id="alamat"
+                                name="alamat">
+                        </div>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label for="email" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="email" placeholder="Email" id="email"
-                            name="email">
+                    <div class="row mb-3">
+                        <label for="negara" class="col-sm-3 col-form-label">Negara</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Negara" id="negara"
+                                name="negara">
+                        </div>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label for="logo_perusahaan" class="col-sm-2 col-form-label">Logo Perusahaan</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="file" id="logo_perusahaan" name="logo_perusahaan">
+                    <div class="row mb-3">
+                        <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Provinsi" id="provinsi"
+                                name="provinsi">
+                        </div>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label for="lingkup_akivitas" class="col-sm-2 col-form-label">Lingkup Akivitas</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" id="lingkup_akivitas" rows="3" placeholder="Lingkup Akivitas"
-                            name="lingkup_akivitas"></textarea>
+                    <div class="row mb-3">
+                        <label for="kota" class="col-sm-3 col-form-label">Kota</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Kota" id="kota"
+                                name="kota">
+                        </div>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label for="status_import" class="col-sm-2 col-form-label">Status Import</label>
-                    <div class="col-sm-10">
-                        <select class="form-select" id="status_import" name="status_import">
-                            <option selected disabled>Pilih Status</option>
-                            <option value="import">Import</option>
-                            <option value="tidak_import">Tidak Import</option>
-                        </select>
+                    <div class="row mb-3">
+                        <label for="kecamatan" class="col-sm-3 col-form-label">Kecamatan</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" placeholder="Kecamatan" id="kecamatan"
+                                name="kecamatan">
+                        </div>
                     </div>
                 </div>
             </form>
-
-
         </div>
         <div class="tab-pane" id="company-document">
             <div>
