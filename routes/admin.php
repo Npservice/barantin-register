@@ -9,7 +9,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::prefix('login')->name('auth.')->group(function () {
         Route::get('', [LoginController::class, 'index'])->name('index');
-        Route::post('', [LoginController::class, 'login'])->name('login');
+        Route::post('auth', [LoginController::class, 'login'])->name('login');
         Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     });
 
