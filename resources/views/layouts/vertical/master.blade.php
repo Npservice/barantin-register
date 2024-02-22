@@ -38,6 +38,7 @@
     </div>
     <!-- END layout-wrapper -->
     @include('layouts.components.modal')
+    @include('layouts.components.spinner')
     {{-- Start Rigth Bar --}}
     @include('layouts.components.rightSidebar')
     {{-- End Right Bar --}}
