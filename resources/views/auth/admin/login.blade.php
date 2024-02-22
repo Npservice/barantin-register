@@ -12,7 +12,7 @@
                         name="username" value="{{ old('username') }}" required autocomplete="username" autofocus
                         placeholder="email or username">
                 </div>
-                @error('usernmae')
+                @error('username')
                     <span class="invalid-feedback d-block" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
