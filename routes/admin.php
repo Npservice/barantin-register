@@ -11,6 +11,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('admin', function () {
         return redirect()->route('admin.auth.index');
     });
+
     Route::prefix('login')->name('auth.')->group(function () {
         Route::get('', [LoginController::class, 'index'])->name('index');
         Route::post('auth', [LoginController::class, 'login'])->name('login');
