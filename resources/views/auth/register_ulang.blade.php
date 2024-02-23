@@ -35,7 +35,7 @@
             </div>
             <div class="form-group text-center row mt-2 pt-1">
                 <div class="col-12">
-                    <button class="btn btn-info w-100 waves-effect waves-light" type="submit">Register</button>
+                    <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Register</button>
                 </div>
             </div>
 

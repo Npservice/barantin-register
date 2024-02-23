@@ -34,7 +34,7 @@
                 <label for="nama">Nama</label>
                 <div class="col-12">
                     <input id="name" disabled type="text" class="form-control @error('name') is-invalid @enderror"
-                        name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                        name="nama" value="{{ old('name') }}" required autocomplete="name" autofocus>
                 </div>
                 @error('name')
                     <span class="invalid-feedback d-block" role="alert">
@@ -62,7 +62,7 @@
 
             <div class="form-group text-center row mt-2 pt-1">
                 <div class="col-12">
-                    <button class="btn btn-info w-100 waves-effect waves-light" type="submit">Register</button>
+                    <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Register</button>
                 </div>
             </div>
 
