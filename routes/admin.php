@@ -18,8 +18,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::get('', [DashboardController::class, 'index'])->name('index');
         });
+        Route::resource('master-upt', MasterUptController::class)->except('show');
     });
 
 
-    Route::resource('master-upt', MasterUptController::class)->except('show');
 });

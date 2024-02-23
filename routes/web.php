@@ -40,3 +40,11 @@ Route::middleware(['verified'])->group(function () {
 
 
 require_once __DIR__ . '/admin.php';
+
+Route::get('ajax/failed', function () {
+    if (request()->ajax()) {
+        return response()->json(['message' => 'Unauthorized', 'code' => 401, 'status' => "failed"], 401);
+    }
+    return redirect()->route('login');
+
+})->middleware(['ajax', 'guest'])->name('ajax.failed');

@@ -25,8 +25,8 @@ return new class extends Migration {
             $table->string('syah_bandar_pelabuhan')->nullable();
             $table->string('kepala_kantor_bea_cukai')->nullable();
             $table->string('nama_pengelola')->nullable();
-            $table->enum('stat_ppkol', ['Y', 'N'])->default('Y');
-            $table->enum('stat_insw', ['Y', 'N'])->default('N');
+            $table->enum('stat_ppkol', ['Y', 'N'])->default('Y')->nullable();
+            $table->enum('stat_insw', ['Y', 'N'])->default('N')->nullable();
             $table->timestamps();
         });
     }

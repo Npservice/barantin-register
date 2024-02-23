@@ -1,15 +1,15 @@
   <div class="modal-body">
       <form class="row g-3" id="form-data">
-
+          @csrf
           <div class="col-md-3">
               <label for="kode_satpel" class="form-label">Kode Satpel</label>
-              <input type="text" class="form-control" id="kode_satpel" name="kode_satpel" required>
+              <input type="number" class="form-control" id="kode_satpel" name="kode_satpel" required>
               <div class="invalid-feedback" id="kode_satpel-feedback"></div>
           </div>
           <div class="col-md-3">
-              <label for="kode_utp" class="form-label">Kode UTP</label>
-              <input type="text" class="form-control" id="kode_upt" name="kode_utp" required>
-              <div class="invalid-feedback" id="kode_utp-feedback"></div>
+              <label for="kode_utp" class="form-label">Kode UPT</label>
+              <input type="number" class="form-control" id="kode_upt" name="kode_upt" required>
+              <div class="invalid-feedback" id="kode_upt-feedback"></div>
           </div>
           <div class="col-md-3">
               <label for="nama" class="form-label">Nama</label>
@@ -71,12 +71,18 @@
           </div>
           <div class="col-md-4">
               <label for="stat_ppkol" class="form-label">Stat PPKOL</label>
-              <input type="text" class="form-control" id="stat_ppkol" name="stat_ppkol" required>
+              <select type="text" class="form-select" id="stat_ppkol" name="stat_ppkol" required>
+                  <option value="Y">YA</option>
+                  <option value="N">TIDAK</option>
+              </select>
               <div class="invalid-feedback" id="stat_ppkol-feedback"></div>
           </div>
           <div class="col-md-4">
               <label for="stat_insw" class="form-label">Stat INSW</label>
-              <input type="text" class="form-control" id="stat_insw" name="stat_insw" required>
+              <select type="text" class="form-select" id="stat_insw" name="stat_insw" required>
+                  <option value="Y">YA</option>
+                  <option value="N">TIDAK</option>
+              </select>
               <div class="invalid-feedback" id="stat_insw-feedback"></div>
           </div>
       </form>
@@ -88,3 +94,7 @@
       <button type="button" class="btn btn-primary" id="button-submit"
           onclick="submit('{{ route('admin.master-upt.store') }}', false)">Save changes</button>
   </div>
+  <script>
+      $('#stat_ppkol').val('Y').trigger('change')
+      $('#stat_insw').val('N').trigger('change')
+  </script>

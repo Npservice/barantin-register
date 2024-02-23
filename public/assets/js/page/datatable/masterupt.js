@@ -78,7 +78,8 @@ $('#masterupt-datatable').DataTable({
         {
             data: 'action',
             searchable: false,
-            orderable: false
+            orderable: false,
+            width: 60
         },
 
     ],

@@ -13,7 +13,8 @@
 
 {{-- sweet alert --}}
 <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-
+{{-- toast --}}
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/libs/toastr/build/toastr.min.css') }}">
 
 
 <!-- Bootstrap Css -->
