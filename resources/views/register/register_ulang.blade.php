@@ -3,9 +3,8 @@
 @section('text', 'Regiter Baru')
 @section('content')
     <div class="p-3">
-        <form method="POST" action="{{ route('register') }}" class="form-horizontal mt-3">
+        <form method="GET" action="" class="form-horizontal mt-3">
             @csrf
-
 
             <div class="form-group mb-3 row">
                 <label for="nama">Username</label>

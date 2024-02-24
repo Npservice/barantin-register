@@ -4399,7 +4399,8 @@ li.submit-form {
 }
 
 .auth-body-bg {
-    background-image: url(../images/auth-bg.jpg);
+    /* background-image: url(../images/auth-bg.jpg); */
+    background-color: #be800b;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center

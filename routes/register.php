@@ -18,4 +18,14 @@ Route::prefix('register')->name('register.')->group(function () {
     Route::get('form/{id}', [PreRegisterController::class, 'RegisterForm'])->name('formulir');
 
     Route::get('status', [PreRegisterController::class, 'StatusRegister'])->name('status');
+
+    Route::get('regenerate', function () {
+        return redirect()->route('register.index');
+    });
+    Route::get('email', function () {
+        return redirect()->route('register.index');
+    });
+    Route::get('', function () {
+        return redirect()->route('register.index');
+    });
 });
