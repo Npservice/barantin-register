@@ -74,7 +74,7 @@ class PreRegisterController extends Controller
             return redirect()->route('register.failed')->with(['message_token' => 'Token Expired or Invalid. Please register again.']);
         }
         PreRegister::find($id)->update(['verify_email' => now()]);
-        return redirect()->route('register.formulir', $id);
+        return redirect()->route('register.formulir.index', $id);
     }
 
     /**

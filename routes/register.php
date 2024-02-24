@@ -14,7 +14,7 @@ Route::prefix('register')->name('register.')->group(function () {
 
     Route::get('failed', [PreRegisterController::class, 'RegisterFailed'])->name('failed')->middleware('registerfailed:PreRegisterController');
 
-    Route::get('formulir/{id}', [PreRegisterController::class, 'RegisterFormulirIndex'])->name('index');
+    Route::get('formulir/{id}', [PreRegisterController::class, 'RegisterFormulirIndex'])->name('formulir.index');
     Route::get('form/{id}', [PreRegisterController::class, 'RegisterForm'])->name('formulir');
 
     Route::get('status', [PreRegisterController::class, 'StatusRegister'])->name('status');
