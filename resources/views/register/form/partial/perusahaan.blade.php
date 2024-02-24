@@ -47,7 +47,8 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="jenis_identitas" class="col-md-3 col-sm-12 col-form-label">Jenis Identitas</label>
+                        <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
+                            Identitas</label>
                         <div class="col">
                             <input class="form-control" type="text" placeholder="Jenis Identitas"
                                 id="jenis_identitas" name="jenis_identitas">
