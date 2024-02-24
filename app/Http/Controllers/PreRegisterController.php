@@ -1,15 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers;
 
-use App\Models\MailToken;
-use App\Models\PreRegister;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\View\View;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\MailSendTokenPreRegister;
-use App\Http\Requests\PreRegisterRequestStore;
 
 class PreRegisterController extends Controller
 {
@@ -18,7 +11,7 @@ class PreRegisterController extends Controller
      */
     public function index()
     {
-        return view('auth.register');
+        //
     }
 
     /**
@@ -32,16 +25,9 @@ class PreRegisterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PreRegisterRequestStore $request): View
+    public function store(Request $request)
     {
-        /* create register */
-        $register = PreRegister::cretae($request);
-        /* create token */
-        $generate = MailToken::create(['pre_register_id' => $register->id]);
-
-        Mail::to($register->email)->send(new MailSendTokenPreRegister($register->id, $generate->token));
-        return view('auth.verify');
-
+        //
     }
 
     /**

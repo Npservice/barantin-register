@@ -49,6 +49,56 @@ $('#modal-data').on('hidden.bs.modal', function (e) {
     $('#modal-body').empty()
 });
 
+function ShowPage(url) {
+    $("#page-index").hide();
+    $("html, body").animate({ scrollTop: 0 }, 400);
+    $("#page-grid")
+        .empty()
+        .append(
+            '<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>'
+        );
+    $("#page-grid").load(url);
+}
+function ShowPageSub(url) {
+    $("#page-sub-index").hide();
+    $("html, body").animate({ scrollTop: 0 }, 400);
+    $("#page-sub-grid")
+        .empty()
+        .append(
+            '<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>'
+        );
+    $("#page-sub-grid").load(url);
+}
+
+function ClosePage() {
+    $("#page-grid").empty();
+    $("html, body").animate({ flipInX: 0 }, 400);
+    $("#page-index").show();
+}
+
+function ClosePageSub() {
+    $("#page-sub-grid").empty();
+    $("html, body").animate({ flipInX: 0 }, 400);
+    $("#page-sub-index").show();
+}
+
+function ClosePageLink(url) {
+    $("#page-grid").empty();
+    $("html, body").animate({ flipInX: 0 }, 400);
+    if (url) {
+        $("#page-grid")
+            .empty()
+            .append(
+                '<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>'
+            );
+        $("#page-grid").load(url);
+    } else {
+        $("#page-index").show();
+    }
+}
+
+
+
 function submit(url, image) {
     if (image) {
         form_data = new FormData();

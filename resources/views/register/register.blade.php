@@ -3,7 +3,7 @@
 @section('text', 'Regiter Baru')
 @section('content')
     <div class="p-3">
-        <form method="POST" action="{{ route('register') }}" class="form-horizontal mt-3">
+        <form method="POST" action="{{ route('register.new') }}" class="form-horizontal mt-3">
             @csrf
             {{-- <div class="d-flex justify-content-start"> --}}
             <div class="row">
@@ -12,8 +12,7 @@
                 </div>
                 <div class="col-3 me-5">
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="radio" name="pemohon" id="formRadios1" value="perusahaan"
-                            checked>
+                        <input class="form-check-input" type="radio" name="pemohon" id="formRadios1" value="perusahaan">
                         <label class="form-check-label" for="formRadios1">
                             Perusahaan
                         </label>
@@ -28,15 +27,20 @@
                     </div>
                 </div>
             </div>
+            @error('pemohon')
+                <span class="invalid-feedback d-block" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
             {{-- </div> --}}
 
             <div class="form-group mb-3 row">
                 <label for="nama">Nama</label>
                 <div class="col-12">
                     <input id="name" disabled type="text" class="form-control @error('name') is-invalid @enderror"
-                        name="nama" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                        name="nama" value="{{ old('nama') }}" required autocomplete="name" autofocus>
                 </div>
-                @error('name')
+                @error('nama')
                     <span class="invalid-feedback d-block" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

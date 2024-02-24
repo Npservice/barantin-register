@@ -141,6 +141,9 @@
         </div>
         <div class="tab-pane" id="company-document">
             <div>
+                <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
+                <label for="" class="form-label fw-bold h6 mt-0 mb-0">Kontak Person</label>
+                <hr class="mt-0 mb-3">
                 <form>
                     <div class="row mb-3">
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
@@ -169,6 +172,9 @@
             </div>
         </div>
         <div class="tab-pane" id="bank-detail">
+            <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
+            <label for="" class="form-label fw-bold h6 mt-0 mb-0">Penandatangan</label>
+            <hr class="mt-0 mb-3">
             <div>
                 <form>
                     <div class="row mb-3">
@@ -206,6 +212,9 @@
             </div>
         </div>
         <div class="tab-pane" id="confirm-detail">
+            <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
+            <label for="" class="form-label fw-bold h6 mt-0 mb-0">Yang Diberi Kuasa</label>
+            <hr class="mt-0 mb-3">
             <div>
                 <div class="row mb-4">
                     <div class="d-flex justify-content-start mb-5">
@@ -371,6 +380,9 @@
             </div>
         </div>
         <div class="tab-pane" id="dokumen-pendukung">
+            <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
+            <label for="" class="form-label fw-bold h6 mt-0 mb-0">Dokumen Pendukung</label>
+            <hr class="mt-0 mb-3">
             <div>
                 <div class="row mb-3">
                     <label for="upt" class="col-sm-2 col-form-label">Jenis Dokumen</label>

@@ -12,9 +12,10 @@ return new class extends Migration {
     {
         Schema::create('pre_registers', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->enum('pemohon', ['peorangan', 'perusahaan']);
+            $table->enum('pemohon', ['perorangan', 'perusahaan']);
             $table->string('nama');
             $table->string('email')->unique();
+            $table->timestamp('verify_email')->nullable();
             $table->timestamps();
         });
     }

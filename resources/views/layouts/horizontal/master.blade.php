@@ -21,9 +21,15 @@
         <!-- Start right Content here -->
         <!-- ============================================================== -->
         <div class="main-content">
-            <div class="page-content">
-                @yield('content')
-            </div>
+            @auth
+                <div class="page-content">
+                    @yield('content')
+                </div>
+            @else
+                <div class="page-content-guest">
+                    @yield('content')
+                </div>
+            @endauth
             <!-- End Page-content -->
             {{-- start footer --}}
             @include('layouts.components.footer')

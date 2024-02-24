@@ -14,5 +14,6 @@ class PreRegister extends Model
         'pemohon',
         'nama',
         'email',
+        'verify_email'
     ];
 }

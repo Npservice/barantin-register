@@ -23,7 +23,7 @@ class PreRegisterRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            'pemohon' => ['required', Rule::in(['peorangan', 'perusahaan'])],
+            'pemohon' => ['required', Rule::in(['perorangan', 'perusahaan'])],
             'nama' => 'required|max:255',
             'email' => 'required|email|max:50'
         ];

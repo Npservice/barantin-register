@@ -45,11 +45,12 @@
 
             <div class="form-group mb-0 row mt-2">
                 <div class="col-sm-7 mt-3">
-                    <a href="{{ route('register_ulang') }}" class="text-muted"><i class="mdi mdi-lock"></i>Register
+                    <a href="{{ route('register.create') }}" class="text-muted"><i class="mdi mdi-lock"></i>Register
                         ulang</a>
                 </div>
                 <div class="col-sm-5 mt-3">
-                    <a href="{{ route('register') }}" class="text-muted"><i class="mdi mdi-account-circle"></i>Register
+                    <a href="{{ route('register.index') }}" class="text-muted"><i
+                            class="mdi mdi-account-circle"></i>Register
                         baru</a>
                 </div>
             </div>
