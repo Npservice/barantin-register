@@ -12,7 +12,7 @@ Route::prefix('register')->name('register.')->group(function () {
     Route::get('verify/{id}/{token}', [PreRegisterController::class, 'TokenVerify'])->name('verify');
     Route::post('regenerate', [PreRegisterController::class, 'Regenerate'])->name('regenerate');
 
-    Route::get('failed', [PreRegisterController::class, 'RegisterFailed'])->name('failed');
+    Route::get('failed', [PreRegisterController::class, 'RegisterFailed'])->name('failed')->middleware('registerfailed:PreRegisterController');
 
     Route::get('formulir/{id}', [PreRegisterController::class, 'RegisterFormulirIndex'])->name('formulir');
     Route::get('form/{id}', [PreRegisterController::class, 'RegisterForm'])->name('formulir');
