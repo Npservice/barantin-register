@@ -73,7 +73,10 @@ class PreRegisterController extends Controller
         if (!$mail_token || $mail_token->token != $token || $mail_token->expire_at_token <= now()) {
             return redirect()->route('register.failed')->with(['message_token' => 'Token Expired or Invalid. Please register again.']);
         }
-        PreRegister::find($id)->update(['verify_email' => now()]);
+        DB::transaction(function () use ($id) {
+            $mail_token = MailToken::where('pre_register_id', $id)->delete();
+            PreRegister::find($id)->update(['verify_email' => now()]);
+        });
         return redirect()->route('register.formulir.index', $id);
     }
 
@@ -103,18 +106,14 @@ class PreRegisterController extends Controller
     public function RegisterFormulirIndex(string $id): View|RedirectResponse
     {
         $register = PreRegister::find($id);
-        if (!$register || !$register->verify_email) {
-            return redirect()->route('register.failed')->with(['message_token' => 'Email Not Verified. Please register again.']);
-        }
+        $this->CheckRegister($register);
         return view('register.form.index', compact('id'));
     }
     /* register form request by ajax */
     public function RegisterForm(string $id): View
     {
         $register = PreRegister::find($id);
-        if ($register->pemohon === 'perusahaan') {
-            return view('register.form.partial.perusahaan', compact('register'));
-        }
+        $this->CheckRegister($register);
         return view('register.form.partial.perorangan', compact('register'));
     }
     /* status register */
@@ -127,6 +126,13 @@ class PreRegisterController extends Controller
     {
         $message = session('message_token');
         return view('register.failed', compact('message'));
+    }
+    static function CheckRegister(PreRegister $register): RedirectResponse|bool
+    {
+        if (!$register || !$register->verify_email) {
+            return redirect()->route('register.failed')->with(['message_token' => 'Email Not Verified. Please register again.']);
+        }
+        return true;
     }
 
 
