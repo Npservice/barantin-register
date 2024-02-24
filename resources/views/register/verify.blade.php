@@ -1,5 +1,5 @@
 @extends('layouts.auth.master')
-
+@section('title', 'verify email')
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
