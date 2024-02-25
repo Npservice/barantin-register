@@ -52,12 +52,17 @@
                         <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
                             Identitas</label>
                         <div class="col">
-                            <input class="form-control" type="text" placeholder="Jenis Identitas"
+                            <select class="form-control select-item" type="text" placeholder="Jenis Identitas"
                                 id="jenis_identitas" name="jenis_identitas">
+                                <option value="">select item</option>
+                                <option value="PASSPORT">PASSPORT</option>
+                                <option value="KTP">KTP</option>
+                                <option value="NPWP">NPWP 16 DIGIT</option>
+                            </select>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="text" placeholder="Jenis Identitas"
-                                id="jenis_identitas" name="jenis_identitas">
+                            <input class="form-control" type="text" placeholder="Nomer Identitas"
+                                id="nomer_identitas" name="nomer_identitas">
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -842,4 +847,8 @@
     UptSelect()
     ProvinsiSelect()
     KotaSelect()
+    $('.select-item').select2({
+        placeholder: 'select item',
+        minimumResultsForSearch: -1,
+    })
 </script>
