@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SelectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +27,12 @@ Route::get('/', function () {
 });
 
 // Route::view('/user/register', 'user.register.index');
-Route::view('/admin/template', 'welcome');
-Route::view('/user/datatable', 'user.log.index');
-Route::view('/admin/datatable', 'admin.data.index');
-Route::view('/admin/dashboard', 'admin.dashboard.index');
-Route::view('/user/form/perusahaan', 'user.register.form.perusahaan');
-Route::view('/user/form/perorangan', 'user.register.form.perorangan');
+// Route::view('/admin/template', 'welcome');
+// Route::view('/user/datatable', 'user.log.index');
+// Route::view('/admin/datatable', 'admin.data.index');
+// Route::view('/admin/dashboard', 'admin.dashboard.index');
+// Route::view('/user/form/perusahaan', 'user.register.form.perusahaan');
+// Route::view('/user/form/perorangan', 'user.register.form.perorangan');
 // Route::view('/register/ulang', 'auth.register_ulang')->name('register_ulang');
 // Route::view('/login', 'auth.index');
 
@@ -41,6 +43,13 @@ Route::middleware(['verified'])->group(function () {
 
 require_once __DIR__ . '/admin.php';
 require_once __DIR__ . '/register.php';
+
+
+Route::prefix('select')->name('select.')->group(function () {
+    Route::get('upt', [SelectController::class, 'SelectUpt'])->name('upt');
+    Route::get('provinsi', [SelectController::class, 'SelectProvinsi'])->name('provinsi');
+    Route::get('kota/{id}', [SelectController::class, 'SelectKota'])->name('provinsi');
+});
 
 Route::get('ajax/failed', function () {
     if (request()->ajax()) {

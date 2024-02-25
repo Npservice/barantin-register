@@ -2,32 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterUpt;
 use Illuminate\Http\Request;
+use App\Models\MasterKotaKab;
+use App\Models\MasterProvinsi;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 
-class PreRegisterController extends Controller
+class SelectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function SelectUpt(): JsonResponse
     {
-        //
+        $data = MasterUpt::select('id', 'nama')->get();
+        return response()->json($data);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function SelectProvinsi()
     {
-        //
+        $data = MasterProvinsi::select('id', 'nama')->get();
+        return response()->json($data);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function SelectKota()
     {
-        //
+        $data = MasterKotaKab::select('id', 'nama')->get();
+        return response()->json($data);
     }
 
     /**

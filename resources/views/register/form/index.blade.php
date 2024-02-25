@@ -5,8 +5,7 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/dropify/dist/dropify.min.css') }}">
     <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
         type="text/css" />
-    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -49,10 +48,10 @@
     <script src="{{ asset('assets/libs/dropify/dist/dropify.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 @endpush
 @push('custom-js')
+    <script src="{{ asset('assets/js/page/select.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#spinner').clone().removeClass('d-none').appendTo('#form-data-input');

@@ -19,12 +19,12 @@
                 <span class="step-title">Penandatangan</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="#confirm-detail" class="nav-link" data-toggle="tab">
                 <span class="step-number">04</span>
                 <span class="step-title">Yang Diberi Kuasa</span>
             </a>
-        </li>
+        </li> --}}
         <li class="nav-item">
             <a href="#dokumen-pendukung" class="nav-link" data-toggle="tab">
                 <span class="step-number">05</span>
@@ -43,7 +43,9 @@
                     <div class="row mb-3">
                         <label for="upt" class="col-sm-3 col-form-label">UPT</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="UPT" id="upt" name="upt">
+                            <select class="select2 form-control upt-select" type="text" id="upt" multiple
+                                name="upt" data-placeholder="select item">
+                                <select>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -117,16 +119,16 @@
                     <div class="row mb-3">
                         <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Provinsi" id="provinsi"
-                                name="provinsi">
+                            <select class="form-control provinsi-select" type="text" placeholder="Provinsi"
+                                id="provinsi" name="provinsi"></select>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="kota" class="col-sm-3 col-form-label">Kota</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Kota" id="kota"
-                                name="kota">
+                            <select class="form-control kota-select" type="text" placeholder="Kota"
+                                id="kota" name="kota"></select>
                         </div>
                     </div>
 
@@ -212,7 +214,7 @@
                 </form>
             </div>
         </div>
-        <div class="tab-pane" id="confirm-detail">
+        {{-- <div class="tab-pane" id="confirm-detail">
             <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Yang Diberi Kuasa</label>
             <hr class="mt-0 mb-3">
@@ -379,7 +381,7 @@
 
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="tab-pane" id="dokumen-pendukung">
             <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Dokumen Pendukung</label>
@@ -546,7 +548,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+{{-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -832,56 +834,12 @@
         </div>
     </div>
 </div>
-</div>
-<script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
-<script>
-    $('#thumbnile').dropify()
-    $('input[name="kuasa"]').change(function() {
-        let val = $(this).val();
-        if (val === 'ya') {
-            $('#form-kuasa').removeClass('d-none');
-            return
-        }
-        $('#form-kuasa').addClass('d-none');
+</div> --}}
 
-    });
-    $('#datatable-dokumen-pendukung').DataTable({
-        language: {
-            paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>",
-            },
-        },
-        drawCallback: function() {
-            $(".dataTables_paginate > .pagination").addClass(
-                "pagination-rounded"
-            );
-        },
-    });
-    $('#datatable-kuasa').DataTable({
-        language: {
-            paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>",
-            },
-        },
-        drawCallback: function() {
-            $(".dataTables_paginate > .pagination").addClass(
-                "pagination-rounded"
-            );
-        },
-    });
-    $('#datatable').DataTable({
-        language: {
-            paginate: {
-                previous: "<i class='mdi mdi-chevron-left'>",
-                next: "<i class='mdi mdi-chevron-right'>",
-            },
-        },
-        drawCallback: function() {
-            $(".dataTables_paginate > .pagination").addClass(
-                "pagination-rounded"
-            );
-        },
-    });
+<script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
+<script src="{{ asset('assets/js/page/form/perorangan.js') }}"></script>
+<script>
+    UptSelect()
+    ProvinsiSelect()
+    KotaSelect()
 </script>
