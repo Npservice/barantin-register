@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Register;
 
 
 use App\Models\MailToken;
+use App\Models\PjBaratin;
 use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
@@ -67,9 +68,23 @@ class PreRegisterController extends Controller
     /* register ulang */
     public function RegisterUlang(RegisterUlangRequestStore $request): View
     {
-        $baratan = PjBaratanKpp::where('kode_perusahaan', $request->username)->first();
-        $generate = MailToken::create(['pj_baratan_kpp_id' => $baratan->id]);
-        Mail::to($request->email)->send(new MailSendTokenPreRegister($request->id, $generate->token));
+        $baratin = PjBaratin::where('kode_perusahaan', $request->username)->where('email', $request->email)->first();
+        $pre_register = null;
+        $generate = null;
+
+        if ($baratin) {
+            $pre_register = PreRegister::create(['nama' => $baratin->nama_perusahaan, 'email' => $baratin->email, 'status' => $baratin->status]);
+            $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
+        } else {
+            DB::transaction(function () use ($request, &$pre_register, &$generate) {
+                $baratan = PjBaratanKpp::where('kode_perusahaan', $request->username)->first();
+                $pre_register = PreRegister::create(['nama' => $baratan->nama_perusahaan, 'email' => $baratan->email]);
+                $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
+            });
+        }
+
+
+        Mail::to($request->email)->send(new MailSendTokenPreRegister($pre_register->id, $generate->token));
         return view('register.verify', compact('generate'));
     }
 
@@ -87,6 +102,7 @@ class PreRegisterController extends Controller
             $mail_token = MailToken::where('pre_register_id', $id)->delete();
             PreRegister::find($id)->update(['verify_email' => now()]);
         });
+
         return redirect()->route('register.formulir.index', $id);
     }
 
@@ -117,6 +133,10 @@ class PreRegisterController extends Controller
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
+        $baratan = PjBaratanKpp::where('email', $register->email)->first();
+        if ($baratan) {
+            return view('register.form.index', compact('id', 'baratan'));
+        }
         return view('register.form.index', compact('id'));
     }
     /* register form request by ajax */

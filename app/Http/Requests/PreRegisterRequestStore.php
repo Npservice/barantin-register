@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PjBaratanKpp;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +26,19 @@ class PreRegisterRequestStore extends FormRequest
         return [
             'pemohon' => ['required', Rule::in(['perorangan', 'perusahaan'])],
             'nama' => 'required|max:255',
-            'email' => 'required|email|max:50|unique:pre_registers,email'
+            'email' => [
+                'required',
+                'email',
+                'max:50',
+                'unique:pre_registers,email',
+                function ($attr, $val, $fail) {
+                    $cek = PjBaratanKpp::where('email', $val)->first();
+                    if ($cek) {
+                        $fail('email sudah terdaftar di system lama kami silahkan register ulang');
+                    }
+
+                }
+            ]
         ];
     }
 }

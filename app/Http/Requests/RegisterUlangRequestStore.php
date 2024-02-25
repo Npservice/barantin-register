@@ -22,7 +22,7 @@ class RegisterUlangRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|exists:pj_baratan_kpps,email',
+            'email' => 'required|exists:pj_baratan_kpps,email|unique:pre_registers,email',
             'username' => 'required|exists:pj_baratan_kpps,kode_perusahaan'
         ];
     }

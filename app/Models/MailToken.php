@@ -19,7 +19,6 @@ class MailToken extends Model
     ];
     protected $fillable = [
         'pre_register_id',
-        'pj_baratan_kpp_id',
     ];
 
     public static function boot()
