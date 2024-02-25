@@ -23,7 +23,7 @@ class SelectController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function SelectProvinsi()
+    public function SelectProvinsi(): JsonResponse
     {
         $data = MasterProvinsi::select('id', 'nama')->get();
         return response()->json($data);
@@ -32,9 +32,9 @@ class SelectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function SelectKota()
+    public function SelectKota(string $id): JsonResponse
     {
-        $data = MasterKotaKab::select('id', 'nama')->get();
+        $data = MasterKotaKab::where('provinsi_id',$id)->select('id', 'nama')->get();
         return response()->json($data);
     }
 
