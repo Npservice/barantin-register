@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('nama', 45)->nullable();
             $table->timestamps();
 
-            $table->foreign('provinsi_id')->references('id')->on('provinsi');
+            $table->foreign('provinsi_id')->references('id')->on('master_provinsis')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

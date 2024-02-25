@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Register;
 
 use App\Models\MailToken;
 use App\Models\PreRegister;
-use Illuminate\Http\RedirectResponse;
+use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\RedirectResponse;
 use App\Mail\MailSendTokenPreRegister;
 use App\Http\Requests\PreRegisterRequestStore;
+use App\Http\Requests\RegisterUlangRequestStore;
 
 class PreRegisterController extends Controller
 {
@@ -61,6 +63,14 @@ class PreRegisterController extends Controller
         Mail::to($register->email)->send(new MailSendTokenPreRegister($register->id, $generate->token));
         return view('register.verify', compact('generate'));
 
+    }
+    /* register ulang */
+    public function RegisterUlang(RegisterUlangRequestStore $request): View
+    {
+        $baratan = PjBaratanKpp::where('kode_perusahaan', $request->username)->first();
+        $generate = MailToken::create(['pj_baratan_kpp_id' => $baratan->id]);
+        Mail::to($request->email)->send(new MailSendTokenPreRegister($request->id, $generate->token));
+        return view('register.verify', compact('generate'));
     }
 
     /**
@@ -131,6 +141,12 @@ class PreRegisterController extends Controller
     {
         if (!$register || !$register->verify_email) {
             return redirect()->route('register.failed')->with(['message_token' => 'Email Not Verified. Please register again.']);
+        }
+        if ($register->status === 'MENUNGGU') {
+            return redirect()->route('register.failed')->with(['message_token' => 'Data in process']);
+        }
+        if ($register->status === 'TOLAK') {
+            return redirect()->route('register.failed')->with(['message_token' => 'Data in process']);
         }
         return true;
     }

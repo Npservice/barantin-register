@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('mail_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pre_register_id');
+            $table->uuid('pre_register_id')->nullable();
+            $table->unsignedBigInteger('pj_baratan_kpp_id')->nullable();
             $table->string('token')->unique();
             $table->timestamp('expire_at_token');
-            $table->foreign('pre_register_id')->references('id')->on('pre_registers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

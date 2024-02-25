@@ -7,7 +7,8 @@ Route::prefix('register')->name('register.')->group(function () {
     Route::get('baru', [PreRegisterController::class, 'index'])->name('index');
     Route::get('ulang', [PreRegisterController::class, 'create'])->name('create');
 
-    Route::post('email', [PreRegisterController::class, 'NewRegister'])->name('new');
+    Route::post('baru', [PreRegisterController::class, 'NewRegister'])->name('new');
+    Route::post('ulang', [PreRegisterController::class, 'RegisterUlang'])->name('ulang');
 
     Route::get('verify/{id}/{token}', [PreRegisterController::class, 'TokenVerify'])->name('verify');
     Route::post('regenerate', [PreRegisterController::class, 'Regenerate'])->name('regenerate');

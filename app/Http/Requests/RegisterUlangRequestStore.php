@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PreRegisterRequestStore extends FormRequest
+class RegisterUlangRequestStore extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +22,8 @@ class PreRegisterRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            'pemohon' => ['required', Rule::in(['perorangan', 'perusahaan'])],
-            'nama' => 'required|max:255',
-            'email' => 'required|email|max:50|unique:pre_registers,email'
+            'email' => 'required|exists:pj_baratan_kpps,email',
+            'username' => 'required|exists:pj_baratan_kpps,kode_perusahaan'
         ];
     }
 }
