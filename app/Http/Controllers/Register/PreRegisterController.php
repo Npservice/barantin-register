@@ -128,48 +128,7 @@ class PreRegisterController extends Controller
         Mail::to($user->email)->send(new MailSendTokenPreRegister($user->id, $generate->token));
         return view('register.verify', compact('generate'));
     }
-    /* register  form index */
-    public function RegisterFormulirIndex(string $id): View|RedirectResponse
-    {
-        $register = PreRegister::find($id);
-        $this->CheckRegister($register);
-        $baratan = PjBaratanKpp::where('email', $register->email)->first();
-        if ($baratan) {
-            return view('register.form.index', compact('id', 'baratan'));
-        }
-        return view('register.form.index', compact('id'));
-    }
-    /* register form request by ajax */
-    public function RegisterForm(string $id): View
-    {
-        $register = PreRegister::find($id);
-        $this->CheckRegister($register);
-        return view('register.form.partial.perorangan', compact('register'));
-    }
-    /* status register */
-    public function StatusRegister(): View
-    {
-        return view('register.form.partial.status-register');
-    }
-    /* failed register */
-    public function RegisterFailed(): View
-    {
-        $message = session('message_token');
-        return view('register.failed', compact('message'));
-    }
-    static function CheckRegister(PreRegister $register): RedirectResponse|bool
-    {
-        if (!$register || !$register->verify_email) {
-            return redirect()->route('register.failed')->with(['message_token' => 'Email Not Verified. Please register again.']);
-        }
-        if ($register->status === 'MENUNGGU') {
-            return redirect()->route('register.failed')->with(['message_token' => 'Data in process']);
-        }
-        if ($register->status === 'TOLAK') {
-            return redirect()->route('register.failed')->with(['message_token' => 'Data in process']);
-        }
-        return true;
-    }
+
 
 
 }
