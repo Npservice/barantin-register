@@ -1,6 +1,18 @@
 let id_pre_register = $('#datatable-dokumen-pendukung').data('pre-register');
 
 $('#file_dokumen').dropify()
+
+var phoneInput = $('#telephone');
+IMask(phoneInput[0], {
+    mask: '0000-0000-0000',
+    lazy: false
+});
+var FaxInput = $('#nomer_fax');
+IMask(FaxInput[0], {
+    mask: '(000) 000-0000',
+    lazy: false
+});
+
 $('input[name="kuasa"]').change(function () {
     let val = $(this).val();
     if (val === 'ya') {

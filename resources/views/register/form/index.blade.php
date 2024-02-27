@@ -49,6 +49,7 @@
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/imask/imask.init.js') }}"></script>
 @endpush
 @push('custom-js')
     <script src="{{ asset('assets/js/page/select.js') }}"></script>

@@ -49,6 +49,13 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" disabled value="{{ $register->nama_pemohon }}" type="text"
+                                placeholder="text" id="nama_perusahaan" name="nama_perusahaan">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
                         <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
                             Identitas</label>
                         <div class="col">
@@ -68,47 +75,55 @@
                     <div class="row mb-3">
                         <label for="upt" class="col-sm-3 col-form-label">Telephone</label>
                         <div class="col-sm-9">
-                            <div class="input-group has-validation">
-                                <span class="input-group-text" id="inputGroupPrepend">62</span>
-                                <input type="text" class="form-control" id="validationCustomUsername"
-                                    aria-describedby="inputGroupPrepend" required>
-
-                            </div>
+                            <input type="text" class="form-control" id="telephone" name="telephone"
+                                aria-describedby="inputGroupPrepend" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Fax" id="fax" name="fax">
+                            <input class="form-control" type="text" placeholder="Fax" id="nomer_fax"
+                                name="nomer_fax">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="email" placeholder="Email" id="email"
-                                name="email">
+                            <input class="form-control" disabled value="{{ $register->email }}" type="email"
+                                placeholder="Email" id="email" name="email">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="lingkup_akivitas" class="col-sm-3 col-form-label">Lingkup Akivitas</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="lingkup_akivitas" rows="3"
-                                placeholder="Lingkup Akivitas" name="lingkup_akivitas">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
-                        <div class="col-sm-9">
-                            <select class="form-select" id="status_import" name="status_import">
-                                <option selected disabled>Pilih Status</option>
-                                <option value="import">Import</option>
-                                <option value="tidak_import">Tidak Import</option>
+                            <select class="form-control select-item" id="lingkup_akivitas" rows="3"
+                                placeholder="Lingkup Akivitas" name="lingkup_akivitas" multiple>
+                                <option value="1">Import</option>
+                                <option value="2">Domestik Masuk</option>
+                                <option value="3">Export</option>
+                                <option value="4">Domestik Keluar</option>
                             </select>
                         </div>
                     </div>
 
                 </div>
                 <div class="col-md-6 col-sm-12">
+                    <div class="row mb-3">
+                        <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
+                        <div class="col-sm-9">
+                            <select class="form-select select-item" id="status_import" name="status_import">
+                                <option value="">select item</option>
+                                <option value="25">Importir Umum</option>
+                                <option value="26">Importir Produsen</option>
+                                <option value="27">Importir Terdaftar</option>
+                                <option value="28">Agen Tunggal</option>
+                                <option value="29">BULOG</option>
+                                <option value="30">PERTAMINA</option>
+                                <option value="31">DAHANA</option>
+                                <option value="32">IPTN</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                         <div class="col-sm-9">
@@ -199,9 +214,18 @@
 
                     <div class="row mb-3">
                         <label for="jenis_identitas" class="col-sm-2 col-form-label">Jenis Identitas</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Jenis Identitas"
-                                id="jenis_identitas" name="jenis_identitas">
+                        <div class="col">
+                            <select class="form-control select-item" type="text" placeholder="Jenis Identitas"
+                                id="jenis_identitas_ttd" name="jenis_identitas_ttd">
+                                <option value="">select item</option>
+                                <option value="PASSPORT">PASSPORT</option>
+                                <option value="KTP">KTP</option>
+                                <option value="NPWP">NPWP 16 DIGIT</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" placeholder="Nomer Identitas"
+                                id="nomer_identitas" name="nomer_identitas">
                         </div>
                     </div>
 

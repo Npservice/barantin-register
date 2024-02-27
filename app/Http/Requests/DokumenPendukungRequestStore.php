@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\DokumenPendukung;
+use App\Models\PreRegister;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,8 +25,33 @@ class DokumenPendukungRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_dokumen' => ['required', Rule::in('KTP', 'PASSPORT', 'NPWP')],
-            'nomer_dokumen' => 'required|digits_between:1,16',
+            'jenis_dokumen' => [
+                'required',
+                Rule::in('KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB', 'TDP', 'angka_pengenal_importir'),
+                function ($attribute, $value, $fail) {
+                    if (in_array($value, ['KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB',])) {
+                        $id = request()->route('id');
+                        $dokumen = DokumenPendukung::where('jenis_dokumen', $value)->where('pre_register_id', $id)->first();
+                        if ($dokumen) {
+                            $fail('Anda hanya dapat memiliki satu jenis dokumen.');
+                        }
+                    }
+                },
+            ],
+            'nomer_dokumen' => [
+                'required',
+                'numeric',
+                function ($attr, $val, $fail) {
+                    $jenis_dokumen = request()->input('jenis_dokumen');
+
+                    if ($jenis_dokumen === 'KTP' || $jenis_dokumen === 'NPWP') {
+                        if (!preg_match('/^[0-9]{16}$/', $val)) {
+                            $fail('Nomor dokumen harus berupa 16 digit.');
+                        }
+                    }
+
+                }
+            ],
             'tanggal_terbit' => 'required|date',
             'file_dokumen' => 'required|file|mimes:png,jpg,pdf|max:5000'
         ];
