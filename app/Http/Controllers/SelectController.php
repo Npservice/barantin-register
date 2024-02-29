@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterUpt;
+use App\Models\MasterNegara;
 use Illuminate\Http\Request;
 use App\Models\MasterKotaKab;
 use App\Models\MasterProvinsi;
@@ -23,6 +24,15 @@ class SelectController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function SelectNegara(): JsonResponse
+    {
+        if (request()->input('negara_id')) {
+            $data = MasterNegara::find(request()->input('negara_id'));
+        } else {
+            $data = MasterNegara::select('id', 'nama', 'kode')->get();
+        }
+        return response()->json($data);
+    }
     public function SelectProvinsi(): JsonResponse
     {
         $data = MasterProvinsi::select('id', 'nama')->get();
@@ -34,7 +44,7 @@ class SelectController extends Controller
      */
     public function SelectKota(string $id): JsonResponse
     {
-        $data = MasterKotaKab::where('provinsi_id',$id)->select('id', 'nama')->get();
+        $data = MasterKotaKab::where('provinsi_id', $id)->select('id', 'nama')->get();
         return response()->json($data);
     }
 

@@ -47,6 +47,7 @@ require_once __DIR__ . '/register.php';
 
 Route::prefix('select')->name('select.')->group(function () {
     Route::get('upt', [SelectController::class, 'SelectUpt'])->name('upt');
+    Route::get('negara', [SelectController::class, 'SelectNegara'])->name('negara');
     Route::get('provinsi', [SelectController::class, 'SelectProvinsi'])->name('provinsi');
     Route::get('kota/{id}', [SelectController::class, 'SelectKota'])->name('provinsi');
 });

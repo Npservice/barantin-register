@@ -5,6 +5,7 @@ use App\Http\Controllers\Register\PreRegisterController;
 
 
 Route::prefix('register')->name('register.')->group(function () {
+    /* email verification handle */
     Route::get('baru', [PreRegisterController::class, 'index'])->name('index');
     Route::get('ulang', [PreRegisterController::class, 'create'])->name('create');
 
@@ -19,6 +20,8 @@ Route::prefix('register')->name('register.')->group(function () {
 
     Route::get('formulir/{id}', [RegisterController::class, 'RegisterFormulirIndex'])->name('formulir.index');
     Route::get('form/{id}', [RegisterController::class, 'RegisterForm'])->name('formulir');
+
+    Route::post('store/{id}', [RegisterController::class, 'RegisterStore'])->name('store');
 
 
     /* dokumen pendukung route handler */

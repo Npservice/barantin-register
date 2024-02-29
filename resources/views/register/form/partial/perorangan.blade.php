@@ -27,7 +27,7 @@
         </li> --}}
         <li class="nav-item">
             <a href="#dokumen-pendukung" class="nav-link" data-toggle="tab">
-                <span class="step-number">05</span>
+                <span class="step-number">04</span>
                 <span class="step-title">Dokumen Pendukung</span>
             </a>
         </li>
@@ -38,21 +38,23 @@
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Registrasi Pemohon</label>
             <hr class="mt-0 mb-3">
 
-            <form class="row">
+            <form class="row" id="form-register">
                 <div class="col-md-6 col-sm-12">
                     <div class="row mb-3">
                         <label for="upt" class="col-sm-3 col-form-label">UPT</label>
                         <div class="col-sm-9">
                             <select class="select2 form-control upt-select" type="text" id="upt" multiple
-                                name="upt" data-placeholder="select item">
+                                name="upt[]" data-placeholder="select item">
                                 <select>
+                                    <div class="invalid-feedback" id="upt-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
-                            <input class="form-control" disabled value="{{ $register->nama_pemohon }}" type="text"
-                                placeholder="text" id="nama_perusahaan" name="nama_perusahaan">
+                            <input class="form-control" readonly value="{{ $register->nama }}" type="text"
+                                id="pemohon" name="pemohon">
+                            <div class="invalid-feedback" id="pemohon-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -66,48 +68,55 @@
                                 <option value="KTP">KTP</option>
                                 <option value="NPWP">NPWP 16 DIGIT</option>
                             </select>
+                            <div class="invalid-feedback" id="jenis_identitas-feedback"></div>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="text" placeholder="Nomer Identitas"
-                                id="nomer_identitas" name="nomer_identitas">
+                            <input class="form-control" type="number" placeholder="Nomor Identitas"
+                                id="nomor_identitas" name="nomor_identitas">
+                            <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="upt" class="col-sm-3 col-form-label">Telephone</label>
+                        <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="telephone" name="telephone"
+                            <input type="text" class="form-control" id="telepon" name="telepon"
                                 aria-describedby="inputGroupPrepend" required>
+                            <div class="invalid-feedback" id="telepon-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Fax" id="nomer_fax"
-                                name="nomer_fax">
+                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax"
+                                name="nomor_fax">
+                            <div class="invalid-feedback" id="nomor_fax-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input class="form-control" disabled value="{{ $register->email }}" type="email"
+                            <input class="form-control" readonly value="{{ $register->email }}" type="email"
                                 placeholder="Email" id="email" name="email">
+                            <div class="invalid-feedback" id="email-feedback"></div>
                         </div>
                     </div>
+
+
+                </div>
+                <div class="col-md-6 col-sm-12">
                     <div class="row mb-3">
                         <label for="lingkup_akivitas" class="col-sm-3 col-form-label">Lingkup Akivitas</label>
                         <div class="col-sm-9">
-                            <select class="form-control select-item" id="lingkup_akivitas" rows="3"
-                                placeholder="Lingkup Akivitas" name="lingkup_akivitas" multiple>
+                            <select class="form-control select-item" id="lingkup_aktivitas" rows="3"
+                                placeholder="Lingkup Akivitas" name="lingkup_aktivitas[]" multiple>
                                 <option value="1">Import</option>
                                 <option value="2">Domestik Masuk</option>
                                 <option value="3">Export</option>
                                 <option value="4">Domestik Keluar</option>
                             </select>
+                            <div class="invalid-feedback" id="lingkup_aktivitas-feedback"></div>
                         </div>
                     </div>
-
-                </div>
-                <div class="col-md-6 col-sm-12">
                     <div class="row mb-3">
                         <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                         <div class="col-sm-9">
@@ -122,45 +131,42 @@
                                 <option value="31">DAHANA</option>
                                 <option value="32">IPTN</option>
                             </select>
+                            <div class="invalid-feedback" id="status_import-feedback"></div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <label for="negara" class="col-sm-3 col-form-label">Negara</label>
+                        <div class="col-sm-9">
+                            <select class="form-control negara-select" type="text" placeholder="Negara"
+                                id="negara" name="negara"></select>
+                            <div class="invalid-feedback" id="negara-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 d-none" id="provinsi-form">
+                        <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
+                        <div class="col-sm-9">
+                            <select class="form-control provinsi-select" type="text" placeholder="Provinsi"
+                                id="provinsi" name="provinsi"></select>
+                            <div class="invalid-feedback" id="provinsi-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 d-none" id="kota-form">
+                        <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
+                        <div class="col-sm-9">
+                            <select class="form-control kota-select" type="text" placeholder="Kota"
+                                id="kota" name="kota"></select>
+                            <div class="invalid-feedback" id="kota-feedback"></div>
+                        </div>
+                    </div>
+
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="text" placeholder="Alamat" id="alamat"
                                 name="alamat">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label for="negara" class="col-sm-3 col-form-label">Negara</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Negara" id="negara"
-                                name="negara">
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
-                        <div class="col-sm-9">
-                            <select class="form-control provinsi-select" type="text" placeholder="Provinsi"
-                                id="provinsi" name="provinsi"></select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label for="kota" class="col-sm-3 col-form-label">Kota</label>
-                        <div class="col-sm-9">
-                            <select class="form-control kota-select" type="text" placeholder="Kota"
-                                id="kota" name="kota"></select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <label for="kecamatan" class="col-sm-3 col-form-label">Kecamatan</label>
-                        <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Kecamatan" id="kecamatan"
-                                name="kecamatan">
+                            <div class="invalid-feedback" id="alamat-feedback"></div>
                         </div>
                     </div>
                 </div>
@@ -171,28 +177,31 @@
                 <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
                 <label for="" class="form-label fw-bold h6 mt-0 mb-0">Kontak Person</label>
                 <hr class="mt-0 mb-3">
-                <form>
+                <form id="form-cp">
                     <div class="row mb-3">
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Nama" id="nama"
-                                name="nama">
+                            <input class="form-control" type="text" placeholder="Nama" id="nama_cp"
+                                name="nama_cp">
+                            <div class="invalid-feedback" id="nama_cp-feedback"></div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Alamat" id="alamat"
-                                name="alamat">
+                            <input class="form-control" type="text" placeholder="Alamat" id="alamat_cp"
+                                name="alamat_cp">
+                            <div class="invalid-feedback" id="alamat_cp-feedback"></div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="telepon" class="col-sm-2 col-form-label">Telepon</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="tel" placeholder="Telepon" id="telepon"
-                                name="telepon">
+                            <input class="form-control" type="tel" placeholder="Telepon" id="telepon_cp"
+                                name="telepon_cp">
+                            <div class="invalid-feedback" id="telepon_cp-feedback"></div>
                         </div>
                     </div>
                 </form>
@@ -203,12 +212,13 @@
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Penandatangan</label>
             <hr class="mt-0 mb-3">
             <div>
-                <form>
+                <form id="form-penandatangan">
                     <div class="row mb-3">
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Nama" id="nama"
-                                name="nama">
+                            <input class="form-control" type="text" placeholder="Nama" id="nama_tdd"
+                                name="nama_tdd">
+                            <div class="invalid-feedback" id="nama_tdd-feedback"></div>
                         </div>
                     </div>
 
@@ -216,32 +226,36 @@
                         <label for="jenis_identitas" class="col-sm-2 col-form-label">Jenis Identitas</label>
                         <div class="col">
                             <select class="form-control select-item" type="text" placeholder="Jenis Identitas"
-                                id="jenis_identitas_ttd" name="jenis_identitas_ttd">
+                                id="jenis_identitas_tdd" name="jenis_identitas_tdd">
                                 <option value="">select item</option>
                                 <option value="PASSPORT">PASSPORT</option>
                                 <option value="KTP">KTP</option>
                                 <option value="NPWP">NPWP 16 DIGIT</option>
                             </select>
+                            <div class="invalid-feedback" id="jenis_identitas_tdd-feedback"></div>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="text" placeholder="Nomer Identitas"
-                                id="nomer_identitas" name="nomer_identitas">
+                            <input class="form-control" type="number" placeholder="Nomer Identitas"
+                                id="nomor_identitas_tdd" name="nomor_identitas_tdd">
+                            <div class="invalid-feedback" id="nomor_identitas_tdd-feedback"></div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="jabatan" class="col-sm-2 col-form-label">Jabatan</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Jabatan" id="jabatan"
-                                name="jabatan">
+                            <input class="form-control" type="text" placeholder="Jabatan" id="jabatan_tdd"
+                                name="jabatan_tdd">
+                            <div class="invalid-feedback" id="jabatan_tdd-feedback"></div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Alamat" id="alamat"
-                                name="alamat">
+                            <input class="form-control" type="text" placeholder="Alamat" id="alamat_tdd"
+                                name="alamat_tdd">
+                            <div class="invalid-feedback" id="alamat_tdd-feedback"></div>
                         </div>
                     </div>
                 </form>
@@ -479,7 +493,9 @@
     <ul class="pager wizard twitter-bs-wizard-pager-link">
         <li class="previous"><a href="javascript: void(0);">Previous</a></li>
         <li class="next"><a href="javascript: void(0);">Next</a></li>
-        <li class="submit-form d-none bg-success"><a class="bg-success" href="javascript: void(0);">Submit</a></li>
+        <li class="submit-form d-none"><button class="btn btn-success" id="button-submit"
+                href="javascript: void(0);">Submit</button>
+        </li>
     </ul>
 </div>
 
@@ -776,12 +792,24 @@
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
 <script src="{{ asset('assets/js/page/form/perorangan.js') }}"></script>
 <script></script>
-<script>
+{{-- <script>
     UptSelect()
     ProvinsiSelect()
     KotaSelect()
+    NegaraSelect(99)
     $('.select-item').select2({
         placeholder: 'select item',
         minimumResultsForSearch: -1,
     })
-</script>
+    $('.negara-select').on('change', function() {
+        let val = $(this).val();
+        console.log(val);
+        if (val == 99) {
+            $('#kota-form').removeClass('d-none');
+            $('#provinsi-form').removeClass('d-none');
+        } else {
+            $('#kota-form').addClass('d-none');
+            $('#provinsi-form').addClass('d-none');
+        }
+    });
+</script> --}}

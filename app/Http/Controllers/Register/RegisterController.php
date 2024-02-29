@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\RegisterRequestStore;
 use App\Http\Requests\DokumenPendukungRequestStore;
 
 class RegisterController extends Controller
@@ -64,23 +65,10 @@ class RegisterController extends Controller
 
 
 
-
-    public function create()
+    /* register saved */
+    public function RegisterStore(RegisterRequestStore $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function datatable()
-    {
-
+        return response()->json();
     }
 
     /* register dokumen pendukung saved */
