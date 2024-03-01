@@ -81,14 +81,16 @@ class RegisterController extends Controller
         // dd($dokumen);
         if ($register->pemohon === 'perusahaan') {
             /* perusahaan register cek */
-            if ($dokumen->intersect(['KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB'])) {
+            if ($dokumen->contains('KTP') && $dokumen->contains('PASSPORT') && $dokumen->contains('NPWP') && $dokumen->contains('SIUP') && $dokumen->contains('surat_keterangan_domisili') && $dokumen->contains('NIB')) {
+                // $this->SaveRegister($request, $id);
+
                 $this->SaveRegister($request, $id);
                 return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
             }
             return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, PASSPORT, NPWP, SIUP / IUI / IUT / SIUP JPT, surat keterangan domisili, NIB'], 422);
         } else {
             /* perorangan register cek */
-            if ($dokumen->intersect(['NPWP', 'KTP', 'PASSPORT'])) {
+            if ($dokumen->contains('NPWP') && $dokumen->contains('KTP') && $dokumen->contains('PASSPORT')) {
                 $this->SaveRegister($request, $id);
                 return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
             }
@@ -103,7 +105,15 @@ class RegisterController extends Controller
         $data = $request->all();
         unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
         $data = collect($data);
-        $data = $data->merge(['fax' => $request->nomor_fax, 'negara_id' => $request->negara, 'provinsi_id' => $request->provinsi, 'nama_perusahaan' => $request->pemohon, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
+        $data = $data->merge([
+            'fax' => $request->nomor_fax,
+            'negara_id' => $request->negara,
+            'provinsi_id' => $request->provinsi,
+            'nama_perusahaan' => $request->pemohon,
+            'status' => 'MENUNGGU',
+            'pre_register_id' => $id,
+            'kota' => $request->kota
+        ]);
         DB::transaction(function () use ($data, $request, $id) {
             $baratin = PjBaratin::create($data->all());
             foreach ($request->upt as $value) {

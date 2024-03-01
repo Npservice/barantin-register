@@ -40,12 +40,6 @@ class PreRegisterRequestStore extends FormRequest
                         if ($cek->status === 'DISETUJUI') {
                             $fail('Data email sudah terdaftar dan disetujui silahkan login');
                         }
-                        if ($cek->status === 'DITOLAK') {
-                            $cek->update(['status' => null, 'verify_email' => null]);
-                        }
-                        if (!$cek->status) {
-                            $fail('Data email sudah terdaftar silahkan hubungi Cs untuk menghapus email');
-                        }
 
                     }
 

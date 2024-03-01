@@ -147,8 +147,8 @@
                                 </div>
                                 <div class="col">
                                     <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->nomor_identitas_ttd ?? '' }}" type="text"
-                                        placeholder="Provinsi" id="provinsi" name="provinsi">
+                                        value="{{ $data->nomor_identitas_tdd ?? '' }}" type="text" id="provinsi"
+                                        name="provinsi">
                                 </div>
                             </div>
 

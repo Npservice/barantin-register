@@ -180,7 +180,7 @@ $('#button-submit').click(function () {
             if (response.status) {
                 notif("success", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
-                window.location.reload
+                location.reload()
             } else {
                 notif("error", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");

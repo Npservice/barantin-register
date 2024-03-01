@@ -179,7 +179,7 @@ $('#button-submit').click(function () {
             if (response.status) {
                 notif("success", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
-                window.location.reload
+                location.reload()
             } else {
                 notif("error", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
@@ -188,7 +188,7 @@ $('#button-submit').click(function () {
         error: function (response) {
             $("#button-submit").removeClass("disabled").html("Submit");
             var respon = response.responseJSON;
-            var error = respon.errors;
+            var error = respon.errors ?? '';
             if (respon && error) {
                 $.each(error, function (key, value) {
                     $("#" + key).addClass("is-invalid");
