@@ -69,7 +69,7 @@
                                     placeholder="Email" id="email" name="email">
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-5">
                             <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                             <div class="col-sm-9">
                                 <select class="form-control select-item" disabled id="status_import"
@@ -116,7 +116,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        <div class="row mb-5">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
                                 <input class="form-control provinsi-select" disabled value="{{ $data->alamat ?? '' }}"
@@ -161,7 +161,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row mb-5">
                                 <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                 <div class="col-sm-9">
                                     <input class="form-control provinsi-select" disabled
@@ -193,7 +193,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        <div class="row mb-5">
                             <label for="telepon" class="col-sm-3 col-form-label">Telepon</label>
                             <div class="col-sm-9">
                                 <input class="form-control provinsi-select" disabled
@@ -207,7 +207,7 @@
                 <div class="table-responsive">
                     <table class="table nowarp w-100 table-bordered" id="table-detail-dokumen">
                         <thead>
-                            <tr>}
+                            <tr>
                                 <th>#</th>
                                 <th>Jenis Dokumen</th>
                                 <th>No Dokumen</th>
