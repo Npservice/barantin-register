@@ -83,7 +83,7 @@ class BaratinController extends Controller
     }
     public function datatablePendukung(string $id): JsonResponse
     {
-        $model = DokumenPendukung::where('pj_baratin_id', $id);
+        $model = DokumenPendukung::where('baratin_id', $id);
 
         return DataTables::eloquent($model)
             ->addIndexColumn()
