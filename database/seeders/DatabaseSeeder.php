@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             MasterProvinsiSeeder::class,
             MasterKotaKabSeeder::class,
             PjBaratanKppSeeder::class,
-            PjBaratinSeeder::class
+            // PjBaratinSeeder::class
         ]);
     }
 }
