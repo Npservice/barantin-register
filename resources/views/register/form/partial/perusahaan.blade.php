@@ -439,11 +439,11 @@
                             name="jenis_dokumen">
                             <option value="">select item</option>
                             <option value="NPWP">NPWP 16 DIGIT</option>
-                            <option value="SIUP">SIUP/IUI/IUT/SIUP JPT</option>
+                            <option value="SIUP">SIUP / IUI / IUT / SIUP JPT</option>
                             <option value="surat_keterangan_domisili">Surat Keterangan Domisili</option>
                             <option value="KTP">KTP</option>
                             <option value="NIB">NIB</option>
-                            <option value="TDP">TDP/TDUP/TDI</option>
+                            <option value="TDP">TDP / TDUP / TDI</option>
                             <option value="angka_pengenal_importir">Angka Pengenal Importir</option>
                         </select>
                         <div class="invalid-feedback" id="jenis_dokumen-feedback"></div>

@@ -55,7 +55,7 @@ let table_dokumen_pendukung = $('#datatable-dokumen-pendukung').DataTable({
     processing: true,
     serverSide: true,
     ajax: '/register/pendukung/datatable/' + id_pre_register,
-    // searching: false,
+    searching: false,
     ordering: false,
     lengthChange: false,
     columns: [
@@ -127,6 +127,7 @@ $('#button-pendukung').click(function () {
             }
         },
         error: function (response) {
+
             $("#button-pendukung").removeClass("disabled").html("tambah");
             var respon = response.responseJSON;
             var error = respon.errors;
@@ -178,10 +179,8 @@ $('#button-submit').click(function () {
         success: function (response) {
             if (response.status) {
                 notif("success", response.message);
-                // table_dokumen_pendukung.draw();
-                // $('#form-pendukung').trigger("reset");
-                // $(".dropify-clear").trigger("click");
                 $("#button-submit").removeClass("disabled").html("Submit");
+                window.location.reload
             } else {
                 notif("error", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
@@ -201,7 +200,7 @@ $('#button-submit').click(function () {
                 notif('error', 'data tidak valid.');
                 return;
             }
-            notif("error", "terjadi kesalahan");
+            notif("error", respon.message ?? "terjadi kesalahan");
         },
     });
 });

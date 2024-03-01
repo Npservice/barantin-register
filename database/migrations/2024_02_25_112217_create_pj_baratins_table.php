@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('pj_baratins', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('pre_register_id');
             $table->string('kode_perusahaan')->nullable();
             $table->string('password')->nullable();
             $table->string('nama_perusahaan')->nullable();
@@ -33,7 +34,7 @@ return new class extends Migration {
             $table->enum('jenis_perusahaan', ['PEMILIK_BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA'])->nullable();
             $table->string('kontak_ppjk')->nullable();
             $table->string('email')->nullable();
-            $table->unsignedBigInteger('fax')->nullable();
+            $table->string('fax')->nullable();
             $table->unsignedBigInteger('kecamatan_id')->nullable();
             $table->unsignedBigInteger('provinsi_id')->nullable();
             $table->unsignedBigInteger('status_import')->nullable();
@@ -41,6 +42,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('negara_id')->nullable();
             $table->tinyInteger('is_active')->unsigned()->default(1);
             $table->tinyInteger('status_prioritas')->default(0)->comment('1: layanan prioritas; 5: draft ekspor');
+            $table->foreign('pre_register_id')->references('id')->on('pre_registers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

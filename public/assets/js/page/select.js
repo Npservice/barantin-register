@@ -68,7 +68,6 @@ function NegaraSelect(negara_id) {
     })
 
 
-
     if (negara_id) {
         $.ajax({
             type: 'GET',

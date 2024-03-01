@@ -96,7 +96,7 @@ class PreRegisterController extends Controller
         /* check token and user */
         $mail_token = MailToken::where('pre_register_id', $id)->first();
         if (!$mail_token || $mail_token->token != $token || $mail_token->expire_at_token <= now()) {
-            return redirect()->route('register.failed')->with(['message_token' => 'Token Expired or Invalid. Please register again.']);
+            return redirect()->route('register.message')->with(['message_token' => 'Token Expired or Invalid. Please register again.']);
         }
         DB::transaction(function () use ($id) {
             $mail_token = MailToken::where('pre_register_id', $id)->delete();

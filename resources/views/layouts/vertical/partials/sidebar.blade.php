@@ -34,6 +34,18 @@
                     </a>
                 </li>
                 <li class="menu-title">Register</li>
+                <li>
+                    <a href="{{ route('admin.pemohon.index') }}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Pemohon</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.baratin.index') }}" class=" waves-effect">
+                        <i class="ri-calendar-2-line"></i>
+                        <span>Baratin</span>
+                    </a>
+                </li>
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-mail-send-line"></i>

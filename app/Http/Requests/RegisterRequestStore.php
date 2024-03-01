@@ -35,7 +35,6 @@ class RegisterRequestStore extends FormRequest
                     }
                 },
             ],
-            'nama_perusahaan' => 'required',
             'jenis_identitas' => ['required', Rule::in(['KTP', 'NPWP', 'PASSPORT'])],
             'pemohon' => 'required|exists:pre_registers,nama',
             'nomor_identitas' => [
@@ -69,7 +68,7 @@ class RegisterRequestStore extends FormRequest
 
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],
             'negara' => 'required|exists:master_negaras,id',
-            'kota' => 'required_if:negara,99|exists:master_provinsis,id',
+            'kota' => 'required_if:negara,99|exists:master_kota_kabs,id',
             'provinsi' => 'required_if:negara,99|exists:master_provinsis,id',
             'alamat' => 'required',
 

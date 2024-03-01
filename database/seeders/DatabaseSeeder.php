@@ -14,10 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
+            MasterNegaraSeeder::class,
             MasterUptSeeder::class,
             MasterProvinsiSeeder::class,
             MasterKotaKabSeeder::class,
-            PjBaratanKppSeeder::class
+            PjBaratanKppSeeder::class,
+            PjBaratinSeeder::class
         ]);
     }
 }

@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Register;
 
+use App\Models\Register;
+use App\Models\PjBaratin;
 use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\RegisterRequestStore;
@@ -21,7 +24,7 @@ class RegisterController extends Controller
 {
 
     /* register  formulir handler */
-    public function RegisterFormulirIndex(string $id): View|RedirectResponse
+    public function RegisterFormulirIndex(string $id): View
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
@@ -36,6 +39,9 @@ class RegisterController extends Controller
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
+        if ($register->pemohon === 'perusahaan') {
+            return view('register.form.partial.perusahaan', compact('register'));
+        }
         return view('register.form.partial.perorangan', compact('register'));
     }
     /* status register */
@@ -43,22 +49,21 @@ class RegisterController extends Controller
     {
         return view('register.form.partial.status-register');
     }
-    /* failed register */
-    public function RegisterFailed(): View
+    /* message register */
+    public function RegisterMessage(): View
     {
-        $message = session('message_token');
-        return view('register.failed', compact('message'));
+        return view('register.message');
     }
-    static function CheckRegister(PreRegister $register): RedirectResponse|bool
+    public function CheckRegister(mixed $register): RedirectResponse|bool
     {
         if (!$register || !$register->verify_email) {
-            return redirect()->route('register.failed')->with(['message_token' => 'Email Not Verified. Please register again.']);
+            abort(redirect()->route('register.message')->with(['message_token' => 'Email tidak terverifikasi silahkan register ulang']));
         }
-        if ($register->status === 'MENUNGGU') {
-            return redirect()->route('register.failed')->with(['message_token' => 'Data in process']);
+        if ($register->status == 'MENUNGGU') {
+            abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses']));
         }
-        if ($register->status === 'TOLAK') {
-            return redirect()->route('register.failed')->with(['message_token' => 'Data in process']);
+        if ($register->status == 'DITOLAK') {
+            abort(redirect()->route('register.message')->with(['message_cancel' => 'Data ditolak silahkan register ulang']));
         }
         return true;
     }
@@ -66,9 +71,49 @@ class RegisterController extends Controller
 
 
     /* register saved */
-    public function RegisterStore(RegisterRequestStore $request)
+    public function RegisterStore(RegisterRequestStore $request, string $id): JsonResponse
     {
-        return response()->json();
+
+
+        $register = PreRegister::find($id);
+        $this->CheckRegister($register);
+        $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
+        // dd($dokumen);
+        if ($register->pemohon === 'perusahaan') {
+            /* perusahaan register cek */
+            if ($dokumen->intersect(['KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB'])) {
+                $this->SaveRegister($request, $id);
+                return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
+            }
+            return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, PASSPORT, NPWP, SIUP / IUI / IUT / SIUP JPT, surat keterangan domisili, NIB'], 422);
+        } else {
+            /* perorangan register cek */
+            if ($dokumen->intersect(['NPWP', 'KTP', 'PASSPORT'])) {
+                $this->SaveRegister($request, $id);
+                return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
+            }
+            return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, NPWP, dan PASSPORT'], 422);
+        }
+
+    }
+    /* for saved register */
+    public function SaveRegister(Request $request, string $id): void
+    {
+
+        $data = $request->all();
+        unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
+        $data = collect($data);
+        $data = $data->merge(['fax' => $request->nomor_fax, 'negara_id' => $request->negara, 'provinsi_id' => $request->provinsi, 'nama_perusahaan' => $request->pemohon, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
+        DB::transaction(function () use ($data, $request, $id) {
+            $baratin = PjBaratin::create($data->all());
+            foreach ($request->upt as $value) {
+                Register::create(['master_upt_id' => $value, 'pj_barantin_id' => $baratin->id]);
+            }
+            DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
+            PreRegister::find($id)->update(['status' => 'MENUNGGU']);
+        });
+
+        return;
     }
 
     /* register dokumen pendukung saved */

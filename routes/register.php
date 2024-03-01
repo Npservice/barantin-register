@@ -16,7 +16,7 @@ Route::prefix('register')->name('register.')->group(function () {
     Route::post('regenerate', [PreRegisterController::class, 'Regenerate'])->name('regenerate');
 
     /* RegisterController Handler */
-    Route::get('failed', [RegisterController::class, 'RegisterFailed'])->name('failed');
+    Route::get('message', [RegisterController::class, 'RegisterMessage'])->name('message');
 
     Route::get('formulir/{id}', [RegisterController::class, 'RegisterFormulirIndex'])->name('formulir.index');
     Route::get('form/{id}', [RegisterController::class, 'RegisterForm'])->name('formulir');
