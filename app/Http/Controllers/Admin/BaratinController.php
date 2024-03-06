@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Register;
 use App\Models\PjBaratin;
 use Illuminate\Http\Request;
+use App\Helpers\AjaxResponse;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Database\Eloquent\Builder;
 
 class BaratinController extends Controller
 {
@@ -77,9 +81,42 @@ class BaratinController extends Controller
     }
     public function datatable(): JsonResponse
     {
-        $model = PjBaratin::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama'])->select('pj_baratins.id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'status');
+        /* get id upt bedasarkan user yang login */
+        $uptId = auth()->guard('admin')->user()->upt_id;
+        /* cek user apakah mempunyai id upt */
+        if ($uptId) {
+            $model = $this->QueryRegister()->where('master_upt_id', $uptId);
+        } else {
+            $model = $this->QueryRegister();
+        }
 
         return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'admin.baratin.action')->make(true);
+    }
+    public function QueryRegister(): Builder
+    {
+        return Register::with([
+            'upt:nama,id',
+            'baratin' => function ($query) {
+                $query->with(['kotas:nama,id', 'negara:id,nama', 'provinsi:nama,id'])
+                    ->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import');
+            }
+        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status');
+
+    }
+    public function confirmRegister(string $id, Request $request): JsonResponse
+    {
+        $request->validate(['status' => 'required|in:DISETUJUI,DITOLAK']);
+        /* find register by id */
+        $register = Register::find($id);
+        /* cek register  */
+        if ($register) {
+            $res = $register->update($request->all());
+            if ($res) {
+                return AjaxResponse::SuccessResponse('data register ' . $request->status, 'baratin-datatable');
+            }
+            return AjaxResponse::ErrorResponse('register gagal di aprove', 400);
+        }
+        return AjaxResponse::ErrorResponse('data register tidak ditemukan', 400);
     }
     public function datatablePendukung(string $id): JsonResponse
     {

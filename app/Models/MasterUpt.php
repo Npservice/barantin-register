@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Register;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -29,8 +30,9 @@ class MasterUpt extends Model
         'stat_ppkol',
         'stat_insw',
     ];
-    public function register(): BelongsToMany
+
+    public function register(): HasMany
     {
-        return $this->belongsToMany(Register::class, 'registers', 'master_upt_id', 'pj_barantin_id', 'id', 'id');
+        return $this->hasMany(Register::class, 'id', 'master_upt_id');
     }
 }

@@ -137,7 +137,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="masterupt-datatable" class="table table-bordered dt-responsive nowrap w-100"
+                                <table id="baratin-datatable" class="table table-bordered dt-responsive nowrap w-100"
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>

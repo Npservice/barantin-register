@@ -216,3 +216,58 @@ function DeleteAlert(url, type) {
         }
     });
 }
+
+function ConfirmRegister(url, type) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Anda ingin menerima " + type,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Terima",
+        cancelButtonText: "Tolak",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    status: 'DISETUJUI'
+                },
+                success: function (response) {
+                    if (response.status) {
+                        notif("success", response.message);
+                        TableReload(response.table);
+                    } else {
+                        notif("error", response.message);
+                    }
+                },
+                error: function (response) {
+                    notif("error", response.message ?? "register gagal di aprove");
+                },
+            });
+        }
+        if (result.dismiss === 'cancel') {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    status: 'DITOLAK'
+                },
+                success: function (response) {
+                    if (response.status) {
+                        notif("warning", response.message);
+                        TableReload(response.table);
+                    } else {
+                        notif("error", response.message);
+                    }
+                },
+                error: function (response) {
+                    notif("error", response.message ?? "register gagal di aprove");
+                },
+            });
+
+        }
+    });
+}

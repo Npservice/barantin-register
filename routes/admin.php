@@ -27,6 +27,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::prefix('baratin')->name('baratin.')->group(function () {
             Route::get('/datatable/dokumen/{id}', [BaratinController::class, 'datatablePendukung'])->name('datatable.pendukung');
+            Route::post('/confirm/register/{id}', [BaratinController::class, 'confirmRegister'])->name('confirm.register');
         });
 
         Route::resource('master-upt', MasterUptController::class)->except('show');

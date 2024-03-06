@@ -26,7 +26,7 @@ class PjBaratinSeeder extends Seeder
             'perusahaan',
             'perorangan'
         ];
-        foreach (range(1, 20) as $index) {
+        foreach (range(1, 15) as $index) {
             // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
             DB::transaction(function () use ($faker, $pemohon) {
 
@@ -43,7 +43,6 @@ class PjBaratinSeeder extends Seeder
                     'nama' => $nama,
                     'email' => $email,
                     'verify_email' => Carbon::now(),
-                    'status' => $status,
                 ]);
 
                 $baratin = PjBaratin::create([
@@ -83,12 +82,16 @@ class PjBaratinSeeder extends Seeder
                         31,
                         32,
                     ]),
-                    'status' => $register->status,
                     'is_active' => $faker->boolean,
                     'status_prioritas' => $faker->boolean,
                 ]);
 
-                Register::create(['pj_barantin_id' => $baratin->id, 'master_upt_id' => MasterUpt::inRandomOrder()->first()->id]);
+                Register::create([
+                    'pj_barantin_id' => $baratin->id,
+                    'master_upt_id' => MasterUpt::inRandomOrder()->first()->id,
+                    'status' => $register->status,
+                    'pre_register_id' => $register->id
+                ]);
             });
 
         }

@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Models\MasterNegara;
+use App\Models\MasterKotaKab;
+use App\Models\MasterProvinsi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PjBaratin extends Model
 {
@@ -65,9 +68,9 @@ class PjBaratin extends Model
     {
         return $this->belongsTo(MasterKotaKab::class, 'kota', 'id');
     }
-    public function register(): BelongsToMany
+    public function register(): HasMany
     {
-        return $this->belongsToMany(Register::class, 'registers', 'pj_barantin_id', 'master_upt_id', 'id', 'id');
+        return $this->hasMany(Register::class, 'id', 'pj_barantin_id');
     }
     public function preRegister(): BelongsTo
     {
