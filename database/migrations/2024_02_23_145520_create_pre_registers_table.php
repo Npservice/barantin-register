@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->string('nama');
             $table->string('email')->unique();
             $table->timestamp('verify_email')->nullable();
-            $table->enum('status', ['MENUNGGU', 'DITOLAK', 'DISETUJUI'])->nullable()->default(null);
             $table->timestamps();
         });
     }

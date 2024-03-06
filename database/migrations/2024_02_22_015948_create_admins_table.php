@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
         });
     }
 
