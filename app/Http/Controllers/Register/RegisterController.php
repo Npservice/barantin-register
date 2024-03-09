@@ -132,8 +132,8 @@ class RegisterController extends Controller
         DB::transaction(
             function () use ($data, $id) {
                 $baratin = PjBaratin::create($data->all());
-                $register_get_upt = Register::where('pre_register_id', $id)->get();
-                foreach ($register_get_upt as $key => $value) {
+                $register_get = Register::where('pre_register_id', $id)->get();
+                foreach ($register_get as $key => $value) {
                     if (!$value->status || $value->status === 'DITOLAK') {
                         Register::find($value->id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
                     }
