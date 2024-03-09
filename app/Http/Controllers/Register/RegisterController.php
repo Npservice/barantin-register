@@ -129,11 +129,19 @@ class RegisterController extends Controller
             'pre_register_id' => $id,
             'kota' => $request->kota
         ]);
-        DB::transaction(function () use ($data, $id) {
-            $baratin = PjBaratin::create($data->all());
-            Register::where('pre_register_id', $id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
-            DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
-        });
+        DB::transaction(
+            function () use ($data, $id) {
+                $baratin = PjBaratin::create($data->all());
+                $register_get_upt = Register::where('pre_register_id', $id)->get();
+                foreach ($register_get_upt as $key => $value) {
+                    if (!$value->status || $value->status === 'DITOLAK') {
+                        Register::find($value->id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
+                    }
+
+                }
+                DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
+            }
+        );
 
         return;
     }
