@@ -41,15 +41,6 @@
             <form class="row" id="form-register">
                 <div class="col-md-6 col-sm-12">
                     <div class="row mb-3">
-                        <label for="upt" class="col-sm-3 col-form-label">UPT</label>
-                        <div class="col-sm-9">
-                            <select class="select2 form-control upt-select" type="text" id="upt" multiple
-                                name="upt[]" data-placeholder="select item">
-                                <select>
-                                    <div class="invalid-feedback" id="upt-feedback"></div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
                             <input class="form-control" readonly value="{{ $register->nama }}" type="text"
@@ -70,7 +61,8 @@
                         </div>
                         <div class="col">
                             <input class="form-control" type="number" placeholder="Nomor Identitas"
-                                id="nomor_identitas" name="nomor_identitas">
+                                id="nomor_identitas" name="nomor_identitas"
+                                value="{{ $baratan->nomor_identitas ?? '' }}">
                             <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
                         </div>
                     </div>
@@ -78,15 +70,15 @@
                         <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="telepon" name="telepon"
-                                aria-describedby="inputGroupPrepend" required>
+                                aria-describedby="inputGroupPrepend" value="{{ $baratan->telepon ?? '' }}">
                             <div class="invalid-feedback" id="telepon-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax"
-                                name="nomor_fax">
+                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax" name="nomor_fax"
+                                value="{{ $baratan->fax ?? '' }}">
                             <div class="invalid-feedback" id="nomor_fax-feedback"></div>
                         </div>
                     </div>
@@ -163,7 +155,7 @@
                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                         <div class="col-sm-9">
                             <input class="form-control" type="text" placeholder="Alamat" id="alamat"
-                                name="alamat">
+                                name="alamat" value="{{ $baratan->alamat ?? '' }}">
                             <div class="invalid-feedback" id="alamat-feedback"></div>
                         </div>
                     </div>
@@ -180,7 +172,7 @@
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="text" placeholder="Nama" id="nama_cp"
-                                name="nama_cp">
+                                name="nama_cp" value="{{ $baratan->nama_cp ?? '' }}">
                             <div class="invalid-feedback" id="nama_cp-feedback"></div>
                         </div>
                     </div>
@@ -189,7 +181,7 @@
                         <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="text" placeholder="Alamat" id="alamat_cp"
-                                name="alamat_cp">
+                                name="alamat_cp" value="{{ $baratan->alamat_cp ?? '' }}">
                             <div class="invalid-feedback" id="alamat_cp-feedback"></div>
                         </div>
                     </div>
@@ -198,7 +190,7 @@
                         <label for="telepon" class="col-sm-2 col-form-label">Telepon</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="tel" placeholder="Telepon" id="telepon_cp"
-                                name="telepon_cp">
+                                name="telepon_cp" value="{{ $baratan->telepon_cp ?? '' }}">
                             <div class="invalid-feedback" id="telepon_cp-feedback"></div>
                         </div>
                     </div>
@@ -215,7 +207,7 @@
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="text" placeholder="Nama" id="nama_tdd"
-                                name="nama_tdd">
+                                name="nama_tdd" value="{{ $baratan->nama_tdd ?? '' }}">
                             <div class="invalid-feedback" id="nama_tdd-feedback"></div>
                         </div>
                     </div>
@@ -234,7 +226,8 @@
                         </div>
                         <div class="col">
                             <input class="form-control" type="number" placeholder="Nomer Identitas"
-                                id="nomor_identitas_tdd" name="nomor_identitas_tdd">
+                                id="nomor_identitas_tdd" name="nomor_identitas_tdd"
+                                value="{{ $baratan->nomor_identitas_tdd ?? '' }}">
                             <div class="invalid-feedback" id="nomor_identitas_tdd-feedback"></div>
                         </div>
                     </div>
@@ -243,7 +236,7 @@
                         <label for="jabatan" class="col-sm-2 col-form-label">Jabatan</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="text" placeholder="Jabatan" id="jabatan_tdd"
-                                name="jabatan_tdd">
+                                name="jabatan_tdd" value="{{ $baratan->jabatan_tdd ?? '' }}">
                             <div class="invalid-feedback" id="jabatan_tdd-feedback"></div>
                         </div>
                     </div>
@@ -252,7 +245,7 @@
                         <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="text" placeholder="Alamat" id="alamat_tdd"
-                                name="alamat_tdd">
+                                name="alamat_tdd" value="{{ $baratan->alamat_tdd ?? '' }}">
                             <div class="invalid-feedback" id="alamat_tdd-feedback"></div>
                         </div>
                     </div>
@@ -793,4 +786,9 @@
 
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
 <script src="{{ asset('assets/js/page/form/perusahaan.js') }}"></script>
-<script></script>
+<script>
+    NegaraSelect('{{ $baratan->negara_id ?? 99 }}')
+    ProvinsiSelect('{{ $baratan->provinsi_id ?? null }}')
+    KotaSelect('{{ $baratan->kota ?? null }}')
+    $('#status_import').val('{{ $baratan->status_import ?? '' }}').trigger('change')
+</script>

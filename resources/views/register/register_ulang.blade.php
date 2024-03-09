@@ -5,6 +5,27 @@
     <div class="p-3">
         <form method="POST" action="{{ route('register.ulang') }}" class="form-horizontal mt-3">
             @csrf
+            <div class="row">
+                <div class="col-3">
+                    <label for="pemohon">Pemohon :</label>
+                </div>
+                <div class="col-3 me-5">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="pemohon" id="formRadios1" value="perusahaan">
+                        <label class="form-check-label" for="formRadios1">
+                            Perusahaan
+                        </label>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="pemohon" value="perorangan" id="formRadios2">
+                        <label class="form-check-label" for="formRadios2">
+                            Perorangan
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="form-group mb-3 row">
                 <label for="nama">Username</label>
                 <div class="col-12">

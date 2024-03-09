@@ -36,10 +36,16 @@
                 </div>
             </div>
 
-            <div class="form-group mb-3 text-center row mt-3 pt-1">
+            <div class="form-group mb-1 text-center row mt-3 pt-1">
                 <div class="col-12">
                     <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Log
                         In</button>
+                </div>
+            </div>
+            <div class="form-group mb-3 text-center row  pt-1">
+                <div class="col-12">
+                    <a href="{{ route('register.status') }}" class="w-100 btn btn-info waves-effect waves-light"
+                        target="_blank">Cek Status Register</a>
                 </div>
             </div>
 

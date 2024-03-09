@@ -1,4 +1,7 @@
 @extends('layouts.auth.master')
+@push('css')
+    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
+@endpush
 @section('title', 'Register')
 @section('text', 'Regiter Baru')
 @section('content')
@@ -34,6 +37,18 @@
             @enderror
             {{-- </div> --}}
 
+            <div class="form-group mb-3 row">
+                <label for="upt">Upt</label>
+                <div class="col-12">
+                    <select id="upt" disabled multiple type="text"
+                        class="form-control @error('upt') is-invalid @enderror upt-select" name="upt[]"></select>
+                </div>
+                @error('upt')
+                    <span class="invalid-feedback d-block" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
             <div class="form-group mb-3 row">
                 <label for="nama">Nama</label>
                 <div class="col-12">
@@ -80,8 +95,13 @@
     </div>
 
 @endsection
+@push('js')
+    <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
+@endpush
 @push('custom-js')
+    <script src="{{ asset('assets/js/page/select.js') }}"></script>
     <script>
+        UptSelect()
         $('input[name="pemohon"]').change(function() {
             let val = $(this).val();
             let label = $('label[for="nama"]')

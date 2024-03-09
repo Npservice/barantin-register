@@ -3,6 +3,7 @@
 @push('css')
     <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
         type="text/css" />
+    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -30,31 +31,17 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="mb-3">
-                                            <label class="form-label">Single Select</label>
-                                            <select class="form-control select2">
-                                                <option>Select</option>
-                                                <option value="AK">Alaska</option>
-                                                <option value="HI">Hawaii</option>
-                                                <option value="CT">Connecticut</option>
-                                                <option value="DE">Delaware</option>
-                                                <option value="FL">Florida</option>
-                                                <option value="GA">Georgia</option>
-                                                <option value="IN">Indiana</option>
-                                                <option value="ME">Maine</option>
-                                                <option value="MD">Maryland</option>
-                                                <option value="MA">Massachusetts</option>
-                                                <option value="MI">Michigan</option>
-                                                <option value="NH">New Hampshire</option>
-                                                <option value="NJ">New Jersey</option>
-                                                <option value="NY">New York</option>
-                                                <option value="NC">North Carolina</option>
-                                                <option value="OH">Ohio</option>
-                                                <option value="PA">Pennsylvania</option>
-                                                <option value="RI">Rhode Island</option>
-                                                <option value="SC">South Carolina</option>
-                                                <option value="VT">Vermont</option>
-                                                <option value="VA">Virginia</option>
-                                                <option value="WV">West Virginia</option>
+                                            <label class="form-label">Status Import</label>
+                                            <select class="form-control select2" id="filter-status-import">
+                                                <option value="all">All Data</option>
+                                                <option value="25">Importir Umum</option>
+                                                <option value="26">Importir Produsen</option>
+                                                <option value="27">Importir Terdaftar</option>
+                                                <option value="28">Agen Tunggal</option>
+                                                <option value="29">BULOG</option>
+                                                <option value="30">PERTAMINA</option>
+                                                <option value="31">DAHANA</option>
+                                                <option value="32">IPTN</option>
                                             </select>
                                         </div>
                                     </div>
@@ -154,7 +141,9 @@
                                             <th>Kota/Kab</th>
                                             <th>Alamat</th>
                                             <th>Status Import</th>
+                                            <th>Tgl Status</th>
                                             <th>Status</th>
+                                            <th>Keterangan</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -165,14 +154,47 @@
             </div> <!-- end row -->
         </div>
     </div>
-
+    {{-- modal ditolak only --}}
+    <div class="modal fade" id="modal-tolak-keterangan" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Keterangan Ditolak</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-tolak">
+                        <div class="mb-3">
+                            <input type="hidden" name="url" id="url-tolak">
+                            <label for="exampleFormControlInput1" class="form-label">keterangan</label>
+                            <input type="text" class="form-control" id="keterangan-tolak">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="button-tolak">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('js')
     <!-- Required datatable js -->
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 @endpush
 @push('custom-js')
     <script src="{{ asset('assets/js/page/datatable/baratin.js') }}"></script>
+    <script>
+        $('#filter-status-import').select2();
+        $('#filter-status-import').change(function() {
+            var val = $(this).val();
+            var tabledraw = $('#baratin-datatable').DataTable();
+            if (val === 'all') return tabledraw.column('provinsi:name').search('').draw();
+            return tabledraw.column('baratin.status_import:name').search(val).draw();
+        })
+    </script>
 @endpush

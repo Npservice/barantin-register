@@ -14,9 +14,9 @@
             <div class="row mb-4">
                 <div class="d-flex align-items-end justify-content-end">
                     {{-- <div class="col-md-3 col-sm-12"> --}}
-                    <button class="btn btn-primary btn-sm" onclick="ShowPage('{{ route('register.status') }}')">
+                    <a class="btn btn-primary btn-sm" href="{{ route('register.status') }}" target="_blank">
                         Cek Status Registrasi
-                    </button>
+                    </a>
                     {{-- </div> --}}
                 </div>
             </div>
@@ -56,7 +56,8 @@
     <script>
         $(document).ready(function() {
             $('#spinner').clone().removeClass('d-none').appendTo('#form-data-input');
-            $('#form-data-input').load('/register/form/' + '{{ $id }}');
+            $('#form-data-input').load('/register/form/' +
+                '{{ $id }}?baratan_id={{ isset($baratan) ?? null }}');
         })
     </script>
 @endpush

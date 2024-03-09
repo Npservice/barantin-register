@@ -218,6 +218,12 @@
                     </table>
                 </div>
             </div>
+            <div class="card-footer">
+                <div class="text-end">
+                    <a class="btn btn-primary btn-sm me-2"
+                        onclick="ConfirmRegister('{{ route('admin.baratin.confirm.register', $register_id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -245,5 +251,16 @@
                 data: 'file',
             },
         ],
+        language: {
+            paginate: {
+                previous: "<i class='mdi mdi-chevron-left'>",
+                next: "<i class='mdi mdi-chevron-right'>",
+            },
+        },
+        drawCallback: function() {
+            $(".dataTables_paginate > .pagination").addClass(
+                "pagination-rounded"
+            );
+        },
     });
 </script>
