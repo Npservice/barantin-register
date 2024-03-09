@@ -19,5 +19,12 @@ class AdminSeeder extends Seeder
             'username' => 'admin',
             'password' => '12345678'
         ]);
+        Admin::create([
+            'nama' => 'kantorpusat',
+            'email' => 'kantorpusat@gmail.com',
+            'username' => 'kantorpusat',
+            'password' => '12345678',
+            'upt_id' => 1
+        ]);
     }
 }

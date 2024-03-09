@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PreRegister;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PreRegisterSeeder extends Seeder
 {
@@ -12,6 +13,10 @@ class PreRegisterSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        PreRegister::create([
+            'pemohon' => 'perorangan',
+            'nama' => 'ridlo nanda putra',
+            'email' => 'nandaputraservice@gmail.com',
+        ]);
     }
 }

@@ -40,7 +40,7 @@ class PjBaratanKppSeeder extends Seeder
             'provinsi_id' => 21,
             'status_import' => 0,
             'status' => 'DISETUJUI',
-            'upt_id' => 331,
+            'upt_id' => 1,
             'is_password' => 1,
             'alasan' => NULL,
             'created_at' => '2023-11-01 15:31:59',

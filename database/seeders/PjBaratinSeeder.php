@@ -89,7 +89,7 @@ class PjBaratinSeeder extends Seeder
                 Register::create([
                     'pj_barantin_id' => $baratin->id,
                     'master_upt_id' => MasterUpt::inRandomOrder()->first()->id,
-                    'status' => $register->status,
+                    'status' => $status,
                     'pre_register_id' => $register->id
                 ]);
             });

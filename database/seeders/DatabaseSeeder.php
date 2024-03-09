@@ -13,13 +13,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AdminSeeder::class,
             MasterNegaraSeeder::class,
             MasterUptSeeder::class,
             MasterProvinsiSeeder::class,
             MasterKotaKabSeeder::class,
+            AdminSeeder::class,
             PjBaratanKppSeeder::class,
-            PjBaratinSeeder::class
+            PjBaratinSeeder::class,
+            PreRegisterSeeder::class
         ]);
     }
 }
