@@ -31,12 +31,8 @@ $('#masterupt-datatable').DataTable({
             data: 'created_at',
             name: 'created_at',
             render: function (data) {
-                return moment(data).format('DD - MM - YYYY');
+                return moment(data).format('DD-MM-YYYY');
             }
-        },
-        {
-            data: 'status',
-            name: 'status',
         },
         {
             data: 'action',

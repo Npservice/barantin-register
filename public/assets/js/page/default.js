@@ -249,25 +249,34 @@ function ConfirmRegister(url, type) {
             });
         }
         if (result.dismiss === 'cancel') {
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: {
-                    status: 'DITOLAK'
-                },
-                success: function (response) {
-                    if (response.status) {
-                        notif("warning", response.message);
-                        TableReload(response.table);
-                    } else {
-                        notif("error", response.message);
-                    }
-                },
-                error: function (response) {
-                    notif("error", response.message ?? "register gagal di aprove");
-                },
-            });
+            $('#url-tolak').val(url)
+            $('#form-tolak').trigger('reset')
+            $('#modal-tolak-keterangan').modal('show')
 
         }
     });
 }
+$('#button-tolak').click(function () {
+    $.ajax({
+        url: $('#url-tolak').val(),
+        type: "POST",
+        data: {
+            status: 'DITOLAK',
+            keterangan: $('#keterangan-tolak').val()
+        },
+        success: function (response) {
+            $('#modal-tolak-keterangan').modal('hide')
+            if (response.status) {
+                notif("warning", response.message);
+                TableReload(response.table);
+            } else {
+                notif("error", response.message);
+            }
+        },
+        error: function (response) {
+            $('#modal-tolak-keterangan').modal('hide')
+            notif("error", response.message ?? "register gagal di aprove");
+        },
+    });
+
+})

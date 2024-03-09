@@ -2,10 +2,7 @@ let id_pre_register = $('#datatable-dokumen-pendukung').data('pre-register');
 
 
 
-UptSelect()
-ProvinsiSelect()
-KotaSelect()
-NegaraSelect(99)
+
 
 $('.select-item').select2({
     placeholder: 'select item',

@@ -21,7 +21,7 @@ function UptSelect() {
         }
     })
 }
-function ProvinsiSelect() {
+function ProvinsiSelect(provinsi_id) {
     $('.provinsi-select').select2({
         placeholder: 'select item',
         minimumResultsForSearch: -1,
@@ -43,6 +43,25 @@ function ProvinsiSelect() {
             }
         }
     })
+    if (provinsi_id) {
+        $.ajax({
+            type: 'GET',
+            url: '/select/provinsi/',
+            data: {
+                provinsi_id: provinsi_id
+            }
+        }).then(function (response) {
+            var option = new Option(response.nama, response.id, true, true);
+            $('.provinsi-select').append(option).trigger('change');
+
+            $('.provinsi-select').trigger({
+                type: 'select2:select',
+                params: {
+                    results: response
+                }
+            });
+        });
+    }
 }
 function NegaraSelect(negara_id) {
     $('.negara-select').select2({
@@ -89,7 +108,7 @@ function NegaraSelect(negara_id) {
     }
 
 }
-function KotaSelect() {
+function KotaSelect(kota_id) {
     $('.kota-select').select2({
         placeholder: "select item",
         minimumResultsForSearch: -1,
@@ -121,6 +140,25 @@ function KotaSelect() {
 
             }
         })
+        if (kota_id) {
+            $.ajax({
+                type: 'GET',
+                url: '/select/kota/' + provinsi,
+                data: {
+                    kota_id: kota_id
+                }
+            }).then(function (response) {
+                var option = new Option(response.nama, response.id, true, true);
+                $('.kota-select').append(option).trigger('change');
+
+                $('.kota-select').trigger({
+                    type: 'select2:select',
+                    params: {
+                        results: response
+                    }
+                });
+            });
+        }
     })
 }
 $('#negara').on('change', function () {
