@@ -10,7 +10,7 @@ class Admin extends Authenticatable
 {
     use HasFactory, HasUuids;
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $fillable = ['nama', 'email', 'username', 'password'];
+    protected $fillable = ['nama', 'email', 'username', 'password', 'upt_id'];
     protected $hidden = [
         'password',
 

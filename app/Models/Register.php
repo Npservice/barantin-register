@@ -12,7 +12,7 @@ class Register extends Model
 {
     use HasFactory, HasUuids;
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $fillable = ['pj_barantin_id', 'master_upt_id', 'status', 'pre_register_id'];
+    protected $fillable = ['pj_barantin_id', 'master_upt_id', 'status', 'pre_register_id', 'keterangan'];
 
     public function baratin(): BelongsTo
     {
@@ -24,6 +24,6 @@ class Register extends Model
     }
     public function preregister(): BelongsTo
     {
-        return $this->belongsTo(PreRegister::class, 'pre_registers', 'id');
+        return $this->belongsTo(PreRegister::class, 'pre_register_id', 'id');
     }
 }

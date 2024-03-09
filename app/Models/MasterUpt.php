@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MasterUpt extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
     protected $guarded = ['id', 'updated_at', 'created_at'];
     protected $fillable = [
         'kode_satpel',
@@ -33,6 +33,6 @@ class MasterUpt extends Model
 
     public function register(): HasMany
     {
-        return $this->hasMany(Register::class, 'id', 'master_upt_id');
+        return $this->hasMany(Register::class, 'master_upt_id', 'id');
     }
 }
