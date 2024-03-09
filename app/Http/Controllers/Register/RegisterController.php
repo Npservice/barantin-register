@@ -11,7 +11,6 @@ use App\Helpers\AjaxResponse;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -28,47 +27,64 @@ class RegisterController extends Controller
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
-        $baratan = PjBaratanKpp::where('email', $register->email)->first();
+        $baratan = PjBaratanKpp::where('email', $register->email)->value('id');
         if ($baratan) {
             return view('register.form.index', compact('id', 'baratan'));
         }
         return view('register.form.index', compact('id'));
     }
     /* register form request by ajax */
-    public function RegisterForm(string $id): View
+    public function RegisterForm(Request $request, string $id): View
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
+        $baratan_cek = PjBaratanKpp::find($request->baratan_id);
+        $baratan = $baratan_cek ?? null;
         if ($register->pemohon === 'perusahaan') {
-            return view('register.form.partial.perusahaan', compact('register'));
+            return view('register.form.partial.perusahaan', compact('register', 'baratan'));
         }
-        return view('register.form.partial.perorangan', compact('register'));
+        return view('register.form.partial.perorangan', compact('register', 'baratan'));
     }
     /* status register */
-    public function StatusRegister(): View
+    public function StatusRegister(): View|JsonResponse
     {
-        return view('register.form.partial.status-register');
+
+        if (request()->ajax()) {
+            $model = Register::with([
+                'upt:nama,id',
+                'preregister:nama,id',
+                'baratin' => function ($query) {
+                    $query->with(['kotas:nama,id'])
+                        ->select('nama_perusahaan', 'kota', 'nama_tdd', 'jabatan_tdd', 'id');
+                }
+            ])
+                ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'created_at')
+                ->whereNotNull('pj_barantin_id')
+                ->whereNotNull('status')
+                ->orderBy('created_at', 'DESC');
+            return DataTables::eloquent($model)->addIndexColumn()->toJson();
+        }
+        return view('register.status.index');
     }
     /* message register */
     public function RegisterMessage(): View
     {
         return view('register.message');
     }
+
+    /* register ceked */
     public function CheckRegister(mixed $register): RedirectResponse|bool
     {
         if (!$register || !$register->verify_email) {
             abort(redirect()->route('register.message')->with(['message_token' => 'Email tidak terverifikasi silahkan register ulang']));
         }
-        if ($register->status == 'MENUNGGU') {
-            abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses']));
+        $register_cek = Register::where('pre_register_id', $register->id)->orderBy('created_at', 'DESC')->first();
+        if ($register_cek->status === 'MENUNGGU' && $register_cek->status === 'DISETUJUI') {
+            abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt masing-masing']));
         }
-        if ($register->status == 'DITOLAK') {
-            abort(redirect()->route('register.message')->with(['message_cancel' => 'Data ditolak silahkan register ulang']));
-        }
+
         return true;
     }
-
-
 
     /* register saved */
     public function RegisterStore(RegisterRequestStore $request, string $id): JsonResponse
@@ -110,17 +126,13 @@ class RegisterController extends Controller
             'negara_id' => $request->negara,
             'provinsi_id' => $request->provinsi,
             'nama_perusahaan' => $request->pemohon,
-            'status' => 'MENUNGGU',
             'pre_register_id' => $id,
             'kota' => $request->kota
         ]);
-        DB::transaction(function () use ($data, $request, $id) {
+        DB::transaction(function () use ($data, $id) {
             $baratin = PjBaratin::create($data->all());
-            foreach ($request->upt as $value) {
-                Register::create(['master_upt_id' => $value, 'pj_barantin_id' => $baratin->id]);
-            }
+            Register::where('pre_register_id', $id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
             DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
-            PreRegister::find($id)->update(['status' => 'MENUNGGU']);
         });
 
         return;

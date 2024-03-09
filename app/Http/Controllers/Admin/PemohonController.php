@@ -75,7 +75,7 @@ class PemohonController extends Controller
     }
     public function datatable(): JsonResponse
     {
-        $model = PreRegister::select('id', 'pemohon', 'nama', 'email', 'created_at', 'status');
+        $model = PreRegister::select('id', 'pemohon', 'nama', 'email', 'created_at');
 
         return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'admin.pemohon.action')->make(true);
 

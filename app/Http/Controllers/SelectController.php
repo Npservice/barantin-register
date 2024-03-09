@@ -35,7 +35,12 @@ class SelectController extends Controller
     }
     public function SelectProvinsi(): JsonResponse
     {
-        $data = MasterProvinsi::select('id', 'nama')->get();
+        if (request()->input('provinsi_id')) {
+            $data = MasterProvinsi::find(request()->input('provinsi_id'));
+        } else {
+            $data = MasterProvinsi::select('id', 'nama')->get();
+
+        }
         return response()->json($data);
     }
 
@@ -44,7 +49,11 @@ class SelectController extends Controller
      */
     public function SelectKota(string $id): JsonResponse
     {
-        $data = MasterKotaKab::where('provinsi_id', $id)->select('id', 'nama')->get();
+        if (request()->input('kota_id')) {
+            $data = MasterKotaKab::find(request()->input('kota_id'));
+        } else {
+            $data = MasterKotaKab::where('provinsi_id', $id)->select('id', 'nama')->get();
+        }
         return response()->json($data);
     }
 

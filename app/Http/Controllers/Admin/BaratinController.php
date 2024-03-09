@@ -50,10 +50,11 @@ class BaratinController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id): View
+    public function show(Request $request, string $id): View
     {
         $data = PjBaratin::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama'])->find($id);
-        return view('admin.baratin.show', compact('data'));
+        $register_id = $request->register_id;
+        return view('admin.baratin.show', compact('data', 'register_id'));
     }
 
     /**
@@ -100,12 +101,13 @@ class BaratinController extends Controller
                 $query->with(['kotas:nama,id', 'negara:id,nama', 'provinsi:nama,id'])
                     ->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import');
             }
-        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status');
+        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.created_at')->whereNotNull('pj_barantin_id');
+
 
     }
     public function confirmRegister(string $id, Request $request): JsonResponse
     {
-        $request->validate(['status' => 'required|in:DISETUJUI,DITOLAK']);
+        $request->validate(['status' => 'required|in:DISETUJUI,DITOLAK', 'keterangan' => 'nullable']);
         /* find register by id */
         $register = Register::find($id);
         /* cek register  */

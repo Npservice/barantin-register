@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Register;
 
 
+use App\Models\Register;
 use App\Models\MailToken;
 use App\Models\PjBaratin;
 use App\Models\PreRegister;
@@ -45,19 +46,40 @@ class PreRegisterController extends Controller
     public function NewRegister(PreRegisterRequestStore $request): View
     {
         /* cek email in database */
-        $register_cek = PreRegister::where('email', $request->email)->first();
+        $preregister_cek = PreRegister::with('register:id,master_upt_id,pre_register_id')->where('email', $request->email)->first();
 
-        if ($register_cek) {
-            $register = PreRegister::find($register_cek->id)->update($request->merge(['verify_email' => null])->all());
+        if ($preregister_cek) {
+            $preregister = PreRegister::find($preregister_cek->id)->update($request->merge(['verify_email' => null])->all());
+            foreach ($request->upt as $key => $upt) {
+                /* cek keberadaan upt */
+                $found = false; // Tandai apakah upt sudah ditemukan
+                foreach ($preregister_cek->register as $in => $prereg) {
+                    // Perbaikan untuk mengakses relasi register
+                    $register = Register::find($prereg->id);
+                    if ($register && $register->master_upt_id == $upt) {
+                        // Jika upt sudah terdaftar di register, update status dan pj_baratin_id
+                        $register->update(['status' => null, 'pj_baratin_id' => null]);
+                        $found = true; // tandai upt sudah ditemukan
+                        break; // keluar dari perulangan kedua
+                    }
+                }
+                if (!$found) {
+                    Register::create(['master_upt_id' => $upt, 'pre_register_id' => $preregister_cek->id]);
+                }
+            }
             /* clear all token */
-            MailToken::where('pre_register_id', $register_cek->id)->delete();
+            MailToken::where('pre_register_id', $preregister_cek->id)->delete();
             /* generaet new token */
-            $generate = MailToken::create(['pre_register_id' => $register_cek->id]);
+            $generate = MailToken::create(['pre_register_id' => $preregister_cek->id]);
             return view('register.verify', compact('generate'));
         }
 
-        /* create register */
+        /* create preregister */
         $register = PreRegister::create($request->all());
+        /* create register */
+        foreach ($request->upt as $key => $value) {
+            Register::create(['master_upt_id' => $value, 'pre_register_id' => $register->id]);
+        }
         /* create token */
         $generate = MailToken::create(['pre_register_id' => $register->id]);
         /* generate new token */
@@ -73,12 +95,13 @@ class PreRegisterController extends Controller
         $generate = null;
 
         if ($baratin) {
-            $pre_register = PreRegister::create(['nama' => $baratin->nama_perusahaan, 'email' => $baratin->email, 'status' => $baratin->status]);
+            $pre_register = PreRegister::create(['nama' => $baratin->nama_perusahaan, 'email' => $baratin->email, 'status' => $baratin->status, 'pemohon' => $request->pemohon]);
             $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
         } else {
             DB::transaction(function () use ($request, &$pre_register, &$generate) {
                 $baratan = PjBaratanKpp::where('kode_perusahaan', $request->username)->first();
-                $pre_register = PreRegister::create(['nama' => $baratan->nama_perusahaan, 'email' => $baratan->email]);
+                $pre_register = PreRegister::create(['nama' => $baratan->nama_perusahaan, 'email' => $baratan->email, 'pemohon' => $request->pemohon]);
+                Register::create(['master_upt_id' => $baratan->upt_id, 'pre_register_id' => $pre_register->id]);
                 $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
             });
         }
