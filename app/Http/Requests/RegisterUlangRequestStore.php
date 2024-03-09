@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterUlangRequestStore extends FormRequest
@@ -22,6 +23,7 @@ class RegisterUlangRequestStore extends FormRequest
     public function rules(): array
     {
         return [
+            'pemohon' => ['required', Rule::in(['perorangan', 'perusahaan'])],
             'email' => 'required|exists:pj_baratan_kpps,email|unique:pre_registers,email',
             'username' => 'required|exists:pj_baratan_kpps,kode_perusahaan'
         ];

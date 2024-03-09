@@ -24,17 +24,17 @@ class RegisterRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            'upt' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
-                    foreach ($value as $item) {
-                        if (!in_array($item, $validUpts)) {
-                            $fail('One or more selected upt is invalid.');
-                        }
-                    }
-                },
-            ],
+            // 'upt' => [
+            //     'required',
+            //     function ($attribute, $value, $fail) {
+            //         $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
+            //         foreach ($value as $item) {
+            //             if (!in_array($item, $validUpts)) {
+            //                 $fail('One or more selected upt is invalid.');
+            //             }
+            //         }
+            //     },
+            // ],
             'jenis_identitas' => ['required', Rule::in(['KTP', 'NPWP', 'PASSPORT'])],
             'pemohon' => 'required|exists:pre_registers,nama',
             'nomor_identitas' => [
