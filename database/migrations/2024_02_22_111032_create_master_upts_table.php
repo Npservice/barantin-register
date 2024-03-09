@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('master_upts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('kode_satpel', 5)->nullable();
             $table->string('kode_upt', 5);
             $table->string('nama');

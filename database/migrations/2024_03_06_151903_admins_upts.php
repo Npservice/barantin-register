@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('admins', function (Blueprint $table) {
-            $table->uuid('upt_id')->nullable()->after('id');
+            $table->bigInteger('upt_id')->unsigned()->nullable()->after('id');
             $table->foreign('upt_id')->references('id')->on('master_upts')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
