@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Register;
 use App\Models\PjBaratin;
 use Illuminate\Http\Request;
@@ -91,7 +92,17 @@ class BaratinController extends Controller
             $model = $this->QueryRegister();
         }
 
-        return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'admin.baratin.action')->make(true);
+        return DataTables::eloquent($model)->addIndexColumn()
+            ->filterColumn('updated_at', function ($query, $keyword) {
+                $range = explode(' - ', $keyword);
+                if (count($range) === 2) {
+                    $startDate = Carbon::parse($range[0])->startOfDay();
+                    $endDate = Carbon::parse($range[1])->endOfDay();
+                    $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
+                }
+
+            })
+            ->addColumn('action', 'admin.baratin.action')->make(true);
     }
     public function QueryRegister(): Builder
     {

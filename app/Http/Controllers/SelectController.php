@@ -17,7 +17,13 @@ class SelectController extends Controller
      */
     public function SelectUpt(): JsonResponse
     {
-        $data = MasterUpt::select('id', 'nama')->get();
+        if (request()->input('q')) {
+            $data = MasterUpt::select('id', 'nama')->where('nama', 'LIKE', '%' . request()->input('q') . '%')->get();
+        } elseif (request()->input('upt_id')) {
+            $data = MasterUpt::find(request()->input('upt_id'));
+        } else {
+            $data = MasterUpt::select('id', 'nama')->get();
+        }
         return response()->json($data);
     }
 

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Register;
+use App\Models\PjBaratin;
 use App\Models\PreRegister;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use App\Helpers\AjaxResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Database\Eloquent\Builder;
 
 class PemohonController extends Controller
 {
@@ -71,13 +75,28 @@ class PemohonController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $res = Register::destroy($id);
+        if ($res) {
+            return AjaxResponse::SuccessResponse('pemohon berhasil dihapus', 'pemohon-datatable');
+        }
+        return AjaxResponse::ErrorResponse($res, 400);
+
     }
     public function datatable(): JsonResponse
     {
-        $model = PreRegister::select('id', 'pemohon', 'nama', 'email', 'created_at');
+        if (auth()->guard('admin')->user()->upt_id) {
+            $model = $this->QueryPemohon()->where('master_upt_id', auth()->guard('admin')->user()->upt_id);
+        } else {
+            $model = $this->QueryPemohon();
+        }
 
         return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'admin.pemohon.action')->make(true);
 
+    }
+    /* query master datatable */
+    public function QueryPemohon(): Builder
+    {
+        return Register::with('preregister:id,pemohon,nama,email,pemohon', 'upt:nama,id')
+            ->select('registers.id', 'registers.created_at', 'status', 'keterangan', 'pre_register_id', 'master_upt_id');
     }
 }
