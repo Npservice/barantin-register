@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BaratinController;
 use App\Http\Controllers\Admin\PemohonController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MasterUptController;
 use App\Http\Controllers\Admin\Auth\LoginController;
@@ -30,9 +31,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/confirm/register/{id}', [BaratinController::class, 'confirmRegister'])->name('confirm.register');
         });
 
-        Route::resource('master-upt', MasterUptController::class)->except('show');
-        Route::resource('baratin', BaratinController::class);
-        Route::resource('pemohon', PemohonController::class);
+        // Route::resource('master-upt', MasterUptController::class)->except('show');
+        Route::resource('baratin', BaratinController::class)->only(['index', 'show']);
+        Route::resource('admin-user', AdminUserController::class)->except('show');
+        Route::resource('pemohon', PemohonController::class)->only(['index', 'destroy']);
 
     });
 
