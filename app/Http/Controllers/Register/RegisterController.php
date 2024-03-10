@@ -58,7 +58,7 @@ class RegisterController extends Controller
                         ->select('nama_perusahaan', 'kota', 'nama_tdd', 'jabatan_tdd', 'id');
                 }
             ])
-                ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'created_at')
+                ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'updated_at')
                 ->whereNotNull('pj_barantin_id')
                 ->whereNotNull('status')
                 ->orderBy('created_at', 'DESC');
