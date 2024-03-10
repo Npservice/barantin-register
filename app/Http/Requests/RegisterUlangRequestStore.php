@@ -28,4 +28,10 @@ class RegisterUlangRequestStore extends FormRequest
             'username' => 'required|exists:pj_baratan_kpps,kode_perusahaan'
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'email.unique' => 'email sudah di register ulang di upt yang dipilih'
+        ];
+    }
 }

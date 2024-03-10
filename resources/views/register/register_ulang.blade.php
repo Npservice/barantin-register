@@ -26,6 +26,11 @@
                     </div>
                 </div>
             </div>
+            @error('pemohon')
+                <span class="invalid-feedback d-block" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
             <div class="form-group mb-3 row">
                 <label for="nama">Username</label>
                 <div class="col-12">
