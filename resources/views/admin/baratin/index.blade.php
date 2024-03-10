@@ -48,7 +48,7 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-3">
-                                            <label class="form-label">Tanggal Regsiter</label>
+                                            <label class="form-label">Tanggal Register</label>
                                             <input type="text" class="form-control" id="tanggal-register">
                                         </div>
                                     </div>
