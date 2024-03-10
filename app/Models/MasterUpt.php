@@ -35,4 +35,8 @@ class MasterUpt extends Model
     {
         return $this->hasMany(Register::class, 'master_upt_id', 'id');
     }
+    public function admin(): HasMany
+    {
+        return $this->hasMany(Admin::class, 'upt_id', 'id');
+    }
 }
