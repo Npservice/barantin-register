@@ -1,5 +1,4 @@
-<div class="modal fade" id="modal-data" data-bs-backdrop tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="modal-data" data-bs-backdrop aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div id="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

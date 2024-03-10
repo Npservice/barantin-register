@@ -1,9 +1,10 @@
 @extends('layouts.vertical.master')
-@section('title', 'Log')
+@section('title', 'Barantin')
 @push('css')
     <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
         type="text/css" />
     <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -12,11 +13,11 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Baratin</h4>
+                        <h4 class="mb-sm-0">Barantin</h4>
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
-                                <li class="breadcrumb-item active">Baratin</li>
+                                <li class="breadcrumb-item active">Barantin</li>
                             </ol>
                         </div>
 
@@ -47,32 +48,8 @@
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="mb-3">
-                                            <label class="form-label">Single Select</label>
-                                            <select class="form-control select2">
-                                                <option>Select</option>
-                                                <option value="AK">Alaska</option>
-                                                <option value="HI">Hawaii</option>
-                                                <option value="CT">Connecticut</option>
-                                                <option value="DE">Delaware</option>
-                                                <option value="FL">Florida</option>
-                                                <option value="GA">Georgia</option>
-                                                <option value="IN">Indiana</option>
-                                                <option value="ME">Maine</option>
-                                                <option value="MD">Maryland</option>
-                                                <option value="MA">Massachusetts</option>
-                                                <option value="MI">Michigan</option>
-                                                <option value="NH">New Hampshire</option>
-                                                <option value="NJ">New Jersey</option>
-                                                <option value="NY">New York</option>
-                                                <option value="NC">North Carolina</option>
-                                                <option value="OH">Ohio</option>
-                                                <option value="PA">Pennsylvania</option>
-                                                <option value="RI">Rhode Island</option>
-                                                <option value="SC">South Carolina</option>
-                                                <option value="VT">Vermont</option>
-                                                <option value="VA">Virginia</option>
-                                                <option value="WV">West Virginia</option>
-                                            </select>
+                                            <label class="form-label">Tanggal Regsiter</label>
+                                            <input type="text" class="form-control" id="tanggal-register">
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
@@ -141,7 +118,7 @@
                                             <th>Kota/Kab</th>
                                             <th>Alamat</th>
                                             <th>Status Import</th>
-                                            <th>Tgl Status</th>
+                                            <th>Tgl Register</th>
                                             <th>Status</th>
                                             <th>Keterangan</th>
                                         </tr>
@@ -184,17 +161,9 @@
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/moment/min/moment.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 @endpush
 @push('custom-js')
     <script src="{{ asset('assets/js/page/datatable/baratin.js') }}"></script>
-    <script>
-        $('#filter-status-import').select2();
-        $('#filter-status-import').change(function() {
-            var val = $(this).val();
-            var tabledraw = $('#baratin-datatable').DataTable();
-            if (val === 'all') return tabledraw.column('provinsi:name').search('').draw();
-            return tabledraw.column('baratin.status_import:name').search(val).draw();
-        })
-    </script>
 @endpush

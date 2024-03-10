@@ -26,26 +26,35 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-title">Master</li>
+                {{-- <li class="menu-title">Master</li>
                 <li>
                     <a href="{{ route('admin.master-upt.index') }}" class=" waves-effect">
                         <i class="ri-calendar-2-line"></i>
                         <span>UPT</span>
                     </a>
-                </li>
+                </li> --}}
                 <li class="menu-title">Register</li>
                 <li>
                     <a href="{{ route('admin.pemohon.index') }}" class=" waves-effect">
-                        <i class="ri-calendar-2-line"></i>
+                        <i class="ri-file-user-line"></i>
                         <span>Pemohon</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.baratin.index') }}" class=" waves-effect">
-                        <i class="ri-calendar-2-line"></i>
+                        <i class="ri-bookmark-2-line"></i>
                         <span>Baratin</span>
                     </a>
                 </li>
+                @if (!auth()->guard('admin')->user()->upt_id)
+                    <li class="menu-title">User</li>
+                    <li>
+                        <a href="{{ route('admin.admin-user.index') }}" class=" waves-effect">
+                            <i class="ri-admin-line"></i>
+                            <span>Admin User</span>
+                        </a>
+                    </li>
+                @endif
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-mail-send-line"></i>
