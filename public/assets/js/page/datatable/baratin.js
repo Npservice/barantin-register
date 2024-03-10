@@ -1,4 +1,4 @@
-$("#baratin-datatable").DataTable({
+let table = $("#baratin-datatable").DataTable({
     processing: true,
     serverSide: true,
     ajax: "/admin/baratin",
@@ -59,8 +59,8 @@ $("#baratin-datatable").DataTable({
             },
         },
         {
-            data: "created_at",
-            name: "created_at",
+            data: "updated_at",
+            name: "updated_at",
             render: function (data) {
                 return moment(data).format('DD-MM-YYYY')
             },
@@ -71,4 +71,20 @@ $("#baratin-datatable").DataTable({
     drawCallback: function () {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
+});
+/* table filter handler */
+$('#filter-status-import').select2();
+$('#filter-status-import').change(function () {
+    var val = $(this).val();
+    if (val === 'all') return table.column('provinsi:name').search('').draw();
+    return table.column('baratin.status_import:name').search(val).draw();
+})
+$('#tanggal-register').daterangepicker();
+$('#tanggal-register').on('apply.daterangepicker', function (ev, picker) {
+    var startDate = picker.startDate.format('YYYY-MM-DD');
+    var endDate = picker.endDate.format('YYYY-MM-DD');
+    table.column('updated_at:name').search(startDate + ' - ' + endDate).draw();
+});
+$('#tanggal-register').on('cancel.daterangepicker', function (ev, picker) {
+    table.column('updated_at:name').search('').draw();
 });

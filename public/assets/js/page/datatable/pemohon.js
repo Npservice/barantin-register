@@ -1,4 +1,4 @@
-$('#masterupt-datatable').DataTable({
+$('#pemohon-datatable').DataTable({
     processing: true,
     serverSide: true,
     ajax: '/admin/pemohon',
@@ -16,16 +16,34 @@ $('#masterupt-datatable').DataTable({
             orderable: false
         },
         {
-            data: 'pemohon',
-            name: 'pemohon',
+            data: 'action',
+            searchable: false,
+            orderable: false,
+            width: 60
         },
         {
-            data: 'nama',
-            name: 'nama',
+            data: 'preregister.pemohon',
+            name: 'preregister.pemohon',
         },
         {
-            data: 'email',
-            name: 'email',
+            data: 'preregister.nama',
+            name: 'preregister.nama',
+        },
+        {
+            data: 'preregister.email',
+            name: 'preregister.email',
+        },
+        {
+            data: 'upt.nama',
+            name: 'upt.nama',
+        },
+        {
+            data: 'status',
+            name: 'status',
+        },
+        {
+            data: 'keterangan',
+            name: 'keterangan',
         },
         {
             data: 'created_at',
@@ -33,12 +51,6 @@ $('#masterupt-datatable').DataTable({
             render: function (data) {
                 return moment(data).format('DD-MM-YYYY');
             }
-        },
-        {
-            data: 'action',
-            searchable: false,
-            orderable: false,
-            width: 60
         },
 
     ],

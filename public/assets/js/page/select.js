@@ -1,6 +1,7 @@
 
-function UptSelect() {
+function UptSelect(upt_id) {
     $('.upt-select').select2({
+        dropdownParent: $('#modal-data').length ? $('#modal-data') : $('body'),
         placeholder: 'select item',
         ajax: {
             type: 'GET',
@@ -20,6 +21,25 @@ function UptSelect() {
             }
         }
     })
+    if (upt_id) {
+        $.ajax({
+            type: 'GET',
+            url: '/select/upt/',
+            data: {
+                upt_id: upt_id
+            }
+        }).then(function (response) {
+            var option = new Option(response.nama, response.id, true, true);
+            $('.upt-select').append(option).trigger('change');
+
+            $('.upt-select').trigger({
+                type: 'select2:select',
+                params: {
+                    results: response
+                }
+            });
+        });
+    }
 }
 function ProvinsiSelect(provinsi_id) {
     $('.provinsi-select').select2({
