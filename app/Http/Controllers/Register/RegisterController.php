@@ -81,7 +81,7 @@ class RegisterController extends Controller
         /* ambil dat terbaru untuk pengecekan bahwa status sudah fix */
         $register_cek = Register::where('pre_register_id', $register->id)->orderBy('updated_at', 'DESC')->first();
 
-        if ($register_cek->status == 'MENUNGGU' && $register_cek->status == 'DISETUJUI') {
+        if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
             abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih']));
         }
 
