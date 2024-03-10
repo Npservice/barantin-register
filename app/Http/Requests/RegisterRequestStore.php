@@ -53,7 +53,7 @@ class RegisterRequestStore extends FormRequest
             ],
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
             'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
-            'email' => 'required|exists:pre_registers,email|unique:pj_baratins,email',
+            'email' => 'required|exists:pre_registers,email',
             'lingkup_aktivitas' => [
                 'required',
                 function ($attribute, $value, $fail) {
