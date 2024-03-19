@@ -25,18 +25,12 @@ class LoginController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
-        $request->validate([
+        $attempt = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
         ]);
 
-        /* cek login email / username */
-        $field = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $attempt = [
-            $field => $request->username,
-            'password' => $request->password,
-        ];
 
 
         if (Auth::guard('admin')->attempt($attempt)) {

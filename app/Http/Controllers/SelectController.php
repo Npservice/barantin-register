@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Register;
 use App\Models\MasterUpt;
 use App\Models\MasterNegara;
 use Illuminate\Http\Request;
@@ -18,9 +19,20 @@ class SelectController extends Controller
     public function SelectUpt(): JsonResponse
     {
         if (request()->input('q')) {
+
             $data = MasterUpt::select('id', 'nama')->where('nama', 'LIKE', '%' . request()->input('q') . '%')->get();
+
         } elseif (request()->input('upt_id')) {
+
             $data = MasterUpt::find(request()->input('upt_id'));
+
+        } elseif (request()->input('pre_register_id')) {
+
+            $data = MasterUpt::select('nama', 'id')->whereIn('id', function ($query) {
+                $query->select('master_upt_id')
+                    ->from('registers')
+                    ->where('pre_register_id', request()->input('pre_register_id'));
+            })->get();
         } else {
             $data = MasterUpt::select('id', 'nama')->get();
         }

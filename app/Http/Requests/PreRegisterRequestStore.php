@@ -51,10 +51,11 @@ class PreRegisterRequestStore extends FormRequest
                         foreach (request()->input('upt') as $in => $upt) {
                             if (in_array($upt, $preregister->register->pluck('master_upt_id')->all())) {
                                 $register = Register::where('id', $value->id)->where('master_upt_id', $upt)->first();
-                                if ($register->status === 'MENUNGGU') {
+
+                                if (isset ($register->status) && $register->status === 'MENUNGGU') {
                                     $fail('email sudah terdaftar di upt yang dipilih status menunggu');
                                 }
-                                if ($register->status === 'DISETUJUI') {
+                                if (isset ($register->status) && $register->status === 'DISETUJUI') {
                                     $fail('email sudah terdaftar di upt yang dipilih status disetujui');
                                 }
                             }

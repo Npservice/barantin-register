@@ -35,15 +35,15 @@
                 </li> --}}
                 <li class="menu-title">Register</li>
                 <li>
-                    <a href="{{ route('admin.pemohon.index') }}" class=" waves-effect">
+                    <a href="{{ route('admin.permohonan.index') }}" class=" waves-effect">
                         <i class="ri-file-user-line"></i>
-                        <span>Pemohon</span>
+                        <span>Permohonan</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.baratin.index') }}" class=" waves-effect">
+                    <a href="{{ route('admin.pendaftar.index') }}" class=" waves-effect">
                         <i class="ri-bookmark-2-line"></i>
-                        <span>Baratin</span>
+                        <span>Pendaftar</span>
                     </a>
                 </li>
                 @if (!auth()->guard('admin')->user()->upt_id)

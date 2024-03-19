@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\BaratinController;
-use App\Http\Controllers\Admin\PemohonController;
+use App\Http\Controllers\Admin\PendaftarController;
+use App\Http\Controllers\Admin\PermohonanController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MasterUptController;
@@ -26,15 +26,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('', [DashboardController::class, 'index'])->name('index');
         });
 
-        Route::prefix('baratin')->name('baratin.')->group(function () {
-            Route::get('/datatable/dokumen/{id}', [BaratinController::class, 'datatablePendukung'])->name('datatable.pendukung');
-            Route::post('/confirm/register/{id}', [BaratinController::class, 'confirmRegister'])->name('confirm.register');
+        Route::prefix('permohonan')->name('permohonan.')->group(function () {
+            Route::get('/datatable/dokumen/{id}', [PermohonanController::class, 'datatablePendukung'])->name('datatable.pendukung');
+            Route::post('/confirm/register/{id}', [PermohonanController::class, 'confirmRegister'])->name('confirm.register');
+        });
+        Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
+            Route::get('/datatable/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('datatable.pendukung');
+            Route::post('/block/akses/{id}', [PendaftarController::class, 'BlockAccessPendaftar'])->name('block.akses');
+            Route::post('/open/akses/{id}', [PendaftarController::class, 'OpenkAccessPendaftar'])->name('open.akses');
         });
 
         // Route::resource('master-upt', MasterUptController::class)->except('show');
-        Route::resource('baratin', BaratinController::class)->only(['index', 'show']);
+        Route::resource('pendaftar', PendaftarController::class)->only(['index', 'show']);
         Route::resource('admin-user', AdminUserController::class)->except('show');
-        Route::resource('pemohon', PemohonController::class)->only(['index', 'destroy']);
+        Route::resource('permohonan', PermohonanController::class)->only(['index', 'destroy', 'show']);
 
     });
 

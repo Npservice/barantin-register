@@ -53,7 +53,7 @@ class DokumenPendukungRequestStore extends FormRequest
                 }
             ],
             'tanggal_terbit' => 'required|date',
-            'file_dokumen' => 'required|file|mimes:pdf|max:5000'
+            'file_dokumen' => 'required|file|mimes:pdf|max:2000'
         ];
     }
 }

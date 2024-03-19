@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\Register;
 use App\Models\PjBaratin;
+use App\Models\PreRegister;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Builder;
 
-class BaratinController extends Controller
+class PermohonanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,7 +29,7 @@ class BaratinController extends Controller
         if (request()->ajax()) {
             return $this->datatable();
         }
-        return view('admin.baratin.index');
+        return view('admin.permohonan.index');
     }
 
     /**
@@ -55,8 +55,9 @@ class BaratinController extends Controller
     {
         $data = PjBaratin::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama'])->find($id);
         $register_id = $request->register_id;
-        return view('admin.baratin.show', compact('data', 'register_id'));
+        return view('admin.permohonan.show', compact('data', 'register_id'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -79,7 +80,12 @@ class BaratinController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $res = Register::destroy($id);
+        if ($res) {
+            return AjaxResponse::SuccessResponse('permohonan berhasil dihapus', 'permohonan-datatable');
+        }
+        return AjaxResponse::ErrorResponse($res, 400);
+
     }
     public function datatable(): JsonResponse
     {
@@ -102,8 +108,12 @@ class BaratinController extends Controller
                 }
 
             })
-            ->addColumn('action', 'admin.baratin.action')->make(true);
+            ->addColumn('action', 'admin.permohonan.action')->make(true);
+
+
+
     }
+    /* query master datatable */
     public function QueryRegister(): Builder
     {
         return Register::with([
@@ -112,7 +122,8 @@ class BaratinController extends Controller
                 $query->with(['kotas:nama,id', 'negara:id,nama', 'provinsi:nama,id'])
                     ->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import');
             }
-        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.created_at')->whereNotNull('pj_barantin_id');
+        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at')->whereNotNull('pj_barantin_id')->whereNot('registers.status', 'DISETUJUI');
+        ;
 
 
     }
@@ -125,7 +136,7 @@ class BaratinController extends Controller
         if ($register) {
             $res = $register->update($request->all());
             if ($res) {
-                return AjaxResponse::SuccessResponse('data register ' . $request->status, 'baratin-datatable');
+                return AjaxResponse::SuccessResponse('data register ' . $request->status, 'permohonan-datatable');
             }
             return AjaxResponse::ErrorResponse('register gagal di aprove', 400);
         }

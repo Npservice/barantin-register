@@ -50,12 +50,15 @@ class PreRegisterController extends Controller
 
         if ($preregister_cek) {
             $preregister = PreRegister::find($preregister_cek->id)->update($request->merge(['verify_email' => null])->all());
+
             foreach ($request->upt as $key => $upt) {
                 /* cek keberadaan upt */
                 $found = false; // Tandai apakah upt sudah ditemukan
+
                 foreach ($preregister_cek->register as $in => $prereg) {
                     // Perbaikan untuk mengakses relasi register
                     $register = Register::find($prereg->id);
+                    // cek upt_id di register sama dengan upt yang dipilih
                     if ($register && $register->master_upt_id == $upt) {
                         // Jika upt sudah terdaftar di register, update status dan pj_baratin_id
                         $register->update(['status' => null, 'pj_baratin_id' => null]);
@@ -63,6 +66,7 @@ class PreRegisterController extends Controller
                         break; // keluar dari perulangan kedua
                     }
                 }
+
                 if (!$found) {
                     Register::create(['master_upt_id' => $upt, 'pre_register_id' => $preregister_cek->id]);
                 }

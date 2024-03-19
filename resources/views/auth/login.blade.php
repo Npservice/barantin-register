@@ -6,11 +6,11 @@
         <form class="form-horizontal mt-3" action="{{ route('login') }}" method="POST">
             @csrf
             <div class="form-group mb-3 row">
-                <label for="email">Email</label>
+                <label for="email">Username</label>
                 <div class="col-12">
-                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                        name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
-                        placeholder="example@email.com">
+                    <input id="email" type="text" class="form-control @error('username') is-invalid @enderror"
+                        name="username" value="{{ old('username') }}" required autocomplete="username" autofocus
+                        placeholder="username">
                 </div>
                 @error('email')
                     <span class="invalid-feedback d-block" role="alert">

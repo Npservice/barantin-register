@@ -1,7 +1,7 @@
 
-function UptSelect(upt_id) {
+function UptSelect(upt_id, pre_register_id) {
     $('.upt-select').select2({
-        dropdownParent: $('#modal-data').length ? $('#modal-data') : $('body'),
+        // dropdownParent: $('#modal-data').length ? $('#modal-data') : $('body'),
         placeholder: 'select item',
         ajax: {
             type: 'GET',
@@ -21,6 +21,28 @@ function UptSelect(upt_id) {
             }
         }
     })
+    if (pre_register_id) {
+        $.ajax({
+            type: 'GET',
+            url: '/select/upt/',
+            data: {
+                pre_register_id: pre_register_id
+            }
+        }).then(function (response) {
+
+
+            var select2Element = $('.upt-select');
+            select2Element.empty();
+
+            response.forEach(function (item) {
+                var option = new Option(item.nama, item.id, true, true);
+                select2Element.append(option);
+            });
+            select2Element.trigger('change');
+
+        });
+    }
+
     if (upt_id) {
         $.ajax({
             type: 'GET',
@@ -183,7 +205,7 @@ function KotaSelect(kota_id) {
 }
 $('#negara').on('change', function () {
     let val = $(this).val();
-    console.log(val);
+    // console.log(val);
     // if (val === 99) {
     //     $('.kota-select').addClass('d-none');
     //     $('.provinsi-select').addClass('d-none');

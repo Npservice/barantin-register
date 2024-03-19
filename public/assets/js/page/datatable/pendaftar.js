@@ -1,7 +1,7 @@
-let table = $("#baratin-datatable").DataTable({
+let table = $("#pendaftar-datatable").DataTable({
     processing: true,
     serverSide: true,
-    ajax: "/admin/baratin",
+    ajax: "/admin/pendaftar",
     language: {
         paginate: {
             previous: "<i class='mdi mdi-chevron-left'>",
@@ -21,6 +21,8 @@ let table = $("#baratin-datatable").DataTable({
             orderable: false,
             width: 60,
         },
+        { data: "status", name: "status" },
+        { data: "blockir", name: "blockir", render: function (data) { return BlokirStatus(data) } },
         { data: "baratin.nama_perusahaan", name: "baratin.nama_perusahaan" },
         { data: "baratin.jenis_identitas", name: "baratin.jenis_identitas" },
         { data: "baratin.nomor_identitas", name: "baratin.nomor_identitas" },
@@ -65,13 +67,23 @@ let table = $("#baratin-datatable").DataTable({
                 return moment(data).format('DD-MM-YYYY')
             },
         },
-        { data: "status", name: "status" },
+
         { data: "keterangan", name: "keterangan" },
     ],
     drawCallback: function () {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
 });
+
+
+function BlokirStatus(data) {
+    switch (data) {
+        case 0:
+            return '<h5><span class="badge bg-success">NONAKTIF</span></h5>'
+        case 1:
+            return '<h5><span class="badge bg-danger">AKTIF</span></h5>'
+    }
+}
 /* table filter handler */
 $('#filter-status-import').select2();
 $('#filter-status-import').change(function () {

@@ -99,7 +99,7 @@ class RegisterController extends Controller
         // dd($dokumen);
         if ($register->pemohon === 'perusahaan') {
             /* perusahaan register cek */
-            if ($dokumen->contains('KTP') && $dokumen->contains('PASSPORT') && $dokumen->contains('NPWP') && $dokumen->contains('SIUP') && $dokumen->contains('surat_keterangan_domisili') && $dokumen->contains('NIB')) {
+            if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
                 // $this->SaveRegister($request, $id);
 
                 $this->SaveRegister($request, $id);
@@ -108,7 +108,7 @@ class RegisterController extends Controller
             return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, PASSPORT, NPWP, SIUP / IUI / IUT / SIUP JPT, surat keterangan domisili, NIB'], 422);
         } else {
             /* perorangan register cek */
-            if ($dokumen->contains('NPWP') && $dokumen->contains('KTP') && $dokumen->contains('PASSPORT')) {
+            if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
                 $this->SaveRegister($request, $id);
                 return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
             }

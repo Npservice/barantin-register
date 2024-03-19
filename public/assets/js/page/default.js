@@ -4,9 +4,11 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         error: function (response) {
-            var error = JSON.parse(response.responseText)
-            if (error.code === 401) {
-                window.location.href = '/'
+            if (response.responseText) {
+                var error = JSON.parse(response.responseText)
+                if (error.code === 401) {
+                    window.location.href = '/'
+                }
             }
         }
     });
@@ -280,3 +282,83 @@ $('#button-tolak').click(function () {
     });
 
 })
+
+function Block(url, type) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Anda ingin memblokir " + type,
+        icon: "question",
+        // showCancelButton: true,
+        confirmButtonColor: "#d33",
+        // cancelButtonColor: "#d33",
+        confirmButtonText: "BLOKIR",
+        // cancelButtonText: "BLOCKIR",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    status: 'BLOCKIR'
+                },
+                success: function (response) {
+                    if (response.status) {
+                        notif("info", response.message);
+                        TableReload(response.table);
+                    } else {
+                        notif("error", response.message);
+                    }
+                },
+                error: function (response) {
+                    notif("error", response.message ?? "register gagal di blockir");
+                },
+            });
+        }
+        if (result.dismiss === 'cancel') {
+            $('#url-tolak').val(url)
+            $('#form-tolak').trigger('reset')
+            $('#modal-tolak-keterangan').modal('show')
+
+        }
+    });
+}
+
+function Open(url, type) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Anda ingin membuka blokir " + type,
+        icon: "question",
+        // showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        // cancelButtonColor: "#d33",
+        confirmButtonText: "BUKA",
+        // cancelButtonText: "BLOCKIR",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    status: 'BLOCKIR'
+                },
+                success: function (response) {
+                    if (response.status) {
+                        notif("success", response.message);
+                        TableReload(response.table);
+                    } else {
+                        notif("error", response.message);
+                    }
+                },
+                error: function (response) {
+                    notif("error", response.message ?? "register gagal di blockir");
+                },
+            });
+        }
+        if (result.dismiss === 'cancel') {
+            $('#url-tolak').val(url)
+            $('#form-tolak').trigger('reset')
+            $('#modal-tolak-keterangan').modal('show')
+
+        }
+    });
+}

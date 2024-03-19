@@ -44,6 +44,35 @@
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
+                            <input class="form-control" readonly value="{{ $register->pemohon }}" type="text"
+                                id="" name="">
+                            <div class="invalid-feedback" id="feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">UPT</label>
+                        <div class="col-sm-9">
+                            <select class="form-control upt-select" id="upt" multiple name="upt"></select>
+                            <div class="invalid-feedback" id="upt-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="lingkup_akivitas" class="col-sm-3 col-form-label">Lingkup Akivitas</label>
+                        <div class="col-sm-9">
+                            <select class="form-control select-item" id="lingkup_aktivitas" rows="3"
+                                placeholder="Lingkup Akivitas" name="lingkup_aktivitas[]" multiple>
+                                <option value="1">Import</option>
+                                <option value="2">Domestik Masuk</option>
+                                <option value="3">Export</option>
+                                <option value="4">Domestik Keluar</option>
+                            </select>
+                            <div class="invalid-feedback" id="lingkup_aktivitas-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">Nama</label>
+                        <div class="col-sm-9">
                             <input class="form-control" readonly value="{{ $register->nama }}" type="text"
                                 id="pemohon" name="pemohon">
                             <div class="invalid-feedback" id="pemohon-feedback"></div>
@@ -70,18 +99,22 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
+                        <label for="upt" class="col-sm-3 col-form-label">Telepon</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="telepon" name="telepon"
                                 aria-describedby="inputGroupPrepend" required value="{{ $baratan->telepon ?? '' }}">
                             <div class="invalid-feedback" id="telepon-feedback"></div>
                         </div>
                     </div>
+
+
+                </div>
+                <div class="col-md-6 col-sm-12">
                     <div class="row mb-3">
                         <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax" name="nomor_fax"
-                                value="{{ $baratan->fax ?? '' }}">
+                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax"
+                                name="nomor_fax" value="{{ $baratan->fax ?? '' }}">
                             <div class="invalid-feedback" id="nomor_fax-feedback"></div>
                         </div>
                     </div>
@@ -91,23 +124,6 @@
                             <input class="form-control" readonly value="{{ $register->email }}" type="email"
                                 placeholder="Email" id="email" name="email">
                             <div class="invalid-feedback" id="email-feedback"></div>
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="row mb-3">
-                        <label for="lingkup_akivitas" class="col-sm-3 col-form-label">Lingkup Akivitas</label>
-                        <div class="col-sm-9">
-                            <select class="form-control select-item" id="lingkup_aktivitas" rows="3"
-                                placeholder="Lingkup Akivitas" name="lingkup_aktivitas[]" multiple>
-                                <option value="1">Import</option>
-                                <option value="2">Domestik Masuk</option>
-                                <option value="3">Export</option>
-                                <option value="4">Domestik Keluar</option>
-                            </select>
-                            <div class="invalid-feedback" id="lingkup_aktivitas-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -127,16 +143,7 @@
                             <div class="invalid-feedback" id="status_import-feedback"></div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <label for="negara" class="col-sm-3 col-form-label">Negara</label>
-                        <div class="col-sm-9">
-                            <select class="form-control negara-select" type="text" placeholder="Negara"
-                                id="negara" name="negara"></select>
-                            <div class="invalid-feedback" id="negara-feedback"></div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3 d-none" id="provinsi-form">
+                    <div class="row mb-3" id="provinsi-form">
                         <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                         <div class="col-sm-9">
                             <select class="form-control provinsi-select" type="text" placeholder="Provinsi"
@@ -145,7 +152,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3 d-none" id="kota-form">
+                    <div class="row mb-3" id="kota-form">
                         <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
                         <div class="col-sm-9">
                             <select class="form-control kota-select" type="text" placeholder="Kota"
@@ -157,8 +164,7 @@
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Alamat" id="alamat"
-                                name="alamat" value="{{ $baratan->alamat ?? '' }}">
+                            <textarea class="form-control" type="text" placeholder="Alamat" id="alamat"rows="4" name="alamat">{{ $baratan->alamat ?? '' }}</textarea>
                             <div class="invalid-feedback" id="alamat-feedback"></div>
                         </div>
                     </div>
@@ -786,6 +792,7 @@
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
 <script src="{{ asset('assets/js/page/form/perorangan.js') }}"></script>
 <script>
+    UptSelect('{{ $baratan->upt_id ?? null }}', '{{ $register->id ?? null }}')
     NegaraSelect('{{ $baratan->negara_id ?? 99 }}')
     ProvinsiSelect('{{ $baratan->provinsi_id ?? null }}')
     KotaSelect('{{ $baratan->kota ?? null }}')
