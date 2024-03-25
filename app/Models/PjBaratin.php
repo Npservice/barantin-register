@@ -19,6 +19,7 @@ class PjBaratin extends Model
     protected $fillable = [
         'kode_perusahaan',
         'pre_register_id',
+        'user_id',
         'password',
         'nama_perusahaan',
         'jenis_identitas',
@@ -76,5 +77,8 @@ class PjBaratin extends Model
     {
         return $this->belongsTo(PreRegister::class, 'pre_register_id', 'id');
     }
-
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
