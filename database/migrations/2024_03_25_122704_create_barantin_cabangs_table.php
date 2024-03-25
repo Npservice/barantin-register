@@ -10,16 +10,19 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('pj_baratins', function (Blueprint $table) {
+        Schema::create('barantin_cabangs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pre_register_id');
+            $table->uuid('pre_register_id')->nullable();
+            $table->uuid('pj_baratin_id')->nullable();
             $table->uuid('user_id')->nullable();
+
             $table->string('kode_perusahaan')->nullable();
             $table->string('password')->nullable();
             $table->string('nama_perusahaan')->nullable();
             $table->string('nama_alias_perusahaan')->nullable();
             $table->enum('jenis_identitas', ['KTP', 'PASSPORT', 'NPWP'])->nullable();
             $table->string('nomor_identitas')->nullable();
+            $table->string('nitku')->nullable();
             $table->text('alamat')->nullable();
             $table->unsignedBigInteger('kota')->nullable();
             $table->string('telepon')->nullable();
@@ -43,7 +46,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('negara_id')->nullable();
             $table->tinyInteger('is_active')->unsigned()->default(1);
             $table->tinyInteger('status_prioritas')->default(0)->comment('1: layanan prioritas; 5: draft ekspor');
+
             $table->foreign('pre_register_id')->references('id')->on('pre_registers')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
@@ -54,6 +59,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('pj_baratins');
+        Schema::dropIfExists('barantin_cabangs');
     }
 };

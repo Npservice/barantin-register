@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('username')->unique()->nullable();
-            $table->enum('status_pemohon', ['PERUSAHAAN', 'PERORANGAN']);
+            $table->enum('role', ['cabang', 'perorangan', 'induk']);
             $table->boolean('status_user')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
