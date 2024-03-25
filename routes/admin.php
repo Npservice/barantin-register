@@ -34,6 +34,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/datatable/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('datatable.pendukung');
             Route::post('/block/akses/{id}', [PendaftarController::class, 'BlockAccessPendaftar'])->name('block.akses');
             Route::post('/open/akses/{id}', [PendaftarController::class, 'OpenkAccessPendaftar'])->name('open.akses');
+            Route::post('/create/user/{id}', [PendaftarController::class, 'CreateUser'])->name('create.user');
+            Route::post('/send/username/{id}', [PendaftarController::class, 'SendUsernamePasswordEmail'])->name('send.user');
         });
 
         // Route::resource('master-upt', MasterUptController::class)->except('show');

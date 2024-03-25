@@ -59,3 +59,13 @@ Route::get('ajax/failed', function () {
     return redirect()->route('login');
 
 })->middleware(['ajax', 'guest'])->name('ajax.failed');
+
+
+Route::prefix('user')->name('user.')->group(function () {
+    Route::view('mitra', 'user.mitra')->name('mitra');
+    Route::view('cabang', 'user.cabang')->name('cabang');
+    Route::view('ppjk', 'user.ppjk')->name('ppjk');
+    Route::view('profile', 'user.profile')->name('profile');
+    Route::view('upt', 'user.tambahupt')->name('upt');
+    // Route::view('rubah-data', 'user.rubahdata');
+});
