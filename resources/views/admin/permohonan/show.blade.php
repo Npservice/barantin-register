@@ -218,12 +218,14 @@
                     </table>
                 </div>
             </div>
+            @if (auth()->guard()->user()->upt_id)
             <div class="card-footer">
                 <div class="text-end">
                     <a class="btn btn-primary btn-sm me-2"
                         onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $register_id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>

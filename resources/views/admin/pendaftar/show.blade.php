@@ -18,7 +18,31 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-danger btn-sm w-" onclick="ClosePage()">Close</button>
+                    {{-- blokir user --}}
+                    @if ($data->user_id)
+                        @if ($register->blockir)
+                            <button class="btn btn-success btn-sm me-2"
+                                onclick="Open('{{ route('admin.pendaftar.open.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Aktifkan
+                                User</button>
+                        @else
+                            <button class="btn btn-warning btn-sm me-2"
+                                onclick="Block('{{ route('admin.pendaftar.block.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Blokir
+                                User</button>
+                        @endif
+                    @endif
+                    {{-- create user --}}
+                    @if (!auth()->guard('admin')->user()->upt_id)
+                        @if ($data->user_id)
+                            <button class="btn btn-primary btn-sm me-2"
+                                onclick="UserSetting('{{ route('admin.pendaftar.send.user', $data->user_id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Kirim
+                                username & password</button>
+                        @else
+                            <button class="btn btn-info btn-sm me-2 "
+                                onclick="CreateUser('{{ route('admin.pendaftar.create.user', $register->id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Buat
+                                username & password</button>
+                        @endif
+                    @endif
+                    <button class="btn btn-danger btn-sm" onclick="ClosePage()">Close</button>
                 </div>
             </div>
             <div class="card-body">
@@ -119,8 +143,9 @@
                         <div class="row mb-5">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled value="{{ $data->alamat ?? '' }}"
-                                    type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled
+                                    value="{{ $data->alamat ?? '' }}" type="text" placeholder="Provinsi"
+                                    id="provinsi" name="provinsi">
                             </div>
                         </div>
                     </div>
@@ -221,7 +246,7 @@
             {{-- <div class="card-footer">
                 <div class="text-end">
                     <a class="btn btn-primary btn-sm me-2"
-                        onclick="ConfirmRegister('{{ route('admin.baratin.confirm.register', $register_id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
+                        onclick="ConfirmRegister('{{ route('admin.baratin.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
                 </div>
             </div> --}}
         </div>

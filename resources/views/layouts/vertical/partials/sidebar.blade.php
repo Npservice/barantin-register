@@ -8,7 +8,7 @@
                 <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
-                <h4 class="font-size-16 mb-1">{{ auth()->guard('admin')->user()->nama }}</h4>
+                <h4 class="font-size-16 mb-1">{{ auth()->guard('admin')->user()->nama ?? 'user' }}</h4>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
                     Online</span>
             </div>
@@ -18,43 +18,83 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title">General</li>
+                @auth('admin')
+                    <li class="menu-title">General</li>
 
-                <li>
-                    <a href="{{ route('admin.dashboard.index') }}" class="waves-effect">
-                        <i class="ri-dashboard-line"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                {{-- <li class="menu-title">Master</li>
+                    <li>
+                        <a href="{{ route('admin.dashboard.index') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    {{-- <li class="menu-title">Master</li>
                 <li>
                     <a href="{{ route('admin.master-upt.index') }}" class=" waves-effect">
                         <i class="ri-calendar-2-line"></i>
                         <span>UPT</span>
                     </a>
                 </li> --}}
-                <li class="menu-title">Register</li>
-                <li>
-                    <a href="{{ route('admin.permohonan.index') }}" class=" waves-effect">
-                        <i class="ri-file-user-line"></i>
-                        <span>Permohonan</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.pendaftar.index') }}" class=" waves-effect">
-                        <i class="ri-bookmark-2-line"></i>
-                        <span>Pendaftar</span>
-                    </a>
-                </li>
-                @if (!auth()->guard('admin')->user()->upt_id)
-                    <li class="menu-title">User</li>
+                    <li class="menu-title">Register</li>
                     <li>
-                        <a href="{{ route('admin.admin-user.index') }}" class=" waves-effect">
-                            <i class="ri-admin-line"></i>
-                            <span>Admin User</span>
+                        <a href="{{ route('admin.permohonan.index') }}" class=" waves-effect">
+                            <i class="ri-file-user-line"></i>
+                            <span>Permohonan</span>
                         </a>
                     </li>
-                @endif
+                    <li>
+                        <a href="{{ route('admin.pendaftar.index') }}" class=" waves-effect">
+                            <i class="ri-bookmark-2-line"></i>
+                            <span>Pendaftar</span>
+                        </a>
+                    </li>
+                    @if (!auth()->guard('admin')->user()->upt_id)
+                        <li class="menu-title">User</li>
+                        <li>
+                            <a href="{{ route('admin.admin-user.index') }}" class=" waves-effect">
+                                <i class="ri-admin-line"></i>
+                                <span>Admin User</span>
+                            </a>
+                        </li>
+                    @endif
+                @endauth
+                @guest
+                    <li>
+                        <a href="{{ route('admin.dashboard.index') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('user.cabang') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Cabang</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('user.profile') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('user.mitra') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>Mitra</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('user.upt') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>UPT terdaftar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('user.ppjk') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i>
+                            <span>PPJK</span>
+                        </a>
+                    </li>
+                @endguest
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-mail-send-line"></i>
