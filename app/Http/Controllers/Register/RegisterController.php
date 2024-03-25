@@ -28,6 +28,7 @@ class RegisterController extends Controller
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
         $baratan = PjBaratanKpp::where('email', $register->email)->value('id');
+
         if ($baratan) {
             return view('register.form.index', compact('id', 'baratan'));
         }
@@ -48,7 +49,6 @@ class RegisterController extends Controller
     /* status register */
     public function StatusRegister(): View|JsonResponse
     {
-
         if (request()->ajax()) {
             $model = Register::with([
                 'upt:nama,id',
@@ -81,8 +81,10 @@ class RegisterController extends Controller
         /* ambil dat terbaru untuk pengecekan bahwa status sudah fix */
         $register_cek = Register::where('pre_register_id', $register->id)->orderBy('updated_at', 'DESC')->first();
 
-        if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
-            abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih atau yang terdaftar sebelumnya']));
+        if (isset ($register_cek)) {
+            if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
+                abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih atau yang terdaftar sebelumnya']));
+            }
         }
 
         return true;
@@ -101,7 +103,6 @@ class RegisterController extends Controller
             /* perusahaan register cek */
             if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
                 // $this->SaveRegister($request, $id);
-
                 $this->SaveRegister($request, $id);
                 return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
             }
@@ -119,7 +120,6 @@ class RegisterController extends Controller
     /* for saved register */
     public function SaveRegister(Request $request, string $id): void
     {
-
         $data = $request->all();
         unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
         $data = collect($data);

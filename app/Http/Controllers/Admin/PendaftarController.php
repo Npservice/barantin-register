@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Register;
 use App\Models\PjBaratin;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MailSendUsernamePassword;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -54,8 +57,9 @@ class PendaftarController extends Controller
     public function show(Request $request, string $id): View
     {
         $data = PjBaratin::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama'])->find($id);
-        $register_id = $request->register_id;
-        return view('admin.pendaftar.show', compact('data', 'register_id'));
+        $register = Register::find($request->register_id);
+
+        return view('admin.pendaftar.show', compact('data', 'register'));
     }
 
     /**
@@ -114,7 +118,7 @@ class PendaftarController extends Controller
             'upt:nama,id',
             'baratin' => function ($query) {
                 $query->with(['kotas:nama,id', 'negara:id,nama', 'provinsi:nama,id'])
-                    ->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import');
+                    ->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
             }
         ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at', 'blockir')->whereNotNull('pj_barantin_id')->where('registers.status', 'DISETUJUI');
 
@@ -124,7 +128,15 @@ class PendaftarController extends Controller
     // open blokir
     public function BlockAccessPendaftar(string $id): JsonResponse
     {
-        $res = Register::find($id)->update(['blockir' => 1]);
+        $res = null;
+        DB::transaction(function () use ($id, &$res) {
+            $register = Register::find($id);
+            $res = $register->update(['blockir' => 1]);
+            if (!Register::where('pj_barantin_id', $register->pj_barantin_id)->where('blockir', 0)->exists()) {
+                $res = $register->baratin->user()->update(['status_user' => 0]);
+            }
+
+        });
         if ($res) {
             return AjaxResponse::SuccessResponse('blokir berhasil di aktifkan', 'pendaftar-datatable');
         }
@@ -134,7 +146,13 @@ class PendaftarController extends Controller
     // close blokir
     public function OpenkAccessPendaftar(string $id): JsonResponse
     {
-        $res = Register::find($id)->update(['blockir' => 0]);
+        $res = null;
+        DB::transaction(function () use ($id, &$res) {
+            $register = Register::find($id);
+            $register->update(['blockir' => 0]);
+            $res = $register->baratin->user()->update(['status_user' => 1]);
+
+        });
         if ($res) {
             return AjaxResponse::SuccessResponse('blokir berhasil di nonaktifkan', 'pendaftar-datatable');
         }
@@ -150,5 +168,66 @@ class PendaftarController extends Controller
             ->editColumn('file', 'register.form.partial.file_pendukung_datatable')
             ->rawColumns(['action', 'file'])
             ->toJson();
+    }
+
+    public function CreateUser(string $id): JsonResponse
+    {
+        $register = Register::find($id);
+        $pre_register = $register->preregister;
+        $barantin = $register->baratin;
+
+
+        $user_collect = collect([
+            'nama' => $barantin->nama_perusahaan,
+            'email' => $barantin->email,
+            'username' => $this->generateRandomString($length = 5, $pre_register->pemohon),
+            'role' => $pre_register->pemohon === 'perushaan' ? 'induk' : 'perorangan',
+            'status_user' => $register->blockir,
+            'password' => $this->generateRandomPassword(),
+        ]);
+        // dd($user);
+
+        $user = User::create($user_collect->all());
+        $barantin->update(['user_id' => $user->id]);
+        $this->SendUsernamePasswordEmail($user->id);
+
+        return response()->json(['table' => 'pendaftar-datatable', 'nama' => $user->nama]);
+    }
+
+    public function SendUsernamePasswordEmail(string $IdOrEmail): bool|JsonResponse
+    {
+        $user = User::where('email', $IdOrEmail)->orWhere('id', $IdOrEmail)->first();
+        $password = $this->generateRandomPassword($length = 8);
+        $user->update(['password', $password]);
+        Mail::to($user->email)->send(new MailSendUsernamePassword($user->username, $password));
+
+        if (request()->input('reset')) {
+            return response()->json(['table' => 'pendaftar-datatable', 'nama' => $user->nama]);
+        }
+        return true;
+
+    }
+    /* genareate username */
+    function generateRandomString(int $length = 5, string $pemohon)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $pemohon === 'perusahaan' ? 'C' . $randomString : 'P' . $randomString;
+    }
+
+    /* generate password */
+    function generateRandomPassword($length = 8)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $randomPassword = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomPassword .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $randomPassword;
     }
 }

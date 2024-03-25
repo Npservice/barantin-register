@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Register;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -12,7 +13,31 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard.index');
+        $total = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
+            $query->where('master_upt_id', $uptId);
+        })->count();
+
+        $setuju = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
+            $query->where('master_upt_id', $uptId);
+        })
+            ->where('status', 'DISETUJUI')
+            ->count();
+
+        $tolak = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
+            $query->where('master_upt_id', $uptId);
+        })
+            ->where('status', 'DITOLAK')
+            ->count();
+
+        $menunggu = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
+            $query->where('master_upt_id', $uptId);
+        })
+            ->where('status', 'MENUNGGU')
+            ->count();
+
+
+
+        return view('admin.dashboard.index', compact('total', 'setuju', 'tolak', 'menunggu'));
     }
 
     /**
