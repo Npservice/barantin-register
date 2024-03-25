@@ -283,7 +283,7 @@ $('#button-tolak').click(function () {
 
 })
 
-function Block(url, type) {
+function Block(url, type, urlReload) {
     Swal.fire({
         title: "Apa Anda Yakin?",
         text: "Anda ingin memblokir " + type,
@@ -305,6 +305,9 @@ function Block(url, type) {
                     if (response.status) {
                         notif("info", response.message);
                         TableReload(response.table);
+                        if (urlReload) {
+                            ClosePageLink(urlReload);
+                        }
                     } else {
                         notif("error", response.message);
                     }
@@ -323,7 +326,7 @@ function Block(url, type) {
     });
 }
 
-function Open(url, type) {
+function Open(url, type, urlReload) {
     Swal.fire({
         title: "Apa Anda Yakin?",
         text: "Anda ingin membuka blokir " + type,
@@ -345,6 +348,9 @@ function Open(url, type) {
                     if (response.status) {
                         notif("success", response.message);
                         TableReload(response.table);
+                        if (urlReload) {
+                            ClosePageLink(urlReload);
+                        }
                     } else {
                         notif("error", response.message);
                     }
@@ -360,5 +366,125 @@ function Open(url, type) {
             $('#modal-tolak-keterangan').modal('show')
 
         }
+    });
+}
+function Changeprofile() {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Anda ingin mengubah profile anda",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Ubah",
+        cancelButtonText: "Tidak",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // $.ajax({
+            //     url: url,
+            //     type: "POST",
+            //     data: {
+            //         status: 'DISETUJUI'
+            //     },
+            //     success: function (response) {
+            //         if (response.status) {
+            //             notif("success", response.message);
+            //             TableReload(response.table);
+            //         } else {
+            //             notif("error", response.message);
+            //         }
+            //     },
+            //     error: function (response) {
+            //         notif("error", response.message ?? "register gagal di aprove");
+            //     },
+            // });
+        }
+        if (result.dismiss === 'cancel') {
+            // $('#url-tolak').val(url)
+            // $('#form-tolak').trigger('reset')
+            // $('#modal-tolak-keterangan').modal('show')
+
+        }
+    });
+}
+
+function CreateUser(url, text, urlReload) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Ingin membuat user barantin " + text,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Buat",
+        cancelButtonText: "Tidak",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                success: function (response) {
+                    TableReload(response.table)
+                    notif('success', 'user berhasil ' + response.nama + ' dibuat');
+                    if (urlReload) {
+                        ClosePageLink(urlReload);
+                    }
+                },
+                error: function (response) {
+                    notif("error", "username & password gagal dibuat");
+                },
+            });
+        }
+        if (result.dismiss === 'cancel') {
+
+
+        }
+    });
+
+
+}
+
+function UserSetting(url, text, urlReload) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Ingin merubah user barantin " + text,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Kirim username & password",
+        cancelButtonText: "Tidak",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    reset: 'true',
+                },
+                success: function (response) {
+                    TableReload(response.table);
+                    notif('success', 'username & password berhasil ' + response.nama + ' diubah');
+                    if (urlReload) {
+                        ClosePageLink(urlReload);
+                    }
+                },
+                error: function (response) {
+                    notif("error", "username & password gagal diubah");
+                },
+            });
+        }
+        if (result.dismiss === 'cancel') {
+
+        }
+    });
+}
+
+function alertBlockirUser() {
+    Swal.fire({
+        title: "User Belum dibuat",
+        text: "Silahkan buat user untuk akses blockir user",
+        icon: "warning",
+        confirmButtonColor: "#0f9cf3",
     });
 }
