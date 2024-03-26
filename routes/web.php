@@ -50,6 +50,7 @@ Route::prefix('select')->name('select.')->group(function () {
     Route::get('negara', [SelectController::class, 'SelectNegara'])->name('negara');
     Route::get('provinsi', [SelectController::class, 'SelectProvinsi'])->name('provinsi');
     Route::get('kota/{id}', [SelectController::class, 'SelectKota'])->name('provinsi');
+    Route::get('perusahaan', [SelectController::class, 'SelectPerusahaanInduk'])->name('perusahaan');
 });
 
 Route::get('ajax/failed', function () {

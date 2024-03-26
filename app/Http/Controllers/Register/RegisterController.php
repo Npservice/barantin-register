@@ -8,6 +8,7 @@ use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
+use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -16,8 +17,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
-use App\Http\Requests\RegisterRequestStore;
 use App\Http\Requests\DokumenPendukungRequestStore;
+use App\Http\Requests\RegisterRequesPerorangantStore;
+use App\Http\Requests\RegisterRequestPerusahaanIndukStore;
+use App\Http\Requests\RegisterRequestPerusahaanCabangStore;
 
 class RegisterController extends Controller
 {
@@ -42,7 +45,11 @@ class RegisterController extends Controller
         $baratan_cek = PjBaratanKpp::find($request->baratan_id);
         $baratan = $baratan_cek ?? null;
         if ($register->pemohon === 'perusahaan') {
-            return view('register.form.partial.perusahaan', compact('register', 'baratan'));
+            if ($register->jenis_perusahaan === 'cabang') {
+                $induk = PjBaratin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($register->pj_baratin_id);
+                return view('register.form.partial.cabang', compact('register', 'baratan', 'induk'));
+            }
+            return view('register.form.partial.induk', compact('register', 'baratan'));
         }
         return view('register.form.partial.perorangan', compact('register', 'baratan'));
     }
@@ -91,60 +98,150 @@ class RegisterController extends Controller
     }
 
     /* register saved */
-    public function RegisterStore(RegisterRequestStore $request, string $id): JsonResponse
+    // public function RegisterStore(RegisterRequestStore $request, string $id): JsonResponse
+    // {
+
+
+    //     $register = PreRegister::find($id);
+    //     $this->CheckRegister($register);
+    //     $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
+    //     // dd($dokumen);
+    //     if ($register->pemohon === 'perusahaan') {
+    //         /* perusahaan register cek */
+
+    //     } else {
+    //         /* perorangan register cek */
+    //         if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
+    //             $this->SaveRegister($request, $id);
+    //             return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
+    //         }
+    //         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, NPWP, dan PASSPORT'], 422);
+    //     }
+
+    // }
+    /* store peroeangan */
+    public function StoreRegisterPerorangan(RegisterRequesPerorangantStore $request, string $id)
     {
-
-
         $register = PreRegister::find($id);
-        // $this->CheckRegister($register);
+        $this->CheckRegister($register);
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
-        // dd($dokumen);
-        if ($register->pemohon === 'perusahaan') {
-            /* perusahaan register cek */
-            if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
-                // $this->SaveRegister($request, $id);
-                $this->SaveRegister($request, $id);
-                return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
-            }
-            return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, PASSPORT, NPWP, SIUP / IUI / IUT / SIUP JPT, surat keterangan domisili, NIB'], 422);
-        } else {
-            /* perorangan register cek */
-            if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
-                $this->SaveRegister($request, $id);
-                return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
-            }
-            return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, NPWP, dan PASSPORT'], 422);
+        if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
+            $data = $request->all();
+            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
+            $data = collect($data);
+            $data = $data->merge([
+                'fax' => $request->nomor_fax,
+                'negara_id' => 99,
+                'provinsi_id' => $request->provinsi,
+                'nama_perusahaan' => $request->pemohon,
+                'pre_register_id' => $id,
+                'kota' => $request->kota
+            ]);
+            $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
+            return response()->json(['status' => true, 'message' => 'Register Perorangan Berhasil Dilakukan'], 200);
         }
+        return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP/PASSPORT'], 422);
+    }
+    /* store perusahaan induk */
+    public function StoreRegisterPerusahaanInduk(RegisterRequestPerusahaanIndukStore $request, string $id)
+    {
+        $register = PreRegister::find($id);
+        $this->CheckRegister($register);
+        $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
+        if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
+            $data = $request->all();
+            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
+            $data = collect($data);
+            $data = $data->merge([
+                'fax' => $request->nomor_fax,
+                'negara_id' => 99,
+                'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
+                'provinsi_id' => $request->provinsi,
+                'nama_perusahaan' => $request->pemohon,
+                'pre_register_id' => $id,
+                'kota' => $request->kota
+            ]);
 
+            $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
+            return response()->json(['status' => true, 'message' => 'Register Perusahaan induk Berhasil Dilakukan'], 200);
+        }
+        return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NPWP, NIB'], 422);
+    }
+    public function StoreRegisterPerusahaanCabang(RegisterRequestPerusahaanCabangStore $request, string $id)
+    {
+        $register = PreRegister::find($id);
+        $this->CheckRegister($register);
+        $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
+        $induk = PjBaratin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
+        // dd($induk);
+        if ($dokumen->contains('NITKU')) {
+            $data = $request->all();
+            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
+            $data = collect($data);
+            $data = $data->merge([
+                'fax' => $request->nomor_fax,
+                'jenis_identitas' => $induk->jenis_identitas,
+                'nomor_identitas' => $induk->nomor_identitas,
+                'negara_id' => 99,
+                'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
+                'provinsi_id' => $request->provinsi,
+                'nama_perusahaan' => $request->pemohon,
+                'pre_register_id' => $id,
+                'kota' => $request->kota
+            ]);
+
+            $this->SaveRegisterCabang($request, $id, $data);
+            return response()->json(['status' => true, 'message' => 'Register Perusahaan cabang Berhasil Dilakukan'], 200);
+        }
+        return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
     }
     /* for saved register */
-    public function SaveRegister(Request $request, string $id): void
+    public function SaveRegisterPerusahaanIndukPerorangan(Request $request, string $id, $data): void
     {
-        $data = $request->all();
-        unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
-        $data = collect($data);
-        $data = $data->merge([
-            'fax' => $request->nomor_fax,
-            'negara_id' => $request->negara,
-            'provinsi_id' => $request->provinsi,
-            'nama_perusahaan' => $request->pemohon,
-            'pre_register_id' => $id,
-            'kota' => $request->kota
-        ]);
         DB::transaction(
-            function () use ($data, $id) {
+            function () use ($data, $id, $request) {
                 $baratin = PjBaratin::create($data->all());
-                $register_get = Register::where('pre_register_id', $id)->get();
-                foreach ($register_get as $key => $value) {
-                    if (!$value->status || $value->status === 'DITOLAK') {
-                        Register::find($value->id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
+                PreRegister::find($id)->update(['nama' => $baratin->nama_perusahaan]);
+                $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
+                foreach ($request->upt as $index => $upt) {
+                    if (in_array($upt, $register_upt_user)) {
+                        $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
+                        if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
+                            Register::find($register_upt_user_select->id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
+                        }
+                    } else {
+                        Register::create(['master_upt_id' => $upt, 'pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
                     }
 
                 }
                 DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
             }
         );
+        return;
+    }
 
+    public function SaveRegisterCabang(Request $request, $id, $data): void
+    {
+        DB::transaction(
+            function () use ($data, $id, $request) {
+                $baratin_cabang = BarantinCabang::create($data->all());
+                PreRegister::find($id)->update(['nama' => $baratin_cabang->nama_perusahaan]);
+                $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
+
+                foreach ($request->upt as $index => $upt) {
+                    if (in_array($upt, $register_upt_user)) {
+                        $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
+                        if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
+                            Register::find($register_upt_user_select->id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU']);
+                        }
+                    } else {
+                        Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
+                    }
+
+                }
+                DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'pre_register_id' => null]);
+            }
+        );
         return;
     }
 

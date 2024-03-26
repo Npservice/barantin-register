@@ -31,8 +31,11 @@
             <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Registrasi Pemohon</label>
             <hr class="mt-0 mb-3">
+
             <form class="row" id="form-register">
                 <div class="col-md-6 col-sm-12">
+
+
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
@@ -41,15 +44,24 @@
                             <div class="invalid-feedback" id="feedback"></div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">Jenis Perusahaan</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" readonly value="INDUK" type="text" id=""
+                                name="">
+                            <div class="invalid-feedback" id="feedback"></div>
+                        </div>
+                    </div>
 
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Nama</label>
+                        <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                         <div class="col-sm-9">
                             <input class="form-control" value="{{ $register->nama }}" type="text" id="pemohon"
                                 name="pemohon">
                             <div class="invalid-feedback" id="pemohon-feedback"></div>
                         </div>
                     </div>
+
                     <div class="row mb-3">
                         <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
                             Identitas</label>
@@ -57,8 +69,6 @@
                             <select class="form-control select-item" type="text" placeholder="Jenis Identitas"
                                 id="jenis_identitas" name="jenis_identitas">
                                 <option value="">select item</option>
-                                <option value="PASSPORT">PASSPORT</option>
-                                <option value="KTP">KTP</option>
                                 <option value="NPWP">NPWP 16 DIGIT</option>
                             </select>
                             <div class="invalid-feedback" id="jenis_identitas-feedback"></div>
@@ -70,6 +80,14 @@
                             <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="telepon" name="telepon"
+                                aria-describedby="inputGroupPrepend" value="{{ $baratan->telepon ?? '' }}">
+                            <div class="invalid-feedback" id="telepon-feedback"></div>
+                        </div>
+                    </div>
 
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">UPT</label>
@@ -78,6 +96,7 @@
                             <div class="invalid-feedback" id="upt-feedback"></div>
                         </div>
                     </div>
+
                     <div class="row mb-3">
                         <label for="lingkup_akivitas" class="col-sm-3 col-form-label">Lingkup Akivitas</label>
                         <div class="col-sm-9">
@@ -91,12 +110,12 @@
                             <div class="invalid-feedback" id="lingkup_aktivitas-feedback"></div>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <label for="upt" class="col-sm-3 col-form-label">Telepon</label>
+                    <div class="row mb-3 d-none" id="nama_alias">
+                        <label for="email" class="col-sm-3 col-form-label">Nama Alias Perusahaan</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="telepon" name="telepon"
-                                aria-describedby="inputGroupPrepend" required value="{{ $baratan->telepon ?? '' }}">
-                            <div class="invalid-feedback" id="telepon-feedback"></div>
+                            <input class="form-control" value="" type="text" id="nama_alias_perusahaan"
+                                name="nama_alias_perusahaan">
+                            <div class="invalid-feedback" id="nama_alias_perusahaan-feedback"></div>
                         </div>
                     </div>
                 </div>
@@ -151,6 +170,7 @@
                             <div class="invalid-feedback" id="kota-feedback"></div>
                         </div>
                     </div>
+
 
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
@@ -252,7 +272,6 @@
                 </form>
             </div>
         </div>
-
         <div class="tab-pane" id="dokumen-pendukung">
             <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Dokumen Pendukung</label>
@@ -264,9 +283,13 @@
                         <select type="text" class="form-select form-control-dokumen" id="jenis_dokumen"
                             name="jenis_dokumen">
                             <option value="">select item</option>
-                            <option value="KTP">KTP</option>
-                            <option value="PASSPORT">PASSPORT</option>
                             <option value="NPWP">NPWP 16 DIGIT</option>
+                            <option value="SIUP">SIUP / IUI / IUT / SIUP JPT</option>
+                            <option value="surat_keterangan_domisili">Surat Keterangan Domisili</option>
+                            <option value="KTP">KTP</option>
+                            <option value="NIB">NIB</option>
+                            <option value="TDP">TDP / TDUP / TDI</option>
+                            <option value="angka_pengenal_importir">Angka Pengenal Importir</option>
                         </select>
                         <div class="invalid-feedback" id="jenis_dokumen-feedback"></div>
                     </div>
@@ -312,7 +335,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <ul class="pager wizard twitter-bs-wizard-pager-link">
         <li class="previous"><a href="javascript: void(0);">Previous</a></li>
@@ -323,7 +345,7 @@
     </ul>
 </div>
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
-<script src="{{ asset('assets/js/page/form/perorangan.js') }}"></script>
+<script src="{{ asset('assets/js/page/form/induk.js') }}"></script>
 <script>
     UptSelect('{{ $baratan->upt_id ?? null }}', '{{ $register->id ?? null }}')
     NegaraSelect('{{ $baratan->negara_id ?? 99 }}')

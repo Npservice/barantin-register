@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('dokumen_pendukungs', function (Blueprint $table) {
-            $table->uuid('barantin_cabang_id')->nullanle()->after('baratin_id');
+            $table->uuid('barantin_cabang_id')->nullable()->after('baratin_id');
             $table->foreign('barantin_cabang_id')->references('id')->on('barantin_cabangs')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }

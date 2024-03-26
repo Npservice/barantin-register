@@ -38,16 +38,16 @@
             {{-- </div> --}}
 
             <div class="form-group mb-3 row d-none" id="perusahaan-select">
-                <label for="perusahaan">Perusahaan</label>
+                <label for="perusahaan">Jenis Perusahaan</label>
                 <div class="col-12">
-                    <select id="perusahaan" type="text" class="form-select @error('perusahaan') is-invalid @enderror"
-                        name="perusahaan" required>
+                    <select id="jenis_perusahaan" type="text"
+                        class="form-select @error('jenis_perusahaan') is-invalid @enderror" name="jenis_perusahaan">
                         <option value="">select item</option>
                         <option value="INDUK">Induk</option>
                         <option value="CABANG">Cabang</option>
                     </select>
                 </div>
-                @error('nama')
+                @error('jenis_perusahaan')
                     <span class="invalid-feedback d-block" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -58,10 +58,10 @@
                 <label>Perusahaan Induk</label>
                 <div class="col-12">
                     <select id="perusahaan-induk" type="text"
-                        class="form-select @error('perusahaan_induk') is-invalid @enderror" name="perusahaan_induk">
+                        class="induk-select @error('perusahaan_induk') is-invalid @enderror" name="perusahaan_induk">
                     </select>
                 </div>
-                @error('nama')
+                @error('perusahaan_induk')
                     <span class="invalid-feedback d-block" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -132,6 +132,7 @@
 @push('custom-js')
     <script src="{{ asset('assets/js/page/select.js') }}"></script>
     <script>
+        PerusahaanIndukSelect()
         UptSelect()
         $('.form-select').select2({
             placeholder: 'select item',
@@ -150,7 +151,7 @@
             }
             $('.form-control').attr('disabled', false);
         });
-        $('#perusahaan').on('change', function() {
+        $('#jenis_perusahaan').on('change', function() {
             let val = $(this).val();
             console.log(val)
             if (val === 'CABANG') {

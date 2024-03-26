@@ -19,6 +19,8 @@ class PreRegister extends Model
         'nama',
         'email',
         'verify_email',
+        'jenis_perusahaan',
+        'pj_baratin_id'
     ];
 
     public function baratin(): HasOne

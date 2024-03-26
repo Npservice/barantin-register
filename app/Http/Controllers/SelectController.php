@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Register;
 use App\Models\MasterUpt;
+use App\Models\PjBaratin;
 use App\Models\MasterNegara;
 use Illuminate\Http\Request;
 use App\Models\MasterKotaKab;
@@ -78,32 +79,13 @@ class SelectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function SelectPerusahaanInduk()
     {
-        //
-    }
+        $pj_barantin_id = Register::where('status', 'DISETUJUI')->distinct('pj_barantin_id')->pluck('pj_barantin_id');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $perushaan = PjBaratin::select('id', 'nama_perusahaan')->whereIn('id', $pj_barantin_id)->get();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json($perushaan);
     }
 }

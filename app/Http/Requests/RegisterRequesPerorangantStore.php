@@ -6,7 +6,7 @@ use App\Models\MasterUpt;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequestStore extends FormRequest
+class RegisterRequesPerorangantStore extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,22 +24,23 @@ class RegisterRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            // 'upt' => [
-            //     'required',
-            //     function ($attribute, $value, $fail) {
-            //         $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
-            //         foreach ($value as $item) {
-            //             if (!in_array($item, $validUpts)) {
-            //                 $fail('One or more selected upt is invalid.');
-            //             }
-            //         }
-            //     },
-            // ],
+            'upt' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
+                    foreach ($value as $item) {
+                        if (!in_array($item, $validUpts)) {
+                            $fail('One or more selected upt is invalid.');
+                        }
+                    }
+                },
+            ],
             'jenis_identitas' => ['required', Rule::in(['KTP', 'NPWP', 'PASSPORT'])],
             'pemohon' => 'required|exists:pre_registers,nama',
             'nomor_identitas' => [
                 'required',
                 'numeric',
+                'unique:pj_baratins,nomor_identitas',
                 function ($attr, $val, $fail) {
                     $jenis_dokumen = request()->input('jenis_identitas');
 
@@ -67,9 +68,9 @@ class RegisterRequestStore extends FormRequest
             ],
 
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],
-            'negara' => 'required|exists:master_negaras,id',
-            'kota' => 'required_if:negara,99|exists:master_kota_kabs,id',
-            'provinsi' => 'required_if:negara,99|exists:master_provinsis,id',
+            // 'negara' => 'required|exists:master_negaras,id',
+            'kota' => 'required|exists:master_kota_kabs,id',
+            'provinsi' => 'required|exists:master_provinsis,id',
             'alamat' => 'required',
 
             'nama_cp' => 'required',

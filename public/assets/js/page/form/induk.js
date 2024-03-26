@@ -1,9 +1,5 @@
 let id_pre_register = $('#datatable-dokumen-pendukung').data('pre-register');
 
-
-
-
-
 $('.select-item').select2({
     placeholder: 'select item',
     minimumResultsForSearch: -1,
@@ -19,7 +15,14 @@ $('.negara-select').on('change', function () {
         $('#provinsi-form').addClass('d-none');
     }
 });
-
+$('#lingkup_aktivitas').change(function () {
+    var selectedOptions = $(this).val();
+    if (selectedOptions && selectedOptions.includes('3')) {
+        $('#nama_alias').removeClass('d-none');
+    } else {
+        $('#nama_alias').addClass('d-none');
+    }
+});
 
 $('#file_dokumen').dropify()
 
@@ -124,7 +127,6 @@ $('#button-pendukung').click(function () {
             }
         },
         error: function (response) {
-
             $("#button-pendukung").removeClass("disabled").html("tambah");
             var respon = response.responseJSON;
             var error = respon.errors;
@@ -163,7 +165,7 @@ $('#button-submit').click(function () {
 
     $.ajax({
         data: form_data,
-        url: '/register/store/perorangan/' + id_pre_register,
+        url: '/register/store/induk/' + id_pre_register,
         processData: false,
         contentType: false,
         type: "POST",
@@ -186,7 +188,7 @@ $('#button-submit').click(function () {
         error: function (response) {
             $("#button-submit").removeClass("disabled").html("Submit");
             var respon = response.responseJSON;
-            var error = respon.errors;
+            var error = respon.errors ?? '';
             if (respon && error) {
                 $.each(error, function (key, value) {
                     $("#" + key).addClass("is-invalid");

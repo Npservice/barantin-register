@@ -21,7 +21,11 @@ Route::prefix('register')->name('register.')->group(function () {
     Route::get('formulir/{id}', [RegisterController::class, 'RegisterFormulirIndex'])->name('formulir.index');
     Route::get('form/{id}', [RegisterController::class, 'RegisterForm'])->name('formulir');
 
-    Route::post('store/{id}', [RegisterController::class, 'RegisterStore'])->name('store');
+    Route::prefix('store')->name('store.')->group(function () {
+        Route::post('perorangan/{id}', [RegisterController::class, 'StoreRegisterPerorangan'])->name('perorangan');
+        Route::post('induk/{id}', [RegisterController::class, 'StoreRegisterPerusahaanInduk'])->name('induk');
+        Route::post('cabang/{id}', [RegisterController::class, 'StoreRegisterPerusahaanCabang'])->name('cabang');
+    });
 
 
     /* dokumen pendukung route handler */

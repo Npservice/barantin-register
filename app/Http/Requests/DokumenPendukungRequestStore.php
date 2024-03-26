@@ -27,9 +27,9 @@ class DokumenPendukungRequestStore extends FormRequest
         return [
             'jenis_dokumen' => [
                 'required',
-                Rule::in('KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB', 'TDP', 'angka_pengenal_importir'),
+                Rule::in('KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB', 'TDP', 'angka_pengenal_importir', 'NITKU'),
                 function ($attribute, $value, $fail) {
-                    if (in_array($value, ['KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB',])) {
+                    if (in_array($value, ['KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB', 'NITKU'])) {
                         $id = request()->route('id');
                         $dokumen = DokumenPendukung::where('jenis_dokumen', $value)->where('pre_register_id', $id)->first();
                         if ($dokumen) {

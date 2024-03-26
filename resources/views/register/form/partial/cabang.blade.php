@@ -34,8 +34,7 @@
 
             <form class="row" id="form-register">
                 <div class="col-md-6 col-sm-12">
-
-
+                    <input type="hidden" name="id_induk" id="id_induk" value="{{ $induk->id }}">
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
@@ -44,9 +43,24 @@
                             <div class="invalid-feedback" id="feedback"></div>
                         </div>
                     </div>
-
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
+                        <label for="email" class="col-sm-3 col-form-label">Jenis Perusahaan</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" readonly value="CABANG" type="text" id=""
+                                name="">
+                            <div class="invalid-feedback" id="feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">Perusahaan Induk</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" readonly value="{{ $induk->nama_perusahaan }}" type="text"
+                                id="" name="">
+                            <div class="invalid-feedback" id="feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan Cabang</label>
                         <div class="col-sm-9">
                             <input class="form-control" value="{{ $register->nama }}" type="text" id="pemohon"
                                 name="pemohon">
@@ -55,21 +69,25 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
-                            Identitas</label>
+                        <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Identitas
+                            Perusahaan Induk</label>
                         <div class="col">
-                            <select class="form-control select-item" type="text" placeholder="Jenis Identitas"
-                                id="jenis_identitas" name="jenis_identitas">
-                                <option value="">select item</option>
-                                <option value="NPWP">NPWP 16 DIGIT</option>
-                            </select>
+                            <input class="form-control" readonly type="text" name="jenis_identitas"
+                                id="enis_identitas" value="{{ $induk->jenis_identitas }}" placeholder="Jenis Identitas">
                             <div class="invalid-feedback" id="jenis_identitas-feedback"></div>
                         </div>
                         <div class="col">
                             <input class="form-control" type="number" placeholder="Nomor Identitas"
-                                id="nomor_identitas" name="nomor_identitas"
-                                value="{{ $baratan->nomor_identitas ?? '' }}">
+                                id="nomor_identitas" name="nomor_identitas" readonly
+                                value="{{ $induk->nomor_identitas }}">
                             <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">NITKU</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="number" id="nitku" name="nitku">
+                            <div class="invalid-feedback" id="nitku-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -84,7 +102,7 @@
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">UPT</label>
                         <div class="col-sm-9">
-                            <select class="form-control upt-select" id="upt" multiple name="upt"></select>
+                            <select class="form-control upt-select" id="upt" multiple name="upt[]"></select>
                             <div class="invalid-feedback" id="upt-feedback"></div>
                         </div>
                     </div>
@@ -100,6 +118,14 @@
                                 <option value="4">Domestik Keluar</option>
                             </select>
                             <div class="invalid-feedback" id="lingkup_aktivitas-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3 d-none" id="nama_alias">
+                        <label for="email" class="col-sm-3 col-form-label">Nama Alias Perusahaan</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" value="" type="text" id="nama_alias_perusahaan"
+                                name="nama_alias_perusahaan">
+                            <div class="invalid-feedback" id="nama_alias_perusahaan-feedback"></div>
                         </div>
                     </div>
                 </div>
@@ -267,6 +293,7 @@
                         <select type="text" class="form-select form-control-dokumen" id="jenis_dokumen"
                             name="jenis_dokumen">
                             <option value="">select item</option>
+                            <option value="NITKU">NITKU</option>
                             <option value="NPWP">NPWP 16 DIGIT</option>
                             <option value="SIUP">SIUP / IUI / IUT / SIUP JPT</option>
                             <option value="surat_keterangan_domisili">Surat Keterangan Domisili</option>
@@ -329,7 +356,7 @@
     </ul>
 </div>
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
-<script src="{{ asset('assets/js/page/form/perusahaan.js') }}"></script>
+<script src="{{ asset('assets/js/page/form/cabang.js') }}"></script>
 <script>
     UptSelect('{{ $baratan->upt_id ?? null }}', '{{ $register->id ?? null }}')
     NegaraSelect('{{ $baratan->negara_id ?? 99 }}')

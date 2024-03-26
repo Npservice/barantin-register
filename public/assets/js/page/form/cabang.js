@@ -15,7 +15,14 @@ $('.negara-select').on('change', function () {
         $('#provinsi-form').addClass('d-none');
     }
 });
-
+$('#lingkup_aktivitas').change(function () {
+    var selectedOptions = $(this).val();
+    if (selectedOptions && selectedOptions.includes('3')) {
+        $('#nama_alias').removeClass('d-none');
+    } else {
+        $('#nama_alias').addClass('d-none');
+    }
+});
 
 $('#file_dokumen').dropify()
 
@@ -158,7 +165,7 @@ $('#button-submit').click(function () {
 
     $.ajax({
         data: form_data,
-        url: '/register/store/' + id_pre_register,
+        url: '/register/store/cabang/' + id_pre_register,
         processData: false,
         contentType: false,
         type: "POST",

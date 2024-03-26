@@ -203,6 +203,51 @@ function KotaSelect(kota_id) {
         }
     })
 }
+
+function PerusahaanIndukSelect(baratin_id) {
+    $('.induk-select').select2({
+        // dropdownParent: $('#modal-data').length ? $('#modal-data') : $('body'),
+        placeholder: 'select item',
+        ajax: {
+            type: 'GET',
+            url: '/select/perusahaan',
+            dataType: 'json',
+            data: function (params) {
+                return {
+                    q: params.term
+                }
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (obj) {
+                        return { id: obj.id, text: obj.nama_perusahaan }
+                    })
+                }
+            }
+        }
+    })
+    if (baratin_id) {
+        $.ajax({
+            type: 'GET',
+            url: '/select/perusahaan',
+            data: {
+                baratin_id: baratin_id
+            }
+        }).then(function (response) {
+            var option = new Option(response.nama_perusahaan, response.id, true, true);
+            $('.induk-select').append(option).trigger('change');
+
+            $('.induk-select').trigger({
+                type: 'select2:select',
+                params: {
+                    results: response
+                }
+            });
+        });
+    }
+}
+
+
 $('#negara').on('change', function () {
     let val = $(this).val();
     // console.log(val);
