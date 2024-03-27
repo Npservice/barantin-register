@@ -81,4 +81,16 @@ class PjBaratin extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function mitra(): HasMany
+    {
+        return $this->hasMany(MitraPerusahaan::class);
+    }
+    public function ppjk(): HasMany
+    {
+        return $this->hasMany(Ppjk::class);
+    }
+    public function baratinCabang(): HasMany
+    {
+        return $this->hasMany(BarantinCabang::class);
+    }
 }

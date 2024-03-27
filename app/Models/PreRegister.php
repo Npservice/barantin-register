@@ -27,6 +27,10 @@ class PreRegister extends Model
     {
         return $this->hasOne(PjBaratin::class);
     }
+    public function baratinCabang(): HasOne
+    {
+        return $this->hasOne(BarantinCabang::class);
+    }
     public function register(): HasMany
     {
         return $this->hasMany(Register::class, 'pre_register_id', 'id');

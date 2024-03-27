@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
@@ -52,5 +52,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function baratin(): HasOne
     {
         return $this->hasOne(PjBaratin::class);
+    }
+    public function baratinCabang(): HasOne
+    {
+        return $this->hasOne(BarantinCabang::class);
     }
 }
