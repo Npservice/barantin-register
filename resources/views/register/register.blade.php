@@ -118,7 +118,7 @@
 
             <div class="form-group mt-2 mb-0 row">
                 <div class="col-12 mt-3 text-center">
-                    <a href="{{ route('login') }}" class="text-muted">Back to login</a>
+                    <a href="{{ route('barantin.auth.index') }}" class="text-muted">Back to login</a>
                 </div>
             </div>
         </form>

@@ -57,7 +57,10 @@
                         </li>
                     @endif
                 @endauth
-                @guest
+
+                @auth('web')
+                @endauth
+                {{-- @guest
                     <li>
                         <a href="{{ route('admin.dashboard.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
@@ -94,7 +97,12 @@
                             <span>PPJK</span>
                         </a>
                     </li>
-                @endguest
+                @endguest --}}
+
+
+
+
+
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-mail-send-line"></i>

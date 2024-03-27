@@ -33,7 +33,7 @@
                     <img class="rounded-circle header-profile-user"
                         src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
                     <span
-                        class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->nama ?? 'user' }}</span>
+                        class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->nama ?? auth()->guard('web')->user()->nama }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
@@ -48,9 +48,16 @@
                     <a class="dropdown-item" href="#"><i class="ri-lock-unlock-line align-middle me-1"></i>
                         Lock screen</a>
                     <div class="dropdown-divider"></div> --}}
-                    <a class="dropdown-item text-danger" href="javascript:void(0)"
-                        onclick="logout('{{ route('admin.auth.logout') }}')">
-                        <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
+                    @auth('admin')
+                        <a class="dropdown-item text-danger" href="javascript:void(0)"
+                            onclick="logout('{{ route('admin.auth.logout') }}')">
+                            <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
+                    @endauth
+                    @auth('web')
+                        <a class="dropdown-item text-danger" href="javascript:void(0)"
+                            onclick="logout('{{ route('barantin.auth.logout') }}')">
+                            <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
+                    @endauth
                 </div>
             </div>
         </div>

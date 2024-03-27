@@ -3,7 +3,7 @@
 @section('text', 'Sign in')
 @section('content')
     <div class="p-3">
-        <form class="form-horizontal mt-3" action="{{ route('login') }}" method="POST">
+        <form class="form-horizontal mt-3" action="{{ route('barantin.auth.login') }}" method="POST">
             @csrf
             <div class="form-group mb-3 row">
                 <label for="email">Username</label>
@@ -12,7 +12,7 @@
                         name="username" value="{{ old('username') }}" required autocomplete="username" autofocus
                         placeholder="username">
                 </div>
-                @error('email')
+                @error('username')
                     <span class="invalid-feedback d-block" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
