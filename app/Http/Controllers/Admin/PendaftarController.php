@@ -182,7 +182,7 @@ class PendaftarController extends Controller
             'email' => $barantin->email,
             'username' => $this->generateRandomString($length = 5, $pre_register->pemohon),
             'role' => $pre_register->pemohon === 'perushaan' ? 'induk' : 'perorangan',
-            'status_user' => $register->blockir,
+            'status_user' => 1,
             'password' => $this->generateRandomPassword(),
         ]);
         // dd($user);
