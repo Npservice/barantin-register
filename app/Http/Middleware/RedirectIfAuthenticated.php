@@ -22,6 +22,9 @@ class RedirectIfAuthenticated
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard.index');
         }
+        if (Auth::guard('web')->check()) {
+            return redirect()->route('barantin.dashboard.index');
+        }
 
         return $next($request);
     }

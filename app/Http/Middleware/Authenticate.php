@@ -15,6 +15,6 @@ class Authenticate extends Middleware
         if ($request->ajax()) {
             return route('ajax.failed');
         }
-        return $request->expectsJson() ? null : route('login');
+        return $request->expectsJson() ? null : route('barantin.auth.index');
     }
 }
