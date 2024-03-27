@@ -14,16 +14,10 @@ use App\Http\Controllers\SelectController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Auth::routes([
-    // 'login' => true,
-    // 'logout' => false,
-    // 'register' => false,
-    // 'reset' => false,
-    'verify' => true
-]);
+
 
 Route::get('/', function () {
-    return redirect()->route('home');
+    return redirect()->route('barantin.auth.index');
 });
 
 // Route::view('/user/register', 'user.register.index');
@@ -36,13 +30,14 @@ Route::get('/', function () {
 // Route::view('/register/ulang', 'auth.register_ulang')->name('register_ulang');
 // Route::view('/login', 'auth.index');
 
-Route::middleware(['verified'])->group(function () {
-    Route::view('/home', 'welcome')->name('home');
-});
+// Route::middleware(['verified'])->group(function () {
+//     Route::view('/home', 'welcome')->name('home');
+// });
 
 
 require_once __DIR__ . '/admin.php';
 require_once __DIR__ . '/register.php';
+require_once __DIR__ . '/user.php';
 
 
 Route::prefix('select')->name('select.')->group(function () {
@@ -62,11 +57,11 @@ Route::get('ajax/failed', function () {
 })->middleware(['ajax', 'guest'])->name('ajax.failed');
 
 
-Route::prefix('user')->name('user.')->group(function () {
-    Route::view('mitra', 'user.mitra')->name('mitra');
-    Route::view('cabang', 'user.cabang')->name('cabang');
-    Route::view('ppjk', 'user.ppjk')->name('ppjk');
-    Route::view('profile', 'user.profile')->name('profile');
-    Route::view('upt', 'user.tambahupt')->name('upt');
-    // Route::view('rubah-data', 'user.rubahdata');
-});
+// Route::prefix('user')->name('user.')->group(function () {
+//     Route::view('mitra', 'user.mitra')->name('mitra');
+//     Route::view('cabang', 'user.cabang')->name('cabang');
+//     Route::view('ppjk', 'user.ppjk')->name('ppjk');
+//     Route::view('profile', 'user.profile')->name('profile');
+//     Route::view('upt', 'user.tambahupt')->name('upt');
+//     // Route::view('rubah-data', 'user.rubahdata');
+// });
