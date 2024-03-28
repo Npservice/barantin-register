@@ -59,44 +59,44 @@
                 @endauth
 
                 @auth('web')
-                @endauth
-                {{-- @guest
                     <li>
-                        <a href="{{ route('admin.dashboard.index') }}" class="waves-effect">
+                        <a href="{{ route('barantin.dashboard.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('user.cabang') }}" class="waves-effect">
+                        <a href="{{ route('barantin.cabang.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>Cabang</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('user.profile') }}" class="waves-effect">
+                        <a href="#" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>Profile</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('user.mitra') }}" class="waves-effect">
+                        <a href="{{ route('barantin.mitra.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>Mitra</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('user.upt') }}" class="waves-effect">
+                        <a href="{{ route('barantin.upt.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
-                            <span>UPT terdaftar</span>
+                            <span>UPT dipilih</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('user.ppjk') }}" class="waves-effect">
+                        <a href="{{ route('barantin.ppjk.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>PPJK</span>
                         </a>
                     </li>
+                @endauth
+                {{-- @guest
                 @endguest --}}
 
 
