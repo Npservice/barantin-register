@@ -34,7 +34,7 @@ class MasterKotaKab extends Model
     }
     public function ppjk(): HasMany
     {
-        return $this->hasMany(Ppjk::class);
+        return $this->hasMany(Ppjk::class, 'master_kota_kab_id', 'id');
     }
     public function mitra(): HasMany
     {

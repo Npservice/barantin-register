@@ -41,16 +41,16 @@ class Ppjk extends Model
     }
     public function negara(): BelongsTo
     {
-        return $this->belongsTo(MasterNegara::class);
+        return $this->belongsTo(MasterNegara::class, 'master_negara_id', 'id');
     }
 
     public function provinsi(): BelongsTo
     {
-        return $this->belongsTo(MasterProvinsi::class);
+        return $this->belongsTo(MasterProvinsi::class, 'master_provinsi_id', 'id');
     }
     public function kotas(): BelongsTo
     {
-        return $this->belongsTo(MasterKotaKab::class);
+        return $this->belongsTo(MasterKotaKab::class, 'master_kota_kab_id', 'id');
     }
 
 }

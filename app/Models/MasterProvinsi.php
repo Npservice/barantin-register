@@ -27,7 +27,7 @@ class MasterProvinsi extends Model
     }
     public function ppjk(): HasMany
     {
-        return $this->hasMany(Ppjk::class);
+        return $this->hasMany(Ppjk::class, 'master_provinsi_id', 'id');
     }
     public function mitra(): HasMany
     {
