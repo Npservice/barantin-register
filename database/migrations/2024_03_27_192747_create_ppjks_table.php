@@ -17,7 +17,7 @@ return new class extends Migration {
 
             $table->string('nama_ppjk')->nullable();
             $table->string('email_ppjk')->nullable();
-            $table->string('tanggal_kerjasama_ppjk')->nullable();
+            $table->date('tanggal_kerjasama_ppjk')->nullable();
             $table->string('alamat_ppjk')->nullable();
 
             $table->bigInteger('master_negara_id')->unsigned()->nullable();
