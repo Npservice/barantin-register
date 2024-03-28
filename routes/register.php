@@ -4,7 +4,7 @@ use App\Http\Controllers\Register\RegisterController;
 use App\Http\Controllers\Register\PreRegisterController;
 
 
-Route::prefix('register')->name('register.')->group(function () {
+Route::prefix('register')->name('register.')->middleware('guest')->group(function () {
     /* email verification handle */
     Route::get('baru', [PreRegisterController::class, 'index'])->name('index');
     Route::get('ulang', [PreRegisterController::class, 'create'])->name('create');
