@@ -197,8 +197,9 @@ class PendaftarController extends Controller
     public function SendUsernamePasswordEmail(string $IdOrEmail): bool|JsonResponse
     {
         $user = User::where('email', $IdOrEmail)->orWhere('id', $IdOrEmail)->first();
-        $password = $this->generateRandomPassword($length = 8);
-        $user->update(['password', $password]);
+        $password = $this->generateRandomPassword(8);
+        $update = $user->update(['password' => $password]);
+        // return response()->json($update)
         Mail::to($user->email)->send(new MailSendUsernamePassword($user->username, $password));
 
         if (request()->input('reset')) {
