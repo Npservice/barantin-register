@@ -18,6 +18,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
+                    <button class="btn btn-success btn-sm me-2" id="btn-status" disabled>DISETUJUI</button>
                     {{-- blokir user --}}
                     @if ($data->user_id)
                         @if ($register->blockir)

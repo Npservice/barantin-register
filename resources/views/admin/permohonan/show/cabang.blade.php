@@ -18,7 +18,29 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-danger btn-sm w-" onclick="ClosePage()">Close</button>
+                    {{-- blokir user --}}
+                    @switch($register->status)
+                        @case('DISETUJUI')
+                            <button class="btn btn-success btn-sm me-2" id="btn-status"
+                                disabled>{{ $register->status }}</button>
+                        @break
+
+                        @case('DITOLAK')
+                            <button class="btn btn-danger btn-sm me-2" id="btn-status" disabled>{{ $register->status }}</button>
+                        @break
+
+                        @default
+                            <button class="btn btn-warning btn-sm me-2" id="btn-status"
+                                disabled>{{ $register->status }}</button>
+                    @endswitch
+                    @if (auth()->guard()->user()->upt_id)
+                        @if (!$register->status || $register->status === 'MENUNGGU')
+                            <a class="btn btn-primary btn-sm me-2"
+                                onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.permohonan.show', $data->id) }}?register_id={{ $register->id }}')">APROVE</a>
+                        @endif
+
+                    @endif
+                    <button class="btn btn-danger btn-sm" onclick="ClosePage()">Close</button>
                 </div>
             </div>
             <div class="card-body">
@@ -27,6 +49,14 @@
                         <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
                         <label for="" class="form-label fw-bold h6 mt-0 mb-0">Data</label>
                         <hr class="mt-0 mb-3">
+                        <div class="row mb-3">
+                            <label for="upt" class="col-sm-3 col-form-label">Perusahaan Induk</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="telepon" disabled
+                                    value="{{ $data->baratininduk->nama_perusahaan ?? '' }}" name="telepon"
+                                    aria-describedby="inputGroupPrepend" required>
+                            </div>
+                        </div>
                         <div class="row mb-3">
                             <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                             <div class="col-sm-9">
@@ -45,6 +75,14 @@
                                 <input class="form-control" type="number" disabled
                                     value="{{ $data->nomor_identitas ?? '' }}" placeholder="Nomor Identitas"
                                     id="nomor_identitas" name="nomor_identitas">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="upt" class="col-sm-3 col-form-label">NITKU</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="telepon" disabled
+                                    value="{{ $data->nitku ?? '' }}" name="telepon"
+                                    aria-describedby="inputGroupPrepend" required>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -69,7 +107,7 @@
                                     placeholder="Email" id="email" name="email">
                             </div>
                         </div>
-                        <div class="row mb-5">
+                        <div class="row mb-3">
                             <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                             <div class="col-sm-9">
                                 <select class="form-control select-item" disabled id="status_import"
@@ -85,6 +123,13 @@
                                     <option value="32">IPTN</option>
                                 </select>
                                 <div class="invalid-feedback" id="status_import-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <label for="email" class="col-sm-3 col-form-label">Nama Alias</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" disabled
+                                    value="{{ $data->nama_alias_perusahaan ?? '' }}">
                             </div>
                         </div>
                         <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
@@ -119,8 +164,8 @@
                         <div class="row mb-5">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled value="{{ $data->alamat ?? '' }}"
-                                    type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
+                                <textarea class="form-control provinsi-select" disabled value="" type="text" placeholder="Provinsi"
+                                    id="provinsi" name="provinsi">{{ $data->alamat ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -164,9 +209,8 @@
                             <div class="row mb-5">
                                 <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                 <div class="col-sm-9">
-                                    <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->alamat_tdd ?? '' }}" type="text" placeholder="Provinsi"
-                                        id="provinsi" name="provinsi">
+                                    <textarea class="form-control provinsi-select" disabled value="" type="text" placeholder="Provinsi"
+                                        id="provinsi" name="provinsi">{{ $data->alamat_tdd ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -187,9 +231,8 @@
                         <div class="row mb-3">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->alamat_cp ?? '' }}" type="text" placeholder="Provinsi"
-                                    id="provinsi" name="provinsi">
+                                <textarea class="form-control provinsi-select" disabled value="" type="text" placeholder="Provinsi"
+                                    id="provinsi" name="provinsi">{{ $data->alamat_cp ?? '' }}</textarea>
                             </div>
                         </div>
 
@@ -218,14 +261,12 @@
                     </table>
                 </div>
             </div>
-            @if (auth()->guard()->user()->upt_id)
-            <div class="card-footer">
+            {{-- <div class="card-footer">
                 <div class="text-end">
                     <a class="btn btn-primary btn-sm me-2"
-                        onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $register_id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
+                        onclick="ConfirmRegister('{{ route('admin.baratin.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
                 </div>
-            </div>
-            @endif
+            </div> --}}
         </div>
     </div>
 </div>

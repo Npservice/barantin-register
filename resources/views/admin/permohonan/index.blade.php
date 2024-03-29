@@ -62,32 +62,20 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="permohonan-datatable" class="table table-bordered dt-responsive nowrap w-100"
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Opsi</th>
-                                            <th>Nama Perusahaan</th>
-                                            <th>Jenis Identitas</th>
-                                            <th>Nomor Identitas</th>
-                                            <th>Telepon</th>
-                                            <th>Fax</th>
-                                            <th>Email</th>
-                                            <th>Negara</th>
-                                            <th>Provinsi</th>
-                                            <th>Kota/Kab</th>
-                                            <th>Alamat</th>
-                                            <th>Status Import</th>
-                                            <th>Tgl Register</th>
-                                            <th>Status</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                        <div class="card-header">
+                            <div class="text-start">
+                                <button class="btn btn-info btn-sm"
+                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.perorangan') }}')">perorangan</button>
+                                <button class="btn btn-warning btn-sm mx-3"
+                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.induk') }}')">perusahaan
+                                    induk</button>
+                                <button class="btn btn-success btn-sm"
+                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.cabang') }}')">perusahaan
+                                    cabang</button>
                             </div>
+                        </div>
+                        <div class="card-body" id="table-loaded">
+
                         </div>
                     </div>
                 </div> <!-- end col -->
@@ -106,6 +94,7 @@
                     <form id="form-tolak">
                         <div class="mb-3">
                             <input type="hidden" name="url" id="url-tolak">
+                            <input type="hidden" name="url" id="url-reload">
                             <label for="exampleFormControlInput1" class="form-label">keterangan</label>
                             <input type="text" class="form-control" id="keterangan-tolak">
                         </div>
@@ -128,5 +117,9 @@
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 @endpush
 @push('custom-js')
-    <script src="{{ asset('assets/js/page/datatable/permohonan.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            TableLoaded('{{ route('admin.permohonan.datatable.perorangan') }}')
+        })
+    </script>
 @endpush

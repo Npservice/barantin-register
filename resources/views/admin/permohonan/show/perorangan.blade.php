@@ -1,11 +1,11 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Pendaftar</h4>
+            <h4 class="mb-sm-0">Permohonan</h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pendaftar</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Permohonan</a></li>
                     <li class="breadcrumb-item active">Detail</li>
                 </ol>
             </div>
@@ -18,29 +18,24 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-success btn-sm me-2" id="btn-status" disabled>DISETUJUI</button>
-                    {{-- blokir user --}}
-                    @if ($data->user_id)
-                        @if ($register->blockir)
-                            <button class="btn btn-success btn-sm me-2"
-                                onclick="Open('{{ route('admin.pendaftar.open.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Aktifkan
-                                User</button>
-                        @else
-                            <button class="btn btn-warning btn-sm me-2"
-                                onclick="Block('{{ route('admin.pendaftar.block.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Blokir
-                                User</button>
-                        @endif
-                    @endif
-                    {{-- create user --}}
-                    @if (!auth()->guard('admin')->user()->upt_id)
-                        @if ($data->user_id)
-                            <button class="btn btn-primary btn-sm me-2"
-                                onclick="UserSetting('{{ route('admin.pendaftar.send.user', $data->user_id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Kirim
-                                username & password</button>
-                        @else
-                            <button class="btn btn-info btn-sm me-2 "
-                                onclick="CreateUser('{{ route('admin.pendaftar.create.user', $register->id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Buat
-                                username & password</button>
+                    @switch($register->status)
+                        @case('DISETUJUI')
+                            <button class="btn btn-success btn-sm me-2" id="btn-status"
+                                disabled>{{ $register->status }}</button>
+                        @break
+
+                        @case('DITOLAK')
+                            <button class="btn btn-danger btn-sm me-2" id="btn-status" disabled>{{ $register->status }}</button>
+                        @break
+
+                        @default
+                            <button class="btn btn-warning btn-sm me-2" id="btn-status"
+                                disabled>{{ $register->status }}</button>
+                    @endswitch
+                    @if (auth()->guard()->user()->upt_id)
+                        @if (!$register->status || $register->status === 'MENUNGGU')
+                            <a class="btn btn-primary btn-sm me-2"
+                                onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
                         @endif
                     @endif
                     <button class="btn btn-danger btn-sm" onclick="ClosePage()">Close</button>
@@ -94,7 +89,7 @@
                                     placeholder="Email" id="email" name="email">
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-5">
                             <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                             <div class="col-sm-9">
                                 <select class="form-control select-item" disabled id="status_import"
@@ -110,13 +105,6 @@
                                     <option value="32">IPTN</option>
                                 </select>
                                 <div class="invalid-feedback" id="status_import-feedback"></div>
-                            </div>
-                        </div>
-                        <div class="row mb-5">
-                            <label for="email" class="col-sm-3 col-form-label">Nama Alias</label>
-                            <div class="col-sm-9">
-                                <input class="form-control" disabled
-                                    value="{{ $data->nama_alias_perusahaan ?? '' }}">
                             </div>
                         </div>
                         <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
@@ -264,7 +252,7 @@
     $('#status_import').val('{{ $data->status_import }}').trigger('change');
     $('#table-detail-dokumen').DataTable({
         processing: true,
-        ajax: '/admin/pendaftar/datatable/dokumen/{{ $data->id }}',
+        ajax: '/admin/permohonan/datatable/dokumen/{{ $data->id }}',
         searching: false,
         ordering: false,
         lengthChange: false,
