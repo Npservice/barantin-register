@@ -18,6 +18,18 @@ Route::prefix('barantin')->name('barantin.')->group(function () {
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::get('', [DashboardController::class, 'index'])->name('index');
         });
+
+        Route::prefix('cabang')->name('cabang.')->group(function () {
+            Route::post('cancel', [UserCabangController::class, 'cancel'])->name('cancel');
+            Route::get('upt/detail/{id}', [UserCabangController::class, 'DatatableUptDetail'])->name('upt.detail');
+
+            Route::prefix('pendukung')->name('pendukung.')->group(function () {
+                Route::get('datatable/{id}', [UserCabangController::class, 'DokumenPendukungDataTable'])->name('datatable');
+                Route::post('store/{id}', [UserCabangController::class, 'DokumenPendukungStore'])->name('store');
+                Route::delete('destroy/{id}', [UserCabangController::class, 'DokumenPendukungDestroy'])->name('destroy');
+            });
+        });
+
         Route::resource('cabang', UserCabangController::class);
         Route::resource('ppjk', UserPpjkController::class);
         Route::resource('mitra', UserMitraController::class);
