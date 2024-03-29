@@ -43,6 +43,9 @@ table = $("#permohonan-datatable").DataTable({
             data: "baratincabang.nomor_identitas", name: "baratincabang.nomor_identitas"
         },
         {
+            data: "baratincabang.nitku", name: "baratincabang.nitku"
+        },
+        {
             data: "baratincabang.telepon", name: "baratincabang.telepon"
         },
         {

@@ -22,17 +22,6 @@ let table = $("#user-cabang-datatable").DataTable({
             width: 60,
         },
         {
-            data: "register.status",
-            name: "register.status"
-        },
-        {
-            data: "register.blockir",
-            name: "register.blockir",
-            render: function (data) {
-                return BlokirStatus(data)
-            }
-        },
-        {
             data: "nama_perusahaan",
             name: "nama_perusahaan"
         },
@@ -40,9 +29,14 @@ let table = $("#user-cabang-datatable").DataTable({
             data: "jenis_identitas",
             name: "jenis_identitas"
         },
+
         {
             data: "nomor_identitas",
             name: "nomor_identitas"
+        },
+        {
+            data: "nitku",
+            name: "nitku"
         },
         {
             data: "telepon",
@@ -80,19 +74,13 @@ let table = $("#user-cabang-datatable").DataTable({
                 return renderStatus(data);
             },
         },
-        {
-            data: "updated_at",
-            name: "updated_at",
-            render: function (data) {
-                return moment(data).format('DD-MM-YYYY')
-            },
-        },
-
-        {
-            data: "register.keterangan",
-            name: "register.keterangan"
-        },
     ],
+    language: {
+        paginate: {
+            previous: "<i class='mdi mdi-chevron-left'>",
+            next: "<i class='mdi mdi-chevron-right'>",
+        },
+    },
     drawCallback: function () {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
@@ -105,6 +93,8 @@ function BlokirStatus(data) {
             return '<h5><span class="badge bg-success">NONAKTIF</span></h5>'
         case 1:
             return '<h5><span class="badge bg-danger">AKTIF</span></h5>'
+        default:
+            return "Tidak Diketahui";
     }
 }
 

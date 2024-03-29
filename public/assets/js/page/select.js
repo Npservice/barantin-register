@@ -1,7 +1,7 @@
 
-function UptSelect(upt_id, pre_register_id) {
+function UptSelect(upt_id, pre_register_id, parent) {
     $('.upt-select').select2({
-        dropdownParent: $('#modal-data').length ? $('#modal-data') : $('body'),
+        dropdownParent: parent ? $('#modal-data') : $('body'),
         placeholder: 'select item',
         ajax: {
             type: 'GET',

@@ -52,6 +52,8 @@ $('#modal-data').on('hidden.bs.modal', function (e) {
 });
 
 function ShowPage(url) {
+    let status_import = null;
+    let cabang_id = null;
     $("#page-index").hide();
     $("html, body").animate({ scrollTop: 0 }, 400);
     $("#page-grid")
@@ -97,6 +99,18 @@ function ClosePageLink(url) {
     } else {
         $("#page-index").show();
     }
+}
+function CreateCabang(url) {
+    let id_pre_register = null;
+    let table_dokumen_pendukung = null;
+    $("#page-index").hide();
+    $("html, body").animate({ scrollTop: 0 }, 400);
+    $("#page-grid")
+        .empty()
+        .append(
+            '<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>'
+        );
+    $("#page-grid").load(url);
 }
 
 /* only table load */
