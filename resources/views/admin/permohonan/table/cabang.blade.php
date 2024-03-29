@@ -13,8 +13,9 @@
                  <th>Upt</th>
                  <th>Perusahaan Induk</th>
                  <th>Nama Perusahaan</th>
-                 <th>Jenis Identitas</th>
-                 <th>Nomor Identitas</th>
+                 <th>Jenis Identitas Induk</th>
+                 <th>Nomor Identitas Induk</th>
+                 <th>NITKU</th>
                  <th>Telepon</th>
                  <th>Fax</th>
                  <th>Email</th>

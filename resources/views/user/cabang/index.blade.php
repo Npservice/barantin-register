@@ -31,7 +31,7 @@
                         <div class="card-header">
                             <div class="d-flex justify-content-end">
                                 <button class="btn btn-primary btn-sm"
-                                    onclick="ShowPage('{{ route('barantin.cabang.create') }}')">tambah cabang</button>
+                                    onclick="CreateCabang('{{ route('barantin.cabang.create') }}')">tambah cabang</button>
                             </div>
                         </div>
                         <div class="card-body">
@@ -42,11 +42,10 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Opsi</th>
-                                            <th>Status</th>
-                                            <th>Blokir</th>
                                             <th>Nama Perusahaan</th>
-                                            <th>Jenis Identitas</th>
-                                            <th>Nomor Identitas</th>
+                                            <th>Jenis Identitas Induk</th>
+                                            <th>Nomor Identitas Induk</th>
+                                            <th>NITKU</th>
                                             <th>Telepon</th>
                                             <th>Fax</th>
                                             <th>Email</th>
@@ -55,8 +54,6 @@
                                             <th>Kota/Kab</th>
                                             <th>Alamat</th>
                                             <th>Status Import</th>
-                                            <th>Tgl Register</th>
-                                            <th>Keterangan</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -74,6 +71,7 @@
     <script src="{{ asset('assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
     <script src="{{ asset('assets/libs/dropify/dist/dropify.min.js') }}"></script>
     <!-- Required datatable js -->
+    <script src="{{ asset('assets/libs/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>

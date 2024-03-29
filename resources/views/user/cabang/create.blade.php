@@ -22,7 +22,7 @@
                            <h4 class="card-title my-2">Register Data Cabang</h4>
                        </div>
                        <div class="col text-end">
-                           <button class="btn btn-danger btn-sm" onclick="ClosePage()">Close</button>
+                           <button class="btn btn-danger btn-sm" onclick="CancelPage()">Cancel</button>
                        </div>
                    </div>
                </div>
@@ -63,8 +63,10 @@
 
                                <form class="row" id="form-register">
                                    <div class="col-md-6 col-sm-12">
+                                       <input type="hidden"name='id_pre_register' id="id_pre_register"
+                                           value="{{ $register->id }}">
                                        <input type="hidden" name="id_induk" id="id_induk"
-                                           value="{{ $induk->id ?? '' }}">
+                                           value="{{ auth()->user()->baratin->id ?? '' }}">
                                        <div class="row mb-3">
                                            <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                                            <div class="col-sm-9">
@@ -88,7 +90,7 @@
                                                Induk</label>
                                            <div class="col-sm-9">
                                                <input class="form-control" readonly
-                                                   value="{{ $induk->nama_perusahaan ?? '' }}" type="text"
+                                                   value="{{ auth()->user()->baratin->nama_perusahaan }}" type="text"
                                                    id="" name="">
                                                <div class="invalid-feedback" id="feedback"></div>
                                            </div>
@@ -110,7 +112,7 @@
                                            <div class="col">
                                                <input class="form-control" readonly type="text"
                                                    name="jenis_identitas" id="enis_identitas"
-                                                   value="{{ $induk->jenis_identitas ?? '' }}"
+                                                   value="{{ auth()->user()->baratin->jenis_identitas }}"
                                                    placeholder="Jenis Identitas">
                                                <div class="invalid-feedback" id="jenis_identitas-feedback"></div>
                                            </div>
@@ -118,7 +120,7 @@
                                                <input class="form-control" type="number"
                                                    placeholder="Nomor Identitas" id="nomor_identitas"
                                                    name="nomor_identitas" readonly
-                                                   value="{{ $induk->nomor_identitas ?? '' }}">
+                                                   value="{{ auth()->user()->baratin->nomor_identitas }}">
                                                <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
                                            </div>
                                        </div>
@@ -187,8 +189,7 @@
                                        <div class="row mb-3">
                                            <label for="email" class="col-sm-3 col-form-label">Email</label>
                                            <div class="col-sm-9">
-                                               <input class="form-control" readonly
-                                                   value="{{ $register->email ?? '' }}" type="email"
+                                               <input class="form-control" value="" type="email"
                                                    placeholder="Email" id="email" name="email">
                                                <div class="invalid-feedback" id="email-feedback"></div>
                                            </div>
@@ -389,7 +390,7 @@
                                    <div class="row mb-5">
                                        <div class="table-responsive">
                                            <table id="datatable-dokumen-pendukung"
-                                               data-pre-register="{{ $register->id ?? '' }}"
+                                               data-pre-register="{{ $register->id }}"
                                                class="table table-bordered dt-responsive nowrap"
                                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                                <thead>
@@ -418,7 +419,7 @@
                    </div>
                </div>
                <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
-               <script src="{{ asset('assets/js/page/form/cabang.js') }}"></script>
+               <script src="{{ asset('assets/js/page/user/cabang/form.js') }}"></script>
                <script>
                    UptSelect('{{ $baratan->upt_id ?? null }}', '{{ $register->id ?? null }}')
                    NegaraSelect('{{ $baratan->negara_id ?? 99 }}')
