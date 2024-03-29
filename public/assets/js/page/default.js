@@ -227,7 +227,7 @@ function DeleteAlert(url, type) {
     });
 }
 
-function ConfirmRegister(url, type) {
+function ConfirmRegister(url, type, urlReload) {
     Swal.fire({
         title: "Apa Anda Yakin?",
         text: "Anda ingin menerima " + type,
@@ -249,6 +249,9 @@ function ConfirmRegister(url, type) {
                     if (response.status) {
                         notif("success", response.message);
                         TableReload(response.table);
+                        if (urlReload) {
+                            ClosePageLink(urlReload);
+                        }
                     } else {
                         notif("error", response.message);
                     }
@@ -260,6 +263,9 @@ function ConfirmRegister(url, type) {
         }
         if (result.dismiss === 'cancel') {
             $('#url-tolak').val(url)
+            if (urlReload) {
+                $('#url-reload').val(urlReload)
+            }
             $('#form-tolak').trigger('reset')
             $('#modal-tolak-keterangan').modal('show')
 
@@ -267,6 +273,7 @@ function ConfirmRegister(url, type) {
     });
 }
 $('#button-tolak').click(function () {
+    let linkReload = $('#url-reload').val()
     $.ajax({
         url: $('#url-tolak').val(),
         type: "POST",
@@ -279,6 +286,9 @@ $('#button-tolak').click(function () {
             if (response.status) {
                 notif("warning", response.message);
                 TableReload(response.table);
+                if (linkReload) {
+                    ClosePageLink(linkReload);
+                }
             } else {
                 notif("error", response.message);
             }
