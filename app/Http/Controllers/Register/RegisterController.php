@@ -88,7 +88,7 @@ class RegisterController extends Controller
         /* ambil dat terbaru untuk pengecekan bahwa status sudah fix */
         $register_cek = Register::where('pre_register_id', $register->id)->orderBy('updated_at', 'DESC')->first();
 
-        if (isset ($register_cek)) {
+        if (isset($register_cek)) {
             if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
                 abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih atau yang terdaftar sebelumnya']));
             }
@@ -187,6 +187,7 @@ class RegisterController extends Controller
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
+                'pj_baratin_id' => $induk->id,
                 'kota' => $request->kota
             ]);
 

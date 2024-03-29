@@ -1,7 +1,7 @@
-let table = $("#pendaftar-datatable").DataTable({
+table = $("#pendaftar-datatable").DataTable({
     processing: true,
     serverSide: true,
-    ajax: "/admin/pendaftar",
+    ajax: "/admin/pendaftar/datatable/data/cabang",
     language: {
         paginate: {
             previous: "<i class='mdi mdi-chevron-left'>",
@@ -21,21 +21,51 @@ let table = $("#pendaftar-datatable").DataTable({
             orderable: false,
             width: 60,
         },
-        { data: "status", name: "status" },
-        { data: "blockir", name: "blockir", render: function (data) { return BlokirStatus(data) } },
-        { data: "baratin.nama_perusahaan", name: "baratin.nama_perusahaan" },
-        { data: "baratin.jenis_identitas", name: "baratin.jenis_identitas" },
-        { data: "baratin.nomor_identitas", name: "baratin.nomor_identitas" },
-        { data: "baratin.telepon", name: "baratin.telepon" },
-        { data: "baratin.fax", name: "baratin.fax" },
-        { data: "baratin.email", name: "baratin.email" },
-        { data: "baratin.negara.nama", name: "baratin.negara.nama" },
-        { data: "baratin.provinsi.nama", name: "baratin.provinsi.nama" },
-        { data: "baratin.kotas.nama", name: "baratin.kotas.nama" },
-        { data: "baratin.alamat", name: "baratin.alamat" },
         {
-            data: "baratin.status_import",
-            name: "baratin.status_import",
+            data: "status", name: "status"
+        },
+        {
+            data: "blockir", name: "blockir", render: function (data) { return BlokirStatus(data) }
+        },
+        {
+            data: "upt.nama", name: "upt.nama"
+        },
+        {
+            data: "baratincabang.baratininduk.nama_perusahaan", name: "baratincabang.baratininduk.nama_perusahaan"
+        },
+        {
+            data: "baratincabang.nama_perusahaan", name: "baratincabang.nama_perusahaan"
+        },
+        {
+            data: "baratincabang.jenis_identitas", name: "baratincabang.jenis_identitas"
+        },
+        {
+            data: "baratincabang.nomor_identitas", name: "baratincabang.nomor_identitas"
+        },
+        {
+            data: "baratincabang.telepon", name: "baratincabang.telepon"
+        },
+        {
+            data: "baratincabang.fax", name: "baratincabang.fax"
+        },
+        {
+            data: "baratincabang.email", name: "baratincabang.email"
+        },
+        {
+            data: "baratincabang.negara.nama", name: "baratincabang.negara.nama"
+        },
+        {
+            data: "baratincabang.provinsi.nama", name: "baratincabang.provinsi.nama"
+        },
+        {
+            data: "baratincabang.kotas.nama", name: "baratincabang.kotas.nama"
+        },
+        {
+            data: "baratincabang.alamat", name: "baratincabang.alamat"
+        },
+        {
+            data: "baratincabang.status_import",
+            name: "baratincabang.status_import",
             orderable: false,
             render: function (data) {
                 switch (data) {
@@ -88,8 +118,8 @@ function BlokirStatus(data) {
 $('#filter-status-import').select2();
 $('#filter-status-import').change(function () {
     var val = $(this).val();
-    if (val === 'all') return table.column('baratin.status_import:name').search('').draw();
-    return table.column('baratin.status_import:name').search(val).draw();
+    if (val === 'all') return table.column('baratincabang.status_import:name').search('').draw();
+    return table.column('baratincabang.status_import:name').search(val).draw();
 })
 $('#tanggal-register').daterangepicker();
 $('#tanggal-register').on('apply.daterangepicker', function (ev, picker) {

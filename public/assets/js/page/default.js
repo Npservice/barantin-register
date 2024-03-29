@@ -99,7 +99,15 @@ function ClosePageLink(url) {
     }
 }
 
+/* only table load */
 
+function TableLoaded(url) {
+    let table = null;
+    $('#pendaftar-datatable').DataTable().destroy();
+    $('#table-loaded').empty().append('<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>');
+    $('#table-loaded').load(url);
+
+}
 
 function submit(url, image) {
     if (image) {

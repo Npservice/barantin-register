@@ -31,7 +31,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/confirm/register/{id}', [PermohonanController::class, 'confirmRegister'])->name('confirm.register');
         });
         Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
-            Route::get('/datatable/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('datatable.pendukung');
+
+            Route::prefix('datatable')->name('datatable.')->group(function () {
+                Route::get('/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('pendukung');
+                Route::get('data/cabang', [PendaftarController::class, 'datatableCabang'])->name('cabang');
+                Route::get('data/{pemohon}', [PendaftarController::class, 'datatablePeoranganPerusahaanInduk'])->name('pemohon');
+
+                Route::view('perorangan', 'admin.pendaftar.table.perorangan')->name('perorangan');
+                Route::view('induk', 'admin.pendaftar.table.induk')->name('induk');
+                Route::view('cabang', 'admin.pendaftar.table.cabang')->name('cabang');
+            });
             Route::post('/block/akses/{id}', [PendaftarController::class, 'BlockAccessPendaftar'])->name('block.akses');
             Route::post('/open/akses/{id}', [PendaftarController::class, 'OpenkAccessPendaftar'])->name('open.akses');
             Route::post('/create/user/{id}', [PendaftarController::class, 'CreateUser'])->name('create.user');

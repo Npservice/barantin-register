@@ -18,9 +18,9 @@ class Register extends Model
     {
         return $this->belongsTo(PjBaratin::class, 'pj_barantin_id', 'id');
     }
-    public function baratinCabang(): BelongsTo
+    public function baratincabang(): BelongsTo
     {
-        return $this->belongsTo(BarantinCabang::class);
+        return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id', 'id');
     }
     public function upt(): BelongsTo
     {

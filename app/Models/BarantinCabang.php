@@ -75,9 +75,9 @@ class BarantinCabang extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function baratinInduk(): BelongsTo
+    public function baratininduk(): BelongsTo
     {
-        return $this->belongsTo(PjBaratin::class);
+        return $this->belongsTo(PjBaratin::class, 'pj_baratin_id', 'id');
     }
     public function mitra(): HasMany
     {

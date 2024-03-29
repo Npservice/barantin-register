@@ -29,6 +29,7 @@ class PjBaratin extends Model
         'nama_cp',
         'alamat_cp',
         'telepon_cp',
+        'nama_alias_perusahaan',
 
         'kota',
         'provinsi_id',

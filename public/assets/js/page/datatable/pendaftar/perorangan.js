@@ -1,14 +1,14 @@
-var table = $('#permohonan-datatable').DataTable({
+table = $("#pendaftar-datatable").DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/admin/permohonan',
+    ajax: "/admin/pendaftar/datatable/data/perorangan",
     language: {
         paginate: {
             previous: "<i class='mdi mdi-chevron-left'>",
             next: "<i class='mdi mdi-chevron-right'>",
         },
     },
-    order: [[1, 'asc']],
+    order: [[2, "asc"]],
     columns: [
         {
             data: "DT_RowIndex",
@@ -20,6 +20,15 @@ var table = $('#permohonan-datatable').DataTable({
             searchable: false,
             orderable: false,
             width: 60,
+        },
+        {
+            data: "status", name: "status"
+        },
+        {
+            data: "blockir", name: "blockir", render: function (data) { return BlokirStatus(data) }
+        },
+        {
+            data: "upt.nama", name: "upt.nama"
         },
         {
             data: "baratin.nama_perusahaan", name: "baratin.nama_perusahaan"
@@ -85,15 +94,23 @@ var table = $('#permohonan-datatable').DataTable({
                 return moment(data).format('DD-MM-YYYY')
             },
         },
-        { data: "status", name: "status" },
+
         { data: "keterangan", name: "keterangan" },
     ],
     drawCallback: function () {
-        $(".dataTables_paginate > .pagination").addClass(
-            "pagination-rounded"
-        );
+        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
 });
+
+
+function BlokirStatus(data) {
+    switch (data) {
+        case 0:
+            return '<h5><span class="badge bg-success">NONAKTIF</span></h5>'
+        case 1:
+            return '<h5><span class="badge bg-danger">AKTIF</span></h5>'
+    }
+}
 /* table filter handler */
 $('#filter-status-import').select2();
 $('#filter-status-import').change(function () {
