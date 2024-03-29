@@ -83,8 +83,8 @@ class UserUptController extends Controller
     public function query()
     {
         if (auth()->user()->role === 'cabang') {
-            return Register::with('upt:nama,id')->whereHas('baratinCabang', function ($query) {
-                $query->where('id', auth()->user()->baratinCabang->id);
+            return Register::with('upt:nama,id')->whereHas('baratincabang', function ($query) {
+                $query->where('id', auth()->user()->baratincabang->id);
             })->select('register.id', 'barantin_cabang_id', 'register.status', 'register.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at');
         }
         return Register::with('upt:nama,id')->whereHas('baratin', function ($query) {

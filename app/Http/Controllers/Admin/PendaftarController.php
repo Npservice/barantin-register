@@ -170,7 +170,7 @@ class PendaftarController extends Controller
                 $query->where('pj_barantin_id', $register->pj_barantin_id)->orWhere('barantin_cabang_id', $register->barantin_cabang_id);
             })->exists();
             if ($cek) {
-                $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 0]) : $register->baratinCabang->user()->update(['status_user' => 0]);
+                $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 0]) : $register->baratincabang->user()->update(['status_user' => 0]);
             }
 
         });
@@ -187,7 +187,7 @@ class PendaftarController extends Controller
         DB::transaction(function () use ($id, &$res) {
             $register = Register::find($id);
             $register->update(['blockir' => 0]);
-            $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 1]) : $register->baratinCabang->user()->update(['status_user' => 1]);
+            $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 1]) : $register->baratincabang->user()->update(['status_user' => 1]);
 
         });
 
@@ -212,7 +212,7 @@ class PendaftarController extends Controller
     {
         $register = Register::find($id);
         $pre_register = $register->preregister;
-        $barantin = $register->baratin ?? $register->baratinCabang;
+        $barantin = $register->baratin ?? $register->baratincabang;
         // dd($barantin);
 
         $user_collect = collect([

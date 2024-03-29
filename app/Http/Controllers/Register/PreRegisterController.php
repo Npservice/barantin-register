@@ -74,7 +74,7 @@ class PreRegisterController extends Controller
     public function RegisterCheck(PreRegister $preregister, Request $request): View
     {
 
-        PreRegister::find($preregister->id)->update($request->merge(['verify_email' => null])->all());
+        PreRegister::find($preregister->id)->update($request->merge(['verify_email' => null, 'pj_baratin_id' => $request->perusahaan_induk ?? null])->all());
 
 
         foreach ($request->upt as $key => $upt) {

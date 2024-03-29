@@ -92,7 +92,7 @@ class UserMitraController extends Controller
             'master_kota_kab_id',
         );
         if (auth()->user()->role === 'cabang') {
-            return $select->where('barantin_cabang_id', auth()->user()->baratinCabang->id);
+            return $select->where('barantin_cabang_id', auth()->user()->baratincabang->id);
         }
         return $select->where('pj_baratin_id', auth()->user()->baratin->id);
 
