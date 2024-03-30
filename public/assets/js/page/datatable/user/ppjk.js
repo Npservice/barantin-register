@@ -50,5 +50,11 @@ $('#user-ppjk-datatable').DataTable({
     drawCallback: function () {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
+    language: {
+        paginate: {
+            previous: "<i class='mdi mdi-chevron-left'>",
+            next: "<i class='mdi mdi-chevron-right'>",
+        },
+    },
 })
 

@@ -20,6 +20,13 @@ $('#user-upt-datatable').DataTable({
         }
     },
     {
+        data: 'created_at',
+        name: 'created_at',
+        render: function (data) {
+            return moment(data).format('DD-MM-YYYY')
+        }
+    },
+    {
         data: 'updated_at',
         name: 'updated_at',
         render: function (data) {
@@ -40,6 +47,12 @@ $('#user-upt-datatable').DataTable({
     ],
     drawCallback: function () {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+    },
+    language: {
+        paginate: {
+            previous: "<i class='mdi mdi-chevron-left'>",
+            next: "<i class='mdi mdi-chevron-right'>",
+        },
     },
 })
 

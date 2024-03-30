@@ -142,7 +142,7 @@ function submit(url, image) {
         }
         return FormSendImage(url, form_data);
     }
-    var data = $("#form-data").serialize();
+    var data = $("#form-data").length ? $("#form-data").serialize() : $('.form-data').serialize();
     FormSend(url, data);
 }
 
