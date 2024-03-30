@@ -6,6 +6,7 @@ use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\UserMitraController;
 use App\Http\Controllers\User\Auth\LoginController;
 use App\Http\Controllers\User\UserCabangController;
+use App\Http\Controllers\user\UserProfileController;
 
 Route::prefix('barantin')->name('barantin.')->group(function () {
     Route::prefix('login')->name('auth.')->group(function () {
@@ -19,7 +20,7 @@ Route::prefix('barantin')->name('barantin.')->group(function () {
             Route::get('', [DashboardController::class, 'index'])->name('index');
         });
 
-        Route::prefix('cabang')->name('cabang.')->group(function () {
+        Route::prefix('cabang')->name('cabang.')->middleware('induk')->group(function () {
             Route::post('cancel', [UserCabangController::class, 'cancel'])->name('cancel');
             Route::get('upt/detail/{id}', [UserCabangController::class, 'DatatableUptDetail'])->name('upt.detail');
 
@@ -30,9 +31,13 @@ Route::prefix('barantin')->name('barantin.')->group(function () {
             });
         });
 
-        Route::resource('cabang', UserCabangController::class);
+        Route::prefix('profile')->name('profile.')->group(function () {
+            Route::get('', [UserProfileController::class, 'index'])->name('index');
+        });
+
+        Route::resource('cabang', UserCabangController::class)->except(['edit', 'update', 'destroy'])->middleware('induk');
         Route::resource('ppjk', UserPpjkController::class);
         Route::resource('mitra', UserMitraController::class);
-        Route::resource('upt', UserUptController::class);
+        Route::resource('upt', UserUptController::class)->only(['create', 'index', 'store']);
     });
 });
