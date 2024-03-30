@@ -53,7 +53,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(PjBaratin::class);
     }
-    public function baratinCabang(): HasOne
+    public function baratincabang(): HasOne
     {
         return $this->hasOne(BarantinCabang::class);
     }
