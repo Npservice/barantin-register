@@ -42,6 +42,7 @@
                                         <th>#</th>
                                         <th>Nama Upt</th>
                                         <th>Status</th>
+                                        <th>Tgl Pengajuan</th>
                                         <th>Tgl Persetujuan</th>
                                         <th>Keterangan</th>
                                         <th>Status Blockir</th>

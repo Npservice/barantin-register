@@ -5,10 +5,11 @@
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="">
-                <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="" class="avatar-md rounded-circle">
+                <img src="https://avatar.iran.liara.run/public" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
-                <h4 class="font-size-16 mb-1">{{ auth()->guard('admin')->user()->nama ?? 'user' }}</h4>
+                <h4 class="font-size-16 mb-1">
+                    {{ auth()->guard('admin')->user()->nama ?? auth()->guard('web')->user()->nama }}</h4>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
                     Online</span>
             </div>
@@ -65,14 +66,16 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
+                    @if (auth()->guard('web')->user()->role === 'induk')
+                        <li>
+                            <a href="{{ route('barantin.cabang.index') }}" class="waves-effect">
+                                <i class="ri-dashboard-line"></i>
+                                <span>Cabang</span>
+                            </a>
+                        </li>
+                    @endif
                     <li>
-                        <a href="{{ route('barantin.cabang.index') }}" class="waves-effect">
-                            <i class="ri-dashboard-line"></i>
-                            <span>Cabang</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="waves-effect">
+                        <a href="{{ route('barantin.profile.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>Profile</span>
                         </a>

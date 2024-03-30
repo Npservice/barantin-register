@@ -243,7 +243,7 @@
                                 <th>#</th>
                                 <th>Nama UPT</th>
                                 <th>Tgl Pengajuan</th>
-                                <th>Tgl Aproval</th>
+                                <th>Tgl Persetujuan</th>
                                 <th>Status</th>
                                 <th>Status Blokir</th>
                                 <th>Keterangan</th>

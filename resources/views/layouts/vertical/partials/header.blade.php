@@ -30,8 +30,8 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user"
-                        src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
+                    <img class="rounded-circle header-profile-user" src="https://avatar.iran.liara.run/public"
+                        alt="Header Avatar">
                     <span
                         class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->nama ?? auth()->guard('web')->user()->nama }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
