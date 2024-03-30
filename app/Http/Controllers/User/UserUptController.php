@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Register;
+use App\Models\MasterUpt;
 use Illuminate\Http\Request;
+use App\Helpers\AjaxResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
@@ -39,7 +41,50 @@ class UserUptController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        /* get upt yang telah dipilih */
+        $register = Register::where(function ($query) {
+            $query->where('pj_barantin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
+        })->pluck('master_upt_id')->toArray();
+        // validasi upt
+        $request->validate([
+            'upt' => [
+                'required',
+                function ($attribute, $value, $fail) use ($register) {
+                    $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
+
+
+                    foreach ($value as $item) {
+                        if (!in_array($item, $validUpts)) {
+                            $fail('One or more selected upt is invalid.');
+                        }
+                        if (in_array($item, $register)) {
+                            $status = Register::where('master_upt_id', $item)->where(function ($query) {
+                                $query->where('pj_barantin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
+                            })->value('status');
+                            if (isset ($status)) {
+                                if ($status === "MENUNGGU" || $status === "DISETUJUI") {
+                                    $fail('Anda telah tedaftar di upt yang dipilih');
+                                }
+                            }
+                        }
+                    }
+                },
+            ],
+        ]);
+        foreach ($request->upt as $value) {
+            if (in_array($value, $register)) {
+                $res = Register::where('master_upt_id', $value)->where(function ($query) {
+                    $query->where('pj_barantin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
+                })->update(['status' => 'MENUNGGU']);
+            } else {
+                $res = Register::create(['master_upt_id' => $value, 'pj_barantin_id' => auth()->user()->baratin->id ?? null, 'barantin_cabang_id' => auth()->user()->baraticabang->id ?? null, 'status' => 'MENUNGGU', 'pre_register_id' => auth()->user()->baratin->pre_register_id]);
+            }
+        }
+        if ($res) {
+            return AjaxResponse::SuccessResponse('Upt berhasil diajukan', 'user-upt-datatable');
+        }
+        return AjaxResponse::ErrorResponse('Upt gagal diajukan', 400);
+
     }
 
     /**
@@ -85,10 +130,10 @@ class UserUptController extends Controller
         if (auth()->user()->role === 'cabang') {
             return Register::with('upt:nama,id')->whereHas('baratincabang', function ($query) {
                 $query->where('id', auth()->user()->baratincabang->id);
-            })->select('register.id', 'barantin_cabang_id', 'register.status', 'register.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at');
+            })->select('register.id', 'barantin_cabang_id', 'register.status', 'register.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
         }
         return Register::with('upt:nama,id')->whereHas('baratin', function ($query) {
             $query->where('id', auth()->user()->baratin->id);
-        })->select('registers.id', 'pj_barantin_id', 'registers.status', 'registers.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at');
+        })->select('registers.id', 'pj_barantin_id', 'registers.status', 'registers.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
     }
 }

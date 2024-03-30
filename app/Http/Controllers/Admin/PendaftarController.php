@@ -218,7 +218,7 @@ class PendaftarController extends Controller
         $user_collect = collect([
             'nama' => $barantin->nama_perusahaan,
             'email' => $barantin->email,
-            'username' => $this->generateRandomString($length = 5, $pre_register->pemohon),
+            'username' => $this->generateRandomString($length = 5, $pre_register->pemohon, $pre_register->jenis_perusahaan),
             'role' => $pre_register->pemohon === 'perusahaan' ? ($pre_register->jenis_perusahaan === 'induk' ? 'induk' : 'cabang') : 'perorangan',
             'status_user' => 1,
             'password' => $this->generateRandomPassword(),
@@ -247,14 +247,15 @@ class PendaftarController extends Controller
 
     }
     /* genareate username */
-    function generateRandomString(int $length = 5, string $pemohon)
+    function generateRandomString(int $length = 5, string $pemohon, string $jenis_perusahaan)
     {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $random = [0, 1, 2, 3];
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, strlen($characters) - 1)];
         }
-        return $pemohon === 'perusahaan' ? 'C' . $randomString : 'P' . $randomString;
+        return $pemohon === 'perusahaan' ? ($jenis_perusahaan === 'induk' ? 'C' . $randomString : 'C' . $randomString . implode('', array_rand($random, 2))) : 'P' . $randomString;
     }
 
     /* generate password */
