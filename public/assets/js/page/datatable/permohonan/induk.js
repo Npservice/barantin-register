@@ -30,8 +30,8 @@ table = $("#permohonan-datatable").DataTable({
             },
         },
         {
-            data: "upt.nama",
-            name: "upt.nama"
+            data: "upt",
+            name: "upt"
         },
         {
             data: "baratin.nama_perusahaan",
@@ -127,8 +127,7 @@ function BlokirStatus(data) {
 $("#filter-status-import").select2();
 $("#filter-status-import").change(function () {
     var val = $(this).val();
-    if (val === "all")
-        return table.column("baratin.status_import:name").search("").draw();
+    if (val === "all") return table.column("baratin.status_import:name").search("").draw();
     return table.column("baratin.status_import:name").search(val).draw();
 });
 $("#tanggal-register").daterangepicker();
@@ -142,4 +141,9 @@ $("#tanggal-register").on("apply.daterangepicker", function (ev, picker) {
 });
 $("#tanggal-register").on("cancel.daterangepicker", function (ev, picker) {
     table.column("updated_at:name").search("").draw();
+});
+$('#filter-upt').change(function () {
+    var val = $(this).val();
+    if (val === "all") return table.column("upt:name").search("").draw();
+    return table.column("upt:name").search(val).draw();
 });

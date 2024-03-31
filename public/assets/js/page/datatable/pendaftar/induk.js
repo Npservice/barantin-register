@@ -30,8 +30,8 @@ table = $("#pendaftar-datatable").DataTable({
             },
         },
         {
-            data: "upt.nama",
-            name: "upt.nama"
+            data: "upt",
+            name: "upt"
         },
         {
             data: "baratin.nama_perusahaan",
@@ -142,4 +142,9 @@ $("#tanggal-register").on("apply.daterangepicker", function (ev, picker) {
 });
 $("#tanggal-register").on("cancel.daterangepicker", function (ev, picker) {
     table.column("updated_at:name").search("").draw();
+});
+$('#filter-upt').change(function () {
+    var val = $(this).val();
+    if (val === "all") return table.column("upt:name").search("").draw();
+    return table.column("upt:name").search(val).draw();
 });

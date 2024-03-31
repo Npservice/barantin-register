@@ -15,7 +15,7 @@ function UptSelect(upt_id, pre_register_id, parent) {
             processResults: function (data) {
                 return {
                     results: $.map(data, function (obj) {
-                        return { id: obj.id, text: obj.nama }
+                        return { id: obj.id, text: obj.nama_satpel + ' - ' + obj.nama }
                     })
                 }
             }
@@ -35,7 +35,7 @@ function UptSelect(upt_id, pre_register_id, parent) {
             select2Element.empty();
 
             response.forEach(function (item) {
-                var option = new Option(item.nama, item.id, true, true);
+                var option = new Option(item.nama_satpel + ' - ' + item.nama, item.id, true, true);
                 select2Element.append(option);
             });
             select2Element.trigger('change');
@@ -51,7 +51,7 @@ function UptSelect(upt_id, pre_register_id, parent) {
                 upt_id: upt_id
             }
         }).then(function (response) {
-            var option = new Option(response.nama, response.id, true, true);
+            var option = new Option(response.nama_satpel + ' - ' + response.nama, response.id, true, true);
             $('.upt-select').append(option).trigger('change');
 
             $('.upt-select').trigger({
@@ -141,7 +141,6 @@ function NegaraSelect(negara_id, parent) {
         }).then(function (response) {
             var option = new Option(response.kode + ' - ' + response.nama, response.id, true, true);
             $('.negara-select').append(option).trigger('change');
-
             $('.negara-select').trigger({
                 type: 'select2:select',
                 params: {
@@ -252,16 +251,16 @@ function PerusahaanIndukSelect(baratin_id) {
 }
 
 
-$('#negara').on('change', function () {
-    let val = $(this).val();
-    // console.log(val);
-    // if (val === 99) {
-    //     $('.kota-select').addClass('d-none');
-    //     $('.provinsi-select').addClass('d-none');
-    // } else {
-    //     $('.kota-select').empty().addClass('d-none');
-    //     $('.provinsi-select').empty().addClass('d-none');
-    //     // $('.kota-select').empty();
-    //     // $('.provinsi-select').empty();
-    // }
-});
+// $('#negara').change(function () {
+//     let val = $(this).val();
+//     console.log(val);
+//     if (val === 99) {
+//         $('.kota-select').addClass('d-none');
+//         $('.provinsi-select').addClass('d-none');
+//     } else {
+//         $('.kota-select').empty().addClass('d-none');
+//         $('.provinsi-select').empty().addClass('d-none');
+//         $('.kota-select').empty();
+//         $('.provinsi-select').empty();
+//     }
+// });

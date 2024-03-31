@@ -117,6 +117,8 @@ function CreateCabang(url) {
 
 function TableLoaded(url) {
     let table = null;
+    $('#filter-status-import').length > 0 && $('#filter-status-import').val('all').trigger('change');
+    $('#filter-status-import').length > 0 && $('#filter-upt').empty().trigger('change');
     $('#pendaftar-datatable').DataTable().destroy();
     $('#table-loaded').empty().append('<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>');
     $('#table-loaded').load(url);
