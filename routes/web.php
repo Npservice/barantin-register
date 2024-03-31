@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SelectController;
 
 /*
@@ -65,3 +66,6 @@ Route::get('ajax/failed', function () {
 //     Route::view('upt', 'user.tambahupt')->name('upt');
 //     // Route::view('rubah-data', 'user.rubahdata');
 // });
+Route::get('link', function () {
+    Artisan::call('storage:link');
+});
