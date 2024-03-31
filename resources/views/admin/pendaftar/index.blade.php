@@ -29,7 +29,7 @@
                     <div class="card">
                         <div class="card-body">
                             <form>
-                                <div class="row">
+                                <div class="row row-cols-1 row-cols-sm-12 row-cols-md-3">
                                     <div class="col">
                                         <div class="mb-3">
                                             <label class="form-label">Status Import</label>
@@ -55,7 +55,7 @@
                                     @if (!auth()->guard('admin')->user()->upt_id)
                                         <div class="col">
                                             <div class="mb-3">
-                                                <label class="form-label">Upts</label>
+                                                <label class="form-label">UPT</label>
                                                 <select type="text" class="form-control upt-select-filter"
                                                     id="filter-upt"></select>
                                             </div>
@@ -74,13 +74,25 @@
                         <div class="card-header">
                             <div class="text-start">
                                 <button class="btn btn-info btn-sm"
-                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.perorangan') }}')">perorangan</button>
+                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.perorangan') }}')">Perorangan</button>
                                 <button class="btn btn-warning btn-sm mx-3"
-                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.induk') }}')">perusahaan
-                                    induk</button>
+                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.induk') }}')">
+                                    <div class="d-none d-md-block">
+                                        Perusahaan Induk
+                                    </div>
+                                    <div class="d-block d-sm-none">
+                                        P Induk
+                                    </div>
+                                </button>
                                 <button class="btn btn-success btn-sm"
-                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.cabang') }}')">perusahaan
-                                    cabang</button>
+                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.cabang') }}')">
+                                    <div class="d-none d-md-block">
+                                        Perusahaan Cabang
+                                    </div>
+                                    <div class="d-block d-sm-none">
+                                        P Cabang
+                                    </div>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body" id="table-loaded">
