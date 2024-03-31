@@ -55,7 +55,7 @@
                                     @if (!auth()->guard('admin')->user()->upt_id)
                                         <div class="col">
                                             <div class="mb-3">
-                                                <label class="form-label">Upts</label>
+                                                <label class="form-label">UPT</label>
                                                 <select type="text" class="form-control upt-select-filter"
                                                     id="filter-upt"></select>
                                             </div>
