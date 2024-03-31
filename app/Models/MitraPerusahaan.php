@@ -28,7 +28,7 @@ class MitraPerusahaan extends Model
     {
         return $this->belongsTo(PjBaratin::class);
     }
-    public function baratinCabang(): BelongsTo
+    public function baratincabang(): BelongsTo
     {
         return $this->belongsTo(BarantinCabang::class);
     }
