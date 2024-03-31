@@ -21,7 +21,10 @@ class SelectController extends Controller
     {
         if (request()->input('q')) {
 
-            $data = MasterUpt::select('id', 'nama')->where('nama', 'LIKE', '%' . request()->input('q') . '%')->get();
+            $data = MasterUpt::select('id', 'nama', 'nama_satpel')
+                ->where('nama', 'LIKE', '%' . request()->input('q') . '%')
+                ->orWhere('nama_satpel', 'LIKE', '%' . request()->input('q') . '%')
+                ->get();
 
         } elseif (request()->input('upt_id')) {
 
@@ -29,13 +32,13 @@ class SelectController extends Controller
 
         } elseif (request()->input('pre_register_id')) {
 
-            $data = MasterUpt::select('nama', 'id')->whereIn('id', function ($query) {
+            $data = MasterUpt::select('nama', 'id', 'nama_satpel')->whereIn('id', function ($query) {
                 $query->select('master_upt_id')
                     ->from('registers')
                     ->where('pre_register_id', request()->input('pre_register_id'));
             })->get();
         } else {
-            $data = MasterUpt::select('id', 'nama')->get();
+            $data = MasterUpt::select('id', 'nama', 'nama_satpel')->get();
         }
         return response()->json($data);
     }

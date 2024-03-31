@@ -83,6 +83,9 @@ class PendaftarController extends Controller
         }
 
         return DataTables::eloquent($model)->addIndexColumn()
+            ->addColumn('upt', function ($row) {
+                return $row->upt->nama_satpel . ' - ' . $row->upt->nama;
+            })
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $range = explode(' - ', $keyword);
                 if (count($range) === 2) {
@@ -92,6 +95,14 @@ class PendaftarController extends Controller
                 }
 
             })
+            ->filterColumn('upt', function ($query, $keyword) {
+                $query->whereHas('upt', function ($subquery) use ($keyword) {
+                    $subquery->where('nama', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('nama_satpel', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('id', $keyword);
+                });
+
+            })
             ->addColumn('action', 'admin.pendaftar.action.induk')->make(true);
     }
 
@@ -99,7 +110,7 @@ class PendaftarController extends Controller
     public function QueryRegisterPeoranganAndInduk(): Builder
     {
         return Register::with([
-            'upt:nama,id',
+            'upt:nama,id,nama_satpel',
             'baratin.kotas:nama,id',
             'baratin.negara:id,nama',
             'baratin.provinsi:id,nama',
@@ -129,6 +140,9 @@ class PendaftarController extends Controller
         }
         // return response()->json($model->get());
         return DataTables::eloquent($model)->addIndexColumn()
+            ->addColumn('upt', function ($row) {
+                return $row->upt->nama_satpel . ' - ' . $row->upt->nama;
+            })
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $range = explode(' - ', $keyword);
                 if (count($range) === 2) {
@@ -138,6 +152,14 @@ class PendaftarController extends Controller
                 }
 
             })
+            ->filterColumn('upt', function ($query, $keyword) {
+                $query->whereHas('upt', function ($subquery) use ($keyword) {
+                    $subquery->where('nama', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('nama_satpel', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('id', $keyword);
+                });
+
+            })
             ->addColumn('action', 'admin.pendaftar.action.cabang')->make(true);
     }
 
@@ -145,7 +167,7 @@ class PendaftarController extends Controller
     public function QueryRegisterCabang(): Builder
     {
         return Register::with([
-            'upt:nama,id',
+            'upt:nama,id,nama_satpel',
             'baratincabang.baratininduk:nama_perusahaan,id',
             'baratincabang.kotas:nama,id',
             'baratincabang.negara:id,nama',
