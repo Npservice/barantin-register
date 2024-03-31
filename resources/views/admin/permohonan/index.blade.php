@@ -34,7 +34,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Status Import</label>
                                             <select class="form-control select2" id="filter-status-import">
-                                                <option value="all">All Data</option>
+                                                <option value="all">Semua Data Status</option>
                                                 <option value="25">Importir Umum</option>
                                                 <option value="26">Importir Produsen</option>
                                                 <option value="27">Importir Terdaftar</option>
@@ -52,9 +52,17 @@
                                             <input type="text" class="form-control" id="tanggal-register">
                                         </div>
                                     </div>
+                                    @if (!auth()->guard('admin')->user()->upt_id)
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label class="form-label">Upts</label>
+                                                <select type="text" class="form-control upt-select-filter"
+                                                    id="filter-upt"></select>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>
@@ -117,8 +125,10 @@
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 @endpush
 @push('custom-js')
+    <script src="{{ asset('assets/js/page/filter.js') }}"></script>
     <script>
         $(document).ready(function() {
+            UptSelectFilter();
             TableLoaded('{{ route('admin.permohonan.datatable.perorangan') }}')
         })
     </script>

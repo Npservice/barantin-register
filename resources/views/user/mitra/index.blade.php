@@ -27,7 +27,7 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-end">
                             <button class="btn btn-primary btn-sm"
-                                onclick="modal('Tambah Mitra','modal-xl','static','{{ route('barantin.mitra.create') }}')"">tambah
+                                onclick="modal('Tambah Mitra','modal-xl','static','{{ route('barantin.mitra.create') }}')">tambah
                                 mitra</button>
                         </div>
                     </div>
@@ -63,6 +63,7 @@
     <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/imask/imask.init.js') }}"></script>
 @endpush
 @push('custom-js')
     <script src="{{ asset('assets/js/page/select.js') }}"></script>

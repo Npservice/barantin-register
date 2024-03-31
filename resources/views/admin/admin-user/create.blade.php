@@ -38,5 +38,5 @@
           onclick="submit('{{ route('admin.admin-user.store') }}', false)">Save changes</button>
   </div>
   <script>
-      UptSelect();
+      UptSelect(null, null, true);
   </script>

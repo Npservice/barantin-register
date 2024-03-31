@@ -52,6 +52,15 @@
                                             <input type="text" class="form-control" id="tanggal-register">
                                         </div>
                                     </div>
+                                    @if (!auth()->guard('admin')->user()->upt_id)
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label class="form-label">Upts</label>
+                                                <select type="text" class="form-control upt-select-filter"
+                                                    id="filter-upt"></select>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </form>
 
@@ -116,8 +125,10 @@
     <script src="{{ asset('assets/libs/select2/js/select2.min.js') }}"></script>
 @endpush
 @push('custom-js')
+    <script script src="{{ asset('assets/js/page/filter.js') }}"></script>
     <script>
         $(document).ready(function() {
+            UptSelectFilter();
             TableLoaded('{{ route('admin.pendaftar.datatable.perorangan') }}')
         })
     </script>

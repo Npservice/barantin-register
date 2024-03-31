@@ -2,10 +2,12 @@
      <div class="row">
          <div class="col-md-12 col-sm-12">
              <form class="form-data">
+                 @method('PATCH')
                  <div class="row mb-3">
                      <label for="email" class="col-sm-3 col-form-label">Nama</label>
                      <div class="col-sm-9">
-                         <input class="form-control" type="text" id="nama_mitra" name="nama_mitra">
+                         <input class="form-control" type="text" id="nama_mitra" name="nama_mitra"
+                             value="{{ $data->nama_mitra }}">
                          <div class="invalid-feedback" id="nama_mitra-feedback"></div>
                      </div>
                  </div>
@@ -24,7 +26,8 @@
                      </div>
                      <div class="col">
                          <input class="form-control" type="number" placeholder="Nomor Identitas"
-                             id="nomor_identitas_mitra" name="nomor_identitas_mitra" value="">
+                             id="nomor_identitas_mitra" name="nomor_identitas_mitra"
+                             value="{{ $data->nomor_identitas_mitra }}">
                          <div class="invalid-feedback" id="nomor_identitas_mitra-feedback"></div>
                      </div>
                  </div>
@@ -32,7 +35,7 @@
                      <label for="upt" class="col-sm-3 col-form-label">Telepon</label>
                      <div class="col-sm-9">
                          <input type="text" class="form-control" id="telepon_mitra" name="telepon_mitra"
-                             aria-describedby="inputGroupPrepend" required value="">
+                             aria-describedby="inputGroupPrepend" required value="{{ $data->telepon_mitra }}">
                          <div class="invalid-feedback" id="telepon_mitra-feedback"></div>
                      </div>
                  </div>
@@ -67,7 +70,7 @@
                  <div class="row mb-3">
                      <label for="kabupaten" class="col-md-3 col-form-label">Alamat</label>
                      <div class="col-md-9">
-                         <textarea class="form-control" type="text" placeholder="Alamat" id="alamat_mitra" name="alamat_mitra"></textarea>
+                         <textarea class="form-control" type="text" placeholder="Alamat" id="alamat_mitra" name="alamat_mitra">{{ $data->alamat_mitra }}</textarea>
                      </div>
                  </div>
 
@@ -79,12 +82,12 @@
  <div class="modal-footer">
      <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
      <button type="button" class="btn btn-success" id="button-submit"
-         onclick="submit('{{ route('barantin.mitra.store') }}',false)">Submit</button>
+         onclick="submit('{{ route('barantin.mitra.update', $data->id) }}',false)">Submit</button>
  </div>
  <script>
-     NegaraSelect(99, true)
-     ProvinsiSelect(null, true)
-     KotaSelect(null, true)
+     NegaraSelect('{{ $data->master_negara_id }}', true)
+     ProvinsiSelect('{{ $data->master_provinsi_id ?? null }}', true)
+     KotaSelect('{{ $data->master_kota_kab_id ?? null }}', true)
      $('.select-item').select2({
          placeholder: 'select item',
          minimumResultsForSearch: -1,
@@ -104,6 +107,7 @@
              $('#kabupaten-input-select').removeClass('d-none');
          }
      });
+     $('#jenis_identitas_mitra').val('{{ $data->jenis_identitas_mitra }}').trigger('change');
      var phoneInput = $('#telepon_mitra');
      IMask(phoneInput[0], {
          mask: '0000-0000-0000',

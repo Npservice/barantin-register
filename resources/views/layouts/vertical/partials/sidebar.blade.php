@@ -92,12 +92,13 @@
                             <span>UPT dipilih</span>
                         </a>
                     </li>
-                    <li>
+
+                    {{-- <li>
                         <a href="{{ route('barantin.ppjk.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
                             <span>PPJK</span>
                         </a>
-                    </li>
+                    </li> --}}
                 @endauth
                 {{-- @guest
                 @endguest --}}
