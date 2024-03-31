@@ -36,7 +36,7 @@ class RegisterRequestPerusahaanCabangStore extends FormRequest
                     }
                 },
             ],
-            'nitku' => 'required|unique:barantin_cabangs,nitku|digits:4',
+            'nitku' => 'required|unique:barantin_cabangs,nitku|digits:6',
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
             'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
 
