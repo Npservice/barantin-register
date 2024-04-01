@@ -31,7 +31,7 @@ class MailSendTokenPreRegister extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Mail Baratin Verify Email',
+            subject: 'Mail Barantin Verify Email',
         );
     }
 
