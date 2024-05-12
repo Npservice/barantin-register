@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SelectController;
+use App\Http\Controllers\ExampleFetchDataFromAPi;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,3 +70,7 @@ Route::get('ajax/failed', function () {
 Route::get('link', function () {
     Artisan::call('storage:link');
 });
+/* only test */
+
+Route::get('testonly', [ExampleFetchDataFromAPi::class, 'OnlyTestGetDataFromAPi']);
+

@@ -2,8 +2,17 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Psr\Log\LogLevel;
+use App\Helpers\ApiResponse;
+use Illuminate\Http\Request;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -15,6 +24,7 @@ class Handler extends ExceptionHandler
     protected $levels = [
         //
     ];
+
 
     /**
      * A list of the exception types that are not reported.
@@ -41,8 +51,32 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (Throwable $e, Request $request) {
+            if ($request->is('api/*')) {
+
+                if ($e instanceof NotFoundHttpException) {
+                    return ApiResponse::ErrorResponse('Record Not Found', 404, null);
+                }
+                if ($e instanceof UnauthorizedHttpException) {
+                    return ApiResponse::ErrorResponse('Unauthorized', 401, null);
+                }
+                if ($e instanceof BadRequestHttpException) {
+                    return ApiResponse::ErrorResponse('Bad Request', 400, $e->getTrace());
+                }
+                if ($e instanceof MethodNotAllowedHttpException) {
+                    return ApiResponse::ErrorResponse('Method Not Allowed', 405, $e->getTrace());
+                }
+                if ($e instanceof HttpException) {
+                    return ApiResponse::ErrorResponse('Internal Server Error', 500, $e->getTrace());
+                }
+                if ($e instanceof UnauthorizedHttpException) {
+                    return ApiResponse::ErrorResponse('Unauthorized', 401, null);
+                }
+                if ($e instanceof AuthenticationException) {
+                    return ApiResponse::ErrorResponse('Unauthenticated', 401, null);
+                }
+                return ApiResponse::ErrorResponse($e->getMessage(), 500, $e->getTrace());
+            }
         });
     }
 }

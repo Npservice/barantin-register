@@ -3,7 +3,7 @@
     <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
 @endpush
 @section('title', 'Register')
-@section('text', 'Regiter Baru')
+@section('text', 'Registrasi PTK Online')
 @section('content')
     <div class="p-3">
         <form method="POST" action="{{ route('register.new') }}" class="form-horizontal mt-3">

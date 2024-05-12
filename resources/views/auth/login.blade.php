@@ -1,6 +1,6 @@
 @extends('layouts.auth.master')
 @section('title', 'Login')
-@section('text', 'Sign in')
+@section('text', 'Registrasi PTK Online')
 @section('content')
     <div class="p-3">
         <form class="form-horizontal mt-3" action="{{ route('barantin.auth.login') }}" method="POST">
@@ -42,24 +42,35 @@
                         In</button>
                 </div>
             </div>
-            <div class="form-group mb-3 text-center row  pt-1">
-                <div class="col-12">
-                    <a href="{{ route('register.status') }}" class="w-100 btn btn-info waves-effect waves-light"
-                        target="_blank">Cek Status Register</a>
-                </div>
-            </div>
-
-            <div class="form-group mb-0 row mt-2">
-                <div class="col-sm-7 mt-3">
-                    <a href="{{ route('register.create') }}" class="text-muted"><i class="mdi mdi-lock"></i>Register
-                        ulang</a>
-                </div>
-                <div class="col-sm-5 mt-3">
-                    <a href="{{ route('register.index') }}" class="text-muted"><i
-                            class="mdi mdi-account-circle"></i>Register
-                        baru</a>
-                </div>
-            </div>
         </form>
+        <div class="row">
+            <div class="col">
+                <div class="form-group mb-3 text-center row  pt-1">
+                    <div class="col-12">
+                        <a href="{{ route('register.status') }}" class="w-100 btn btn-info waves-effect waves-light"
+                            target="_blank">Status Register</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group mb-3 text-center row  pt-1">
+                    <div class="col-12">
+                        <a href="{{ route('register.index') }}" class="w-100 btn btn-success waves-effect waves-light"
+                            target="_blank">Register Baru</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- <div class="form-group mb-0 row mt-2">
+            <div class="col-sm-7 mt-3">
+                <a href="{{ route('register.create') }}" class="text-muted"><i class="mdi mdi-lock"></i>Register
+                    ulang</a>
+            </div>
+            <div class="col-sm-5 mt-3">
+                <a href="{{ route('register.index') }}" class="text-muted"><i class="mdi mdi-account-circle"></i>Register
+                    baru</a>
+            </div>
+        </div> --}}
     </div>
 @endsection

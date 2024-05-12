@@ -24,7 +24,7 @@ return new class extends Migration {
 
             $table->foreign('pj_barantin_id')->references('id')->on('pj_baratins')->cascadeOnDelete()->cascadeOnUpdate();
 
-            $table->foreign('master_upt_id')->references('id')->on('master_upts')->cascadeOnDelete()->cascadeOnUpdate();
+            // $table->foreign('master_upt_id')->references('id')->on('master_upts')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

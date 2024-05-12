@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Admin extends Authenticatable
 {
-    use HasFactory, HasUuids;
+    use HasApiTokens, HasFactory, HasUuids;
     protected $guarded = ['id', 'created_at', 'updated_at'];
     protected $fillable = ['nama', 'email', 'username', 'password', 'upt_id'];
     protected $hidden = [

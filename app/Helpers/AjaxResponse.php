@@ -17,6 +17,7 @@ class AjaxResponse
         self::$response['message'] = $message;
         self::$response['table'] = $table;
         return response()->json(self::$response, 200);
+
     }
     public static function ErrorResponse(mixed $error, int $code): JsonResponse
     {

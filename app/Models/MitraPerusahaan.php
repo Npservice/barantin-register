@@ -26,11 +26,11 @@ class MitraPerusahaan extends Model
 
     public function baratin(): BelongsTo
     {
-        return $this->belongsTo(PjBaratin::class);
+        return $this->belongsTo(PjBaratin::class, 'pj_baratin_id');
     }
     public function baratincabang(): BelongsTo
     {
-        return $this->belongsTo(BarantinCabang::class);
+        return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id');
     }
     public function negara(): BelongsTo
     {
