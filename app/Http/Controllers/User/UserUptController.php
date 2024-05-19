@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Rules\UptRule;
 use App\Models\Register;
-use App\Models\MasterUpt;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use Illuminate\Http\JsonResponse;
@@ -49,26 +49,7 @@ class UserUptController extends Controller
         $request->validate([
             'upt' => [
                 'required',
-                function ($attribute, $value, $fail) use ($register) {
-                    $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
-
-
-                    foreach ($value as $item) {
-                        if (!in_array($item, $validUpts)) {
-                            $fail('One or more selected upt is invalid.');
-                        }
-                        if (in_array($item, $register)) {
-                            $status = Register::where('master_upt_id', $item)->where(function ($query) {
-                                $query->where('pj_barantin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
-                            })->value('status');
-                            if (isset ($status)) {
-                                if ($status === "MENUNGGU" || $status === "DISETUJUI") {
-                                    $fail('Anda telah tedaftar di upt yang dipilih');
-                                }
-                            }
-                        }
-                    }
-                },
+                new UptRule,
             ],
         ]);
         foreach ($request->upt as $value) {
@@ -86,42 +67,9 @@ class UserUptController extends Controller
         return AjaxResponse::ErrorResponse('Upt gagal diajukan', 400);
 
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
     public function datatable(): JsonResponse
     {
         $model = $this->query();
-
         return DataTables::eloquent($model)->addIndexColumn()->make(true);
     }
     // query model

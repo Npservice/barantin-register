@@ -122,8 +122,8 @@
                             <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                             <div class="col-sm-9">
                                 <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->provinsi->nama ?? ('' ?? '') }}" type="text"
-                                    placeholder="Provinsi" id="provinsi" name="provinsi">
+                                    value="{{ $dataMaster['provinsi'] }}" type="text" placeholder="Provinsi"
+                                    id="provinsi" name="provinsi">
                             </div>
                         </div>
 

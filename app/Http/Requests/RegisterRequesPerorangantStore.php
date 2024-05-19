@@ -8,6 +8,7 @@ use App\Models\MasterUpt;
 use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
+use App\Rules\LingkupAktifitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequesPerorangantStore extends FormRequest
@@ -42,14 +43,7 @@ class RegisterRequesPerorangantStore extends FormRequest
             'email' => 'required|exists:pre_registers,email',
             'lingkup_aktivitas' => [
                 'required',
-                function ($attribute, $value, $fail) {
-                    $validValues = [1, 2, 3, 4]; // Daftar nilai yang valid
-                    foreach ($value as $item) {
-                        if (!in_array($item, $validValues)) {
-                            $fail('One or more selected values is invalid.');
-                        }
-                    }
-                },
+                new LingkupAktifitasRule
             ],
 
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],

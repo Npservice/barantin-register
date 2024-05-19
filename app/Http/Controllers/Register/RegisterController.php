@@ -175,11 +175,12 @@ class RegisterController extends Controller
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
         if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
             $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
+            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['nitku']);
             $data = collect($data);
             $data = $data->merge([
                 'fax' => $request->nomor_fax,
                 'negara_id' => 99,
+                'nitku' => $request->nitku ?? 000000,
                 'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,

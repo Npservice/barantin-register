@@ -48,14 +48,22 @@ class PermohonanController extends Controller
         $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
+        $upt = BarantinApiHelper::GetMasterUpyByID($register->master_upt_id);
+
+        $dataMaster = [
+            'upt' => $upt['nama_satpel'] . ' - ' . $upt['nama'],
+            'provinsi' => BarantinApiHelper::GetMasterProvinsiByID($data->provinsi_id)['nama'],
+            'kota' => BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id)['nama'],
+            'negara' => BarantinApiHelper::GetMasterNegaraByID($data->negara_id)['nama'],
+        ];
 
         if ($preregister->pemohon === 'perorangan') {
-            return view('admin.permohonan.show.perorangan', compact('data', 'register'));
+            return view('admin.permohonan.show.perorangan', compact('data', 'register', 'dataMaster'));
         } else {
             if ($preregister->jenis_perusahaan === 'induk' || !$preregister->jenis_perusahaan) {
-                return view('admin.permohonan.show.induk', compact('data', 'register'));
+                return view('admin.permohonan.show.induk', compact('data', 'register', 'dataMaster'));
             }
-            return view('admin.permohonan.show.cabang', compact('data', 'register'));
+            return view('admin.permohonan.show.cabang', compact('data', 'register', 'dataMaster'));
         }
     }
 

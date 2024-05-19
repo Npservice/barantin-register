@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use App\Rules\NomerIdentitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserMitraRequestStore extends FormRequest
@@ -28,15 +29,7 @@ class UserMitraRequestStore extends FormRequest
             'nomor_identitas_mitra' => [
                 'required',
                 'numeric',
-                function ($attr, $val, $fail) {
-                    $jenis_dokumen = request()->input('jenis_identitas_mitra');
-                    if ($jenis_dokumen === 'KTP' || $jenis_dokumen === 'NPWP') {
-                        if (!preg_match('/^[0-9]{16}$/', $val)) {
-                            $fail('Nomor dokumen harus berupa 16 digit.');
-                        }
-                    }
-
-                }
+                new NomerIdentitasRule(request()->input('jenis_identitas_mitra'))
             ],
 
             'alamat_mitra' => 'required|string|max:255',

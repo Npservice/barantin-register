@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use App\Rules\NomerIdentitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserPppjkRequestUpdate extends FormRequest
@@ -32,15 +33,8 @@ class UserPppjkRequestUpdate extends FormRequest
             'nomor_identitas_ppjk' => [
                 'required',
                 'numeric',
-                function ($attr, $val, $fail) {
-                    $jenis_dokumen = request()->input('jenis_identitas_ppjk');
-                    if ($jenis_dokumen === 'KTP' || $jenis_dokumen === 'NPWP') {
-                        if (!preg_match('/^[0-9]{16}$/', $val)) {
-                            $fail('Nomor dokumen harus berupa 16 digit.');
-                        }
-                    }
 
-                }
+                new NomerIdentitasRule(request()->input('jenis_identitas_ppjk'))
             ],
 
             'provinsi' => 'required|exists:master_provinsis,id',
@@ -56,15 +50,7 @@ class UserPppjkRequestUpdate extends FormRequest
             'nomor_identitas_tdd_ppjk' => [
                 'required',
                 'numeric',
-                function ($attr, $val, $fail) {
-                    $jenis_dokumen = request()->input('jenis_identitas_tdd_ppjk');
-                    if ($jenis_dokumen === 'KTP' || $jenis_dokumen === 'NPWP') {
-                        if (!preg_match('/^[0-9]{16}$/', $val)) {
-                            $fail('Nomor dokumen harus berupa 16 digit.');
-                        }
-                    }
-
-                }
+                new NomerIdentitasRule(request()->input('jenis_identitas_tdd_ppjk'))
             ],
 
             'jabatan_tdd_ppjk' => 'required|string|max:255',
