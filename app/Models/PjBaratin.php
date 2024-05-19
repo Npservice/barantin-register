@@ -24,6 +24,7 @@ class PjBaratin extends Model
         'nama_perusahaan',
         'jenis_identitas',
         'nomor_identitas',
+        'nitku',
         'alamat',
         'telepon',
         'nama_cp',

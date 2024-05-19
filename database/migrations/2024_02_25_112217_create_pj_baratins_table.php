@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('nama_alias_perusahaan')->nullable();
             $table->enum('jenis_identitas', ['KTP', 'PASSPORT', 'NPWP'])->nullable();
             $table->string('nomor_identitas')->nullable();
+            $table->string('nitku')->nullable();
             $table->text('alamat')->nullable();
             $table->unsignedBigInteger('kota')->nullable();
             $table->string('telepon')->nullable();
@@ -40,7 +41,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('kecamatan_id')->nullable();
             $table->unsignedBigInteger('provinsi_id')->nullable();
             $table->unsignedBigInteger('status_import')->nullable();
-            $table->json('lingkup_aktifitas')->nullable();
+            $table->string('lingkup_aktifitas')->nullable();
             $table->unsignedBigInteger('negara_id')->nullable();
             $table->tinyInteger('is_active')->unsigned()->default(1);
             $table->tinyInteger('status_prioritas')->default(0)->comment('1: layanan prioritas; 5: draft ekspor');
