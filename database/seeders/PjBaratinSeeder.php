@@ -30,12 +30,9 @@ class PjBaratinSeeder extends Seeder
             // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
             DB::transaction(function () use ($faker, $pemohon) {
 
-
-                $kota = MasterKotaKab::with('provinsi:id')->inRandomOrder()->first();
                 $jenis_pemohon = $faker->randomElement($pemohon);
                 $nama = $faker->name;
                 $email = $faker->unique()->safeEmail;
-                $verify_email = $faker->boolean;
 
                 $status = $faker->randomElement(['MENUNGGU', 'DISETUJUI', 'DITOLAK']);
                 $register = PreRegister::create([
@@ -57,8 +54,8 @@ class PjBaratinSeeder extends Seeder
                     'nama_cp' => $faker->name,
                     'alamat_cp' => $faker->address,
                     'telepon_cp' => $faker->phoneNumber,
-                    'kota' => $kota->id,
-                    'provinsi_id' => $kota->provinsi->id,
+                    'kota' => 1101,
+                    'provinsi_id' => 11,
                     'negara_id' => 99, // assuming flat 99 for country
                     'nama_tdd' => $faker->name,
                     'jenis_identitas_tdd' => $faker->randomElement(['KTP', 'NPWP', 'PASSPORT']),
@@ -88,7 +85,7 @@ class PjBaratinSeeder extends Seeder
 
                 Register::create([
                     'pj_barantin_id' => $baratin->id,
-                    'master_upt_id' => 1,
+                    'master_upt_id' => 1100,
                     'status' => $status,
                     'pre_register_id' => $register->id
                 ]);

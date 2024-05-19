@@ -60,11 +60,11 @@ class BarantinController extends Controller
      */
     public function GetAllDataBarantin(int $take): JsonResponse
     {
-        $data = PjBaratin::paginate($take);
-        if ($data->count() > 0) {
-            return ApiResponse::SuccessResponse('barantin all data', self::RenderResponseDataBarantins($data, true), true);
+        $dataBarantin = PjBaratin::paginate($take);
+        if ($dataBarantin->count() > 0) {
+            return ApiResponse::successResponse('barantin all data', self::renderResponseDataBarantins($dataBarantin, true), true);
         }
-        return ApiResponse::ErrorResponse('data not found', 404);
+        return ApiResponse::errorResponse('data not found', 404);
     }
 
     /**
@@ -120,9 +120,9 @@ class BarantinController extends Controller
         $data = PjBaratin::find($id);
 
         if ($data) {
-            return ApiResponse::SuccessResponse('barantin data by id', self::RenderResponseDataBarantin($data), false);
+            return ApiResponse::successResponse('barantin data by id', self::renderResponseDataBarantin($data), false);
         }
-        return ApiResponse::ErrorResponse('data not found', 404);
+        return ApiResponse::errorResponse('data not found', 404);
     }
 
 
@@ -134,11 +134,11 @@ class BarantinController extends Controller
      * @param bool $pagination Menentukan apakah pagination harus diterapkan.
      * @return array Array yang berisi data Barantin yang sudah dirender.
      */
-    private static function RenderResponseDataBarantins($data, bool $pagination = true)
+    private static function renderResponseDataBarantins($data, bool $pagination = true)
     {
         $response = [];
         foreach ($data as $index => $item) {
-            $response[$index] = self::RenderResponseDataBarantin($item);
+            $response[$index] = self::renderResponseDataBarantin($item);
         }
 
         if ($pagination) {
@@ -154,12 +154,12 @@ class BarantinController extends Controller
      * @param object $data Objek data Barantin yang akan dirender.
      * @return array Array yang berisi data Barantin yang sudah diformat.
      */
-    private static function RenderResponseDataBarantin($data)
+    private static function renderResponseDataBarantin($data)
     {
-        $provinsi = BarantinApiHelper::GetMasterProvisiByID($data->provinsi_id);
+        $provinsi = BarantinApiHelper::GetMasterProvinsiByID($data->provinsi_id);
         $kota = BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id);
 
-        $response = [
+        return [
             'id' => $data->id,
             'kode_perusahaan' => $data->kode_perusahaan,
             'nama_perusahaan' => $data->nama_perusahaan,
@@ -188,7 +188,7 @@ class BarantinController extends Controller
             'created_at' => $data->created_at,
             'updated_at' => $data->updated_at
         ];
-        return $response;
+
     }
 
 }

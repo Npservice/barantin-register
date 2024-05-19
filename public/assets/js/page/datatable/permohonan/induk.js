@@ -1,4 +1,4 @@
-table = $("#permohonan-datatable").DataTable({
+table = $("#induk-permohonan-datatable").DataTable({
     processing: true,
     serverSide: true,
     ajax: "/admin/permohonan/datatable/data/perusahaan",
@@ -58,16 +58,13 @@ table = $("#permohonan-datatable").DataTable({
             name: "baratin.email"
         },
         {
-            data: "baratin.negara.nama",
-            name: "baratin.negara.nama"
+            data: "negara", name: "negara"
         },
         {
-            data: "baratin.provinsi.nama",
-            name: "baratin.provinsi.nama"
+            data: "provinsi", name: "provinsi"
         },
         {
-            data: "baratin.kotas.nama",
-            name: "baratin.kotas.nama"
+            data: "kota", name: "kota"
         },
         {
             data: "baratin.alamat",

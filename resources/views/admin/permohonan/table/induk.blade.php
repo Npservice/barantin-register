@@ -2,7 +2,7 @@
       <h5>PERUSAHAAN INDUK</h5>
   </div>
   <div class="table-responsive">
-      <table id="permohonan-datatable" class="table table-bordered dt-responsive nowrap w-100"
+      <table id="induk-permohonan-datatable" class="table table-bordered dt-responsive nowrap w-100"
           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
           <thead>
               <tr>

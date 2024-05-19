@@ -176,19 +176,19 @@ class LoginController extends Controller
 
             if ($validate->fails()) {
                 $error = $validate->errors();
-                return ApiResponse::ErrorResponse('Validation failed', 422, $error->all());
+                return ApiResponse::errorResponse('Validation failed', 422, $error->all());
             }
 
             if (Auth::guard('api')->attempt($request->only('username', 'password'))) {
                 $user = Admin::where('username', $request->username)->first();
                 $user->tokens()->delete();
                 $token = $user->createToken($user->id . 'BarantinK3y')->plainTextToken;
-                return ApiResponse::SuccessResponse('Login Successfully', $user, false, ['token' => 'Bearer ' . $token]);
+                return ApiResponse::successResponse('Login Successfully', $user, false, ['token' => 'Bearer ' . $token]);
             }
 
-            return ApiResponse::ErrorResponse('Unauthorized', 401, 'Account not found');
+            return ApiResponse::errorResponse('Unauthorized', 401, 'Account not found');
         } catch (\Throwable $e) {
-            return ApiResponse::ErrorResponse('Failed to login account', 500, $e->getMessage());
+            return ApiResponse::errorResponse('Failed to login account', 500, $e->getMessage());
         }
 
     }

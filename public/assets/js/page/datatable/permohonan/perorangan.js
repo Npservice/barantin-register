@@ -1,4 +1,4 @@
-table = $("#permohonan-datatable").DataTable({
+table = $("#perorangan-permohonan-datatable").DataTable({
     processing: true,
     serverSide: true,
     ajax: "/admin/permohonan/datatable/data/perorangan",
@@ -28,7 +28,7 @@ table = $("#permohonan-datatable").DataTable({
             data: "blockir", name: "blockir", render: function (data) { return BlokirStatus(data) }
         },
         {
-            data: "upt", name: "upt"
+            data: "upt", name: "master_upt_id"
         },
         {
             data: "baratin.nama_perusahaan", name: "baratin.nama_perusahaan"
@@ -49,13 +49,13 @@ table = $("#permohonan-datatable").DataTable({
             data: "baratin.email", name: "baratin.email"
         },
         {
-            data: "baratin.negara.nama", name: "baratin.negara.nama"
+            data: "negara", name: "negara"
         },
         {
-            data: "baratin.provinsi.nama", name: "baratin.provinsi.nama"
+            data: "provinsi", name: "provinsi"
         },
         {
-            data: "baratin.kotas.nama", name: "baratin.kotas.nama"
+            data: "kota", name: "kota"
         },
         {
             data: "baratin.alamat", name: "baratin.alamat"
@@ -129,6 +129,6 @@ $('#tanggal-register').on('cancel.daterangepicker', function (ev, picker) {
 });
 $('#filter-upt').change(function () {
     var val = $(this).val();
-    if (val === "all") return table.column("upt:name").search("").draw();
-    return table.column("upt:name").search(val).draw();
+    if (val === "all") return table.column("master_upt_id:name").search("").draw();
+    return table.column("master_upt_id:name").search(val).draw();
 });

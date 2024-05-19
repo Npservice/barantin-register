@@ -41,7 +41,12 @@ class PreRegisterController extends Controller
     }
 
     /**
-     * new register create
+     * Membuat pendaftaran baru berdasarkan data yang diberikan dalam request.
+     * Jika email sudah terdaftar, akan memanggil fungsi RegisterCheck.
+     * Jika belum, akan membuat data preregister baru dan mengirimkan token verifikasi ke email.
+     *
+     * @param PreRegisterRequestStore $request Data request yang berisi informasi pendaftaran
+     * @return View Mengembalikan tampilan verifikasi dengan token yang baru digenerasi
      */
     public function NewRegister(PreRegisterRequestStore $request): View
     {
@@ -71,6 +76,15 @@ class PreRegisterController extends Controller
 
     }
 
+    /**
+     * Memeriksa dan memperbarui data pendaftaran berdasarkan permintaan yang diberikan.
+     * Jika UPT sudah terdaftar, data akan diperbarui. Jika tidak, UPT baru akan dibuat.
+     * Semua token yang ada akan dihapus dan token baru akan digenerasi.
+     *
+     * @param PreRegister $preregister Objek PreRegister yang sedang diperiksa
+     * @param Request $request Data permintaan yang digunakan untuk pembaruan atau pembuatan
+     * @return View Mengembalikan tampilan verifikasi dengan token yang baru digenerasi
+     */
     public function RegisterCheck(PreRegister $preregister, Request $request): View
     {
 
@@ -106,7 +120,15 @@ class PreRegisterController extends Controller
 
     }
 
-    /* register ulang */
+    /**
+     * Handle re-registration process.
+     * This method will attempt to find a company by its code and email, and if found, it will create a pre-registration and a mail token.
+     * If the company is not found, it will attempt to find a company in a different table and proceed with the registration.
+     * Finally, it sends an email with the registration token.
+     *
+     * @param RegisterUlangRequestStore $request
+     * @return View
+     */
     public function RegisterUlang(RegisterUlangRequestStore $request): View
     {
         $baratin = PjBaratin::where('kode_perusahaan', $request->username)->where('email', $request->email)->first();
@@ -131,7 +153,14 @@ class PreRegisterController extends Controller
     }
 
     /**
-     * verify token
+     * Verifikasi token yang diberikan oleh pengguna.
+     * Fungsi ini akan memvalidasi token yang diterima dan memeriksa apakah token tersebut masih berlaku.
+     * Jika token tidak valid atau telah kedaluwarsa, pengguna akan dialihkan ke halaman pesan dengan pemberitahuan.
+     * Jika token valid, verifikasi email akan diupdate dan pengguna akan dialihkan ke formulir pendaftaran.
+     *
+     * @param string $id ID dari pra-registrasi
+     * @param string $token Token yang akan diverifikasi
+     * @return RedirectResponse Mengembalikan respons pengalihan
      */
     public function TokenVerify(string $id, string $token): RedirectResponse
     {
@@ -149,7 +178,13 @@ class PreRegisterController extends Controller
     }
 
     /**
-     regenerate token function
+     * Fungsi untuk meregenerasi token
+     *
+     * Fungsi ini akan memvalidasi request, menghapus token lama, dan membuat token baru.
+     * Kemudian, fungsi ini akan mengirim email dengan token baru ke pengguna.
+     *
+     * @param Request $request Data request yang diterima
+     * @return View Mengembalikan view untuk verifikasi
      */
     public function Regenerate(Request $request): View
     {

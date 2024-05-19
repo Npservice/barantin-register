@@ -115,13 +115,15 @@ function CreateCabang(url) {
 
 /* only table load */
 
-function TableLoaded(url) {
+function TableLoaded(url, table_name) {
     let table = null;
-    $('#filter-status-import').length > 0 && $('#filter-status-import').val('all').trigger('change');
-    $('#filter-status-import').length > 0 && $('#filter-upt').empty().trigger('change');
-    $('#pendaftar-datatable').DataTable().destroy();
+    $(table_name).DataTable().destroy();
     $('#table-loaded').empty().append('<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>');
+    // $('#filter-status-import').length > 0 && $('#filter-upt').empty().trigger('change');
+    // $('#filter-status-import').length > 0 && $('#filter-status-import').val('all').trigger('change');
     $('#table-loaded').load(url);
+
+
 
 }
 

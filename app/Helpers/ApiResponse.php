@@ -12,16 +12,16 @@ class ApiResponse
         'message' => null,
         'data' => null
     ];
-    public static function SuccessResponse(string $message = null, mixed $data = null, bool $paginate = false, array $custom = []): JsonResponse
+    public static function successResponse(string $message = null, mixed $data = null, bool $paginate = false, array $custom = []): JsonResponse
     {
         self::$response['message'] = $message;
 
-        self::$response = self::DataProccess($paginate, $data);
-        self::$response = self::CustomMessage($custom);
+        self::$response = self::dataProccess($paginate, $data);
+        self::$response = self::customMessage($custom);
 
         return response()->json(self::$response);
     }
-    public static function ErrorResponse(string $message = null, int $code, mixed $error = null): JsonResponse
+    public static function errorResponse(string $message = null, int $code, mixed $error = null): JsonResponse
     {
         unset(self::$response['data']);
 
@@ -32,7 +32,7 @@ class ApiResponse
 
         return response()->json(self::$response, $code);
     }
-    private static function DataProccess(bool $paginate, mixed $data)
+    private static function dataProccess(bool $paginate, mixed $data)
     {
         if ($paginate) {
             unset(self::$response['data']);
@@ -49,7 +49,7 @@ class ApiResponse
     }
 
 
-    private static function CustomMessage(array $custom)
+    private static function customMessage(array $custom)
     {
         if (count($custom) > 0) {
             return self::$response = array_merge(self::$response, $custom);

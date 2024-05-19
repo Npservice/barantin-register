@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Carbon\Carbon;
+use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
+use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class LoginController extends Controller
 {
@@ -23,17 +26,40 @@ class LoginController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function login(Request $request): RedirectResponse
+    public function login(Request $request)//: RedirectResponse
     {
-        $attempt = $request->validate([
+
+        $request->validate([
             'username' => ['required'],
             'password' => ['required'],
         ]);
 
 
 
+        $res = BarantinApiHelper::loginApiBarantin($request->username, $request->password);
 
-        if (Auth::guard('admin')->attempt($attempt)) {
+
+        if ($res['status'] !== '200') {
+            return back()->withErrors([
+                'username' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
+        }
+        $user = $res['data'];
+        $roleInstance = $user['detil'][0];
+
+        $admin = Admin::updateOrCreate(['uid' => $user['uid']], [
+            'uid' => $user['uid'],
+            'roles_id' => $roleInstance['roles_id'],
+            'apps_id' => $roleInstance['apps_id'],
+            'role_name' => $roleInstance['role_name'],
+            'access_token' => $user['accessToken'],
+            'refresh_token' => $user['refreshToken'],
+            'expiry' => Carbon::createFromFormat('Y-m-d\TH:i:sP', $user['expiry'])->toDateTimeString(),
+            'password' => $request->password,
+        ]);
+
+
+        if (Auth::guard('admin')->attempt(['uid' => $admin->uid, 'password' => $request->password])) {
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard.index');
         }
@@ -41,6 +67,7 @@ class LoginController extends Controller
         return back()->withErrors([
             'username' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
+
     }
 
     /**
@@ -48,13 +75,19 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
+
+        $user = Auth::guard('admin')->user();
         Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return response()->json();
+        // Menghapus user dari database
+        if ($user) {
+            $user->delete();
+        }
+
+        return response()->json(['message' => 'User logged out and deleted successfully']);
     }
 
 

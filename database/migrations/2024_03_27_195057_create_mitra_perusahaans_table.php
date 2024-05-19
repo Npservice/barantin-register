@@ -30,9 +30,7 @@ return new class extends Migration {
             $table->foreign('barantin_cabang_id')->references('id')->on('barantin_cabangs')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDeleter()->cascadeOnUpdate();
 
-            $table->foreign('master_negara_id')->references('id')->on('master_negaras')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('master_provinsi_id')->references('id')->on('master_provinsis')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('master_kota_kab_id')->references('id')->on('master_kota_kabs')->cascadeOnDelete()->cascadeOnUpdate();
+
 
 
             $table->timestamps();

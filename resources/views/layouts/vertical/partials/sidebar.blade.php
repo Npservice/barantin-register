@@ -9,7 +9,7 @@
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">
-                    {{ auth()->guard('admin')->user()->nama ?? auth()->guard('web')->user()->nama }}</h4>
+                    {{ auth()->guard('admin')->user()->role_name ?? auth()->guard('web')->user()->nama }}</h4>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
                     Online</span>
             </div>

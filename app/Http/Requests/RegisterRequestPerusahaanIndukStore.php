@@ -2,8 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\UptRule;
+use App\Rules\KotaRule;
 use App\Models\MasterUpt;
+use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
+use App\Rules\NomerIdentitasRule;
+use App\Rules\LingkupAktifitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequestPerusahaanIndukStore extends FormRequest
@@ -26,14 +31,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
         return [
             'upt' => [
                 'required',
-                function ($attribute, $value, $fail) {
-                    $validUpts = MasterUpt::pluck('id')->toArray(); // Ganti 'id' dengan kolom yang sesuai dari model Anda
-                    foreach ($value as $item) {
-                        if (!in_array($item, $validUpts)) {
-                            $fail('One or more selected upt is invalid.');
-                        }
-                    }
-                },
+                new UptRule
             ],
             'jenis_identitas' => ['required', Rule::in(['NPWP'])],
             'pemohon' => 'required|exists:pre_registers,nama',
@@ -41,11 +39,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
                 'required',
                 'numeric',
                 'unique:pj_baratins,nomor_identitas',
-                function ($attr, $val, $fail) {
-                    if (!preg_match('/^[0-9]{16}$/', $val)) {
-                        $fail('Nomor dokumen harus berupa 16 digit.');
-                    }
-                }
+                new NomerIdentitasRule(request()->input('jenis_identitas'))
             ],
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
             'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
@@ -53,14 +47,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
             'email' => 'required|exists:pre_registers,email',
             'lingkup_aktivitas' => [
                 'required',
-                function ($attribute, $value, $fail) {
-                    $validValues = [1, 2, 3, 4]; // Daftar nilai yang valid
-                    foreach ($value as $item) {
-                        if (!in_array($item, $validValues)) {
-                            $fail('One or more selected values is invalid.');
-                        }
-                    }
-                },
+                new LingkupAktifitasRule
             ],
             'nama_alias_perusahaan' => Rule::requiredIf(function () {
                 $lingkup_aktivitas = request()->input('lingkup_aktivitas');
@@ -69,8 +56,8 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
 
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],
             // 'negara' => 'required|exists:master_negaras,id',
-            'kota' => 'required|exists:master_kota_kabs,id',
-            'provinsi' => 'required|exists:master_provinsis,id',
+            'kota' => ['required', new KotaRule(request()->input('provinsi'))],
+            'provinsi' => ['required', new ProvinsiRule],
             'alamat' => 'required',
 
             'nama_cp' => 'required',
@@ -82,15 +69,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
             'nomor_identitas_tdd' => [
                 'required',
                 'numeric',
-                function ($attr, $val, $fail) {
-                    $jenis_dokumen = request()->input('jenis_identitas_tdd');
-                    if ($jenis_dokumen === 'KTP' || $jenis_dokumen === 'NPWP') {
-                        if (!preg_match('/^[0-9]{16}$/', $val)) {
-                            $fail('Nomor dokumen harus berupa 16 digit.');
-                        }
-                    }
-
-                }
+                new NomerIdentitasRule(request()->input('jenis_identitas_tdd'))
             ],
             'jabatan_tdd' => 'required',
             'alamat_tdd' => 'required',

@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Register;
-use App\Models\MasterUpt;
 use App\Models\PjBaratin;
-use App\Models\MasterNegara;
-use Illuminate\Http\Request;
-use App\Models\MasterKotaKab;
-use App\Models\MasterProvinsi;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use App\Http\Controllers\Controller;
 
 class SelectController extends Controller
@@ -19,28 +16,18 @@ class SelectController extends Controller
      */
     public function SelectUpt(): JsonResponse
     {
+        $data = collect(BarantinApiHelper::getDataMasterUpt()->original);
+
         if (request()->input('q')) {
-
-            $data = MasterUpt::select('id', 'nama', 'nama_satpel')
-                ->where('nama', 'LIKE', '%' . request()->input('q') . '%')
-                ->orWhere('nama_satpel', 'LIKE', '%' . request()->input('q') . '%')
-                ->get();
-
+            $data = JsonFilterHelper::searchDataByKeyword($data, request()->input('q'), 'nama_satpel', 'nama');
         } elseif (request()->input('upt_id')) {
-
-            $data = MasterUpt::find(request()->input('upt_id'));
-
+            $data = BarantinApiHelper::GetMasterUpyByID(request()->input('upt_id'));
         } elseif (request()->input('pre_register_id')) {
-
-            $data = MasterUpt::select('nama', 'id', 'nama_satpel')->whereIn('id', function ($query) {
-                $query->select('master_upt_id')
-                    ->from('registers')
-                    ->where('pre_register_id', request()->input('pre_register_id'));
-            })->get();
-        } else {
-            $data = MasterUpt::select('id', 'nama', 'nama_satpel')->get();
+            $uptIdArray = Register::where('pre_register_id', request()->input('pre_register_id'))->pluck('master_upt_id')->toArray();
+            $data = JsonFilterHelper::filterByID($data, $uptIdArray);
         }
         return response()->json($data);
+
     }
 
     /**
@@ -48,33 +35,29 @@ class SelectController extends Controller
      */
     public function SelectNegara(): JsonResponse
     {
+        $data = collect(BarantinApiHelper::GetDataMasterNegara()->original);
         if (request()->input('negara_id')) {
-            $data = MasterNegara::find(request()->input('negara_id'));
-        } else {
-            $data = MasterNegara::select('id', 'nama', 'kode')->get();
+            $data = BarantinApiHelper::GetMasterNegaraByID(request()->input('negara_id'));
         }
         return response()->json($data);
     }
     public function SelectProvinsi(): JsonResponse
     {
+        $data = collect(BarantinApiHelper::GetDataMasterProvinsi()->original);
         if (request()->input('provinsi_id')) {
-            $data = MasterProvinsi::find(request()->input('provinsi_id'));
-        } else {
-            $data = MasterProvinsi::select('id', 'nama')->get();
-
+            $data = BarantinApiHelper::GetMasterProvinsiByID(request()->input('provinsi_id'));
         }
         return response()->json($data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // /**
+    //  * Store a newly created resource in storage.
+    //  */
     public function SelectKota(string $id): JsonResponse
     {
+        $data = collect(BarantinApiHelper::GetDataMasterKota($id)->original);
         if (request()->input('kota_id')) {
-            $data = MasterKotaKab::find(request()->input('kota_id'));
-        } else {
-            $data = MasterKotaKab::where('provinsi_id', $id)->select('id', 'nama')->get();
+            $data = BarantinApiHelper::GetMasterKotaByID(request()->input('kota_id'), $id);
         }
         return response()->json($data);
     }

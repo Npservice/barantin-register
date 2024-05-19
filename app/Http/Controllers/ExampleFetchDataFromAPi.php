@@ -13,9 +13,9 @@ class ExampleFetchDataFromAPi extends Controller
     {
         try {
 
-            $data = BarantinAPiHelper::GetDataMasterUpt();
+            $data = BarantinAPiHelper::getDataMasterUpt();
 
-            $filter = JsonFilterHelper::filter($data->original, 1001);
+            $filter = JsonFilterHelper::filterByID($data->original, 1001);
 
             return response()->json($filter);
         } catch (\Exception $e) {

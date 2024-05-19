@@ -22,10 +22,6 @@ class Register extends Model
     {
         return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id', 'id');
     }
-    public function upt(): BelongsTo
-    {
-        return $this->belongsTo(MasterUpt::class, 'master_upt_id', 'id');
-    }
     public function preregister(): BelongsTo
     {
         return $this->belongsTo(PreRegister::class, 'pre_register_id', 'id');

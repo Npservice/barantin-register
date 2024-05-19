@@ -12,18 +12,16 @@ class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, HasUuids;
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $fillable = ['nama', 'email', 'username', 'password', 'upt_id'];
+    protected $fillable = ['uid', 'roles_id', 'apps_id', 'role_name', 'access_token', 'refresh_token', 'expiry', 'password'];
     protected $hidden = [
-        'password',
+        'access_token',
+        'password'
 
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function upt(): BelongsTo
-    {
-        return $this->belongsTo(MasterUpt::class, 'upt_id', 'id');
-    }
+
 
 }

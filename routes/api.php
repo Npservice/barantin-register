@@ -26,7 +26,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::post('login', [LoginController::class, 'login'])->name('login');
 
     Route::get('failed', function () {
-        return ApiResponse::ErrorResponse('Unauthorized', 401);
+        return ApiResponse::errorResponse('Unauthorized', 401);
     })->name('failed');
 
     Route::middleware('auth:sanctum')->group(function () {

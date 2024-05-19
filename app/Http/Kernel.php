@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'ajax' => \App\Http\Middleware\AjaxRequest::class,
         'induk' => \App\Http\Middleware\IndukPerusahan::class,
-        'registerfailed' => \App\Http\Middleware\RestricRegisterFailedMidlleware::class
+        'registerfailed' => \App\Http\Middleware\RestricRegisterFailedMidlleware::class,
+        'refresh.token' => \App\Http\Middleware\RefreshTokenApiBarantin::class
     ];
 }

@@ -25,7 +25,12 @@ use App\Http\Requests\RegisterRequestPerusahaanCabangStore;
 class RegisterController extends Controller
 {
 
-    /* register  formulir handler */
+    /**
+     * Menampilkan indeks formulir registrasi berdasarkan ID pra-registrasi.
+     *
+     * @param string $id ID dari pra-registrasi yang ingin ditampilkan formulirnya.
+     * @return View Mengembalikan tampilan formulir registrasi.
+     */
     public function RegisterFormulirIndex(string $id): View
     {
         $register = PreRegister::find($id);
@@ -37,7 +42,13 @@ class RegisterController extends Controller
         }
         return view('register.form.index', compact('id'));
     }
-    /* register form request by ajax */
+    /**
+     * Menangani permintaan formulir registrasi melalui AJAX.
+     *
+     * @param Request $request Data permintaan dari pengguna.
+     * @param string $id ID dari pra-registrasi.
+     * @return View Mengembalikan tampilan yang sesuai berdasarkan jenis pemohon.
+     */
     public function RegisterForm(Request $request, string $id): View
     {
         $register = PreRegister::find($id);
@@ -53,7 +64,13 @@ class RegisterController extends Controller
         }
         return view('register.form.partial.perorangan', compact('register', 'baratan'));
     }
-    /* status register */
+    /**
+     * Menangani permintaan untuk mendapatkan status registrasi.
+     * Fungsi ini mengembalikan respons JSON jika permintaan dilakukan melalui AJAX,
+     * dan mengembalikan tampilan halaman status jika tidak.
+     *
+     * @return View|JsonResponse
+     */
     public function StatusRegister(): View|JsonResponse
     {
         if (request()->ajax()) {
@@ -73,13 +90,24 @@ class RegisterController extends Controller
         }
         return view('register.status.index');
     }
-    /* message register */
+    /**
+     * Menampilkan halaman pesan untuk proses registrasi.
+     * Fungsi ini mengembalikan view yang berisi pesan-pesan terkait proses registrasi.
+     *
+     * @return View Mengembalikan view pesan registrasi.
+     */
     public function RegisterMessage(): View
     {
         return view('register.message');
     }
 
-    /* register ceked */
+    /**
+     * Memeriksa status registrasi dan validasi email.
+     * Fungsi ini akan menghentikan proses jika email belum terverifikasi atau registrasi masih dalam proses.
+     *
+     * @param mixed $register Data registrasi yang akan diperiksa.
+     * @return RedirectResponse|bool Mengembalikan true jika pemeriksaan berhasil, atau mengarahkan kembali jika terdapat masalah.
+     */
     public function CheckRegister(mixed $register): RedirectResponse|bool
     {
         if (!$register || !$register->verify_email) {
@@ -97,29 +125,17 @@ class RegisterController extends Controller
         return true;
     }
 
-    /* register saved */
-    // public function RegisterStore(RegisterRequestStore $request, string $id): JsonResponse
-    // {
 
-
-    //     $register = PreRegister::find($id);
-    //     $this->CheckRegister($register);
-    //     $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
-    //     // dd($dokumen);
-    //     if ($register->pemohon === 'perusahaan') {
-    //         /* perusahaan register cek */
-
-    //     } else {
-    //         /* perorangan register cek */
-    //         if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
-    //             $this->SaveRegister($request, $id);
-    //             return response()->json(['status' => true, 'message' => 'Register Berhasil Dilakukan'], 200);
-    //         }
-    //         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP, NPWP, dan PASSPORT'], 422);
-    //     }
-
-    // }
-    /* store peroeangan */
+    /**
+     * Menyimpan data registrasi perorangan.
+     * Fungsi ini akan memeriksa keberadaan dokumen KTP atau PASSPORT sebelum melanjutkan proses registrasi.
+     * Jika dokumen lengkap, data akan diproses dan disimpan.
+     * Jika tidak, akan dikembalikan respons dengan pesan kesalahan.
+     *
+     * @param RegisterRequesPerorangantStore $request Data request yang diterima
+     * @param string $id ID pra-registrasi
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function StoreRegisterPerorangan(RegisterRequesPerorangantStore $request, string $id)
     {
         $register = PreRegister::find($id);
@@ -142,7 +158,16 @@ class RegisterController extends Controller
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP/PASSPORT'], 422);
     }
-    /* store perusahaan induk */
+    /**
+     * Menangani proses registrasi untuk perusahaan induk.
+     * Fungsi ini akan memeriksa keberadaan dokumen NPWP dan NIB sebelum melanjutkan proses registrasi.
+     * Jika dokumen lengkap, data akan diproses dan disimpan.
+     * Jika tidak, akan dikembalikan respons dengan pesan kesalahan.
+     *
+     * @param RegisterRequestPerusahaanIndukStore $request Data request yang diterima
+     * @param string $id ID pra-registrasi
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function StoreRegisterPerusahaanInduk(RegisterRequestPerusahaanIndukStore $request, string $id)
     {
         $register = PreRegister::find($id);
@@ -167,13 +192,23 @@ class RegisterController extends Controller
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NPWP, NIB'], 422);
     }
+    /**
+     * Menangani penyimpanan data registrasi untuk perusahaan cabang.
+     *
+     * Fungsi ini akan memeriksa keberadaan dokumen pendukung yang diperlukan dan
+     * menggabungkan data yang diperlukan sebelum menyimpannya ke dalam database.
+     * Jika dokumen yang diperlukan tidak lengkap, fungsi akan mengembalikan pesan error.
+     *
+     * @param RegisterRequestPerusahaanCabangStore $request Data request yang diterima
+     * @param string $id ID pra-registrasi
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function StoreRegisterPerusahaanCabang(RegisterRequestPerusahaanCabangStore $request, string $id)
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
         $induk = PjBaratin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
-        // dd($induk);
         if ($dokumen->contains('NITKU')) {
             $data = $request->all();
             unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
@@ -196,7 +231,15 @@ class RegisterController extends Controller
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
     }
-    /* for saved register */
+    /**
+     * Menyimpan data registrasi perusahaan induk perorangan menggunakan transaksi database.
+     * Fungsi ini bertanggung jawab untuk membuat entri baru untuk PjBaratin dan memperbarui data pra-registrasi.
+     * Selain itu, fungsi ini juga mengelola status registrasi UPT berdasarkan kondisi yang ada.
+     *
+     * @param Request $request Data request yang diterima
+     * @param string $id ID pra-registrasi
+     * @param Collection $data Data yang akan disimpan
+     */
     public function SaveRegisterPerusahaanIndukPerorangan(Request $request, string $id, $data): void
     {
         DB::transaction(
@@ -204,7 +247,7 @@ class RegisterController extends Controller
                 $baratin = PjBaratin::create($data->all());
                 PreRegister::find($id)->update(['nama' => $baratin->nama_perusahaan]);
                 $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
-                foreach ($request->upt as $index => $upt) {
+                foreach ($request->upt as $upt) {
                     if (in_array($upt, $register_upt_user)) {
                         $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
                         if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
@@ -221,6 +264,16 @@ class RegisterController extends Controller
         return;
     }
 
+    /**
+     * Menyimpan data registrasi cabang menggunakan transaksi database.
+     *
+     * Fungsi ini bertanggung jawab untuk membuat entri baru untuk cabang Barantin
+     * dan memperbarui data pra-registrasi serta mengelola status registrasi UPT.
+     *
+     * @param Request $request Data request yang diterima
+     * @param string $id ID pra-registrasi
+     * @param Collection $data Data yang akan disimpan
+     */
     public function SaveRegisterCabang(Request $request, $id, $data): void
     {
         DB::transaction(
@@ -229,7 +282,7 @@ class RegisterController extends Controller
                 PreRegister::find($id)->update(['nama' => $baratin_cabang->nama_perusahaan]);
                 $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
 
-                foreach ($request->upt as $index => $upt) {
+                foreach ($request->upt as $upt) {
                     if (in_array($upt, $register_upt_user)) {
                         $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
                         if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
@@ -246,7 +299,16 @@ class RegisterController extends Controller
         return;
     }
 
-    /* register dokumen pendukung saved */
+    /**
+     * Menyimpan dokumen pendukung ke dalam database.
+     *
+     * Fungsi ini akan menyimpan file dokumen yang diunggah ke dalam penyimpanan publik
+     * dan mencatat detail dokumen tersebut ke dalam database.
+     *
+     * @param string $id ID dari pra-registrasi
+     * @param DokumenPendukungRequestStore $request Data request yang mengandung informasi dokumen
+     * @return JsonResponse Respon JSON yang mengindikasikan hasil operasi
+     */
     public function DokumenPendukungStore(string $id, DokumenPendukungRequestStore $request): JsonResponse
     {
         $file = Storage::disk('public')->put('file_pendukung/' . $id, $request->file('file_dokumen'));
@@ -262,7 +324,15 @@ class RegisterController extends Controller
 
     }
 
-    /* dokumen pendukung datatable hanlder */
+    /**
+     * Mengelola data tabel untuk dokumen pendukung.
+     *
+     * Fungsi ini mengambil data dokumen pendukung berdasarkan ID pra-registrasi
+     * dan mengembalikan data tersebut dalam format JSON untuk digunakan dalam DataTables.
+     *
+     * @param string $id ID dari pra-registrasi
+     * @return JsonResponse Respon JSON yang mengandung data dokumen pendukung
+     */
     public function DokumenPendukungDataTable(string $id): JsonResponse
     {
         $model = DokumenPendukung::where('pre_register_id', $id);
@@ -274,11 +344,21 @@ class RegisterController extends Controller
             ->rawColumns(['action', 'file'])
             ->toJson();
     }
+    /**
+     * Menghapus dokumen pendukung dari database dan penyimpanan.
+     *
+     * Fungsi ini akan menghapus file dokumen pendukung dari penyimpanan publik
+     * dan menghapus entri dokumen dari database. Jika operasi berhasil,
+     * akan mengembalikan respon sukses, jika gagal akan mengembalikan respon error.
+     *
+     * @param string $id ID dokumen pendukung yang akan dihapus
+     * @return JsonResponse Respon JSON yang mengindikasikan hasil operasi
+     */
     public function DokumenPendukungDestroy(string $id): JsonResponse
     {
 
         $data = DokumenPendukung::find($id);
-        $file = Storage::disk('public')->delete($data->file);
+        Storage::disk('public')->delete($data->file);
         $res = $data->delete();
 
         if ($res) {

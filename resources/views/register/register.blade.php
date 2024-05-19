@@ -69,7 +69,7 @@
             </div>
 
             <div class="form-group mb-3 row">
-                <label for="upt">Upt</label>
+                <label for="upt">UPT Karantina</label>
                 <div class="col-12">
                     <select id="upt" disabled multiple type="text"
                         class="form-control @error('upt') is-invalid @enderror upt-select" name="upt[]"></select>

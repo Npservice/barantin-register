@@ -56,20 +56,10 @@ class PjBaratin extends Model
 
         'is_active',
         'status_prioritas',
+        'lingkup_aktifitas',
     ];
 
-    public function negara(): BelongsTo
-    {
-        return $this->belongsTo(MasterNegara::class, 'negara_id', 'id');
-    }
-    public function provinsi(): BelongsTo
-    {
-        return $this->belongsTo(MasterProvinsi::class, 'provinsi_id', 'id');
-    }
-    public function kotas(): BelongsTo
-    {
-        return $this->belongsTo(MasterKotaKab::class, 'kota', 'id');
-    }
+
     public function register(): HasMany
     {
         return $this->hasMany(Register::class, 'id', 'pj_barantin_id');

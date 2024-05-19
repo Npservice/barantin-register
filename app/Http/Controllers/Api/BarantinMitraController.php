@@ -72,9 +72,9 @@ class BarantinMitraController extends Controller
     {
         $data = MitraPerusahaan::paginate($take);
         if ($data->count() > 0) {
-            return ApiResponse::SuccessResponse('barantin mitra data', self::RenderDataResponses($data, true), true);
+            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data, true), true);
         }
-        return ApiResponse::ErrorResponse('data not found', 404);
+        return ApiResponse::errorResponse('Data not found', 404);
     }
     /**
      * @OA\Get(
@@ -123,9 +123,9 @@ class BarantinMitraController extends Controller
     {
         $data = MitraPerusahaan::where('pj_baratin_id', $barantin_id)->get();
         if ($data->count() > 0) {
-            return ApiResponse::SuccessResponse('barantin mitra data', self::RenderDataResponses($data), false);
+            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data), false);
         }
-        return ApiResponse::ErrorResponse('data not found', 404);
+        return ApiResponse::errorResponse('Data not found', 404);
     }
 
     /**
@@ -174,9 +174,9 @@ class BarantinMitraController extends Controller
     {
         $data = MitraPerusahaan::where('barantin_cabang_id', $barantin_cabang_id)->get();
         if ($data->count() > 0) {
-            return ApiResponse::SuccessResponse('barantin mitra data', self::RenderDataResponses($data), false);
+            return ApiResponse::successResponse('barantin mitra data', self::renderDataResponses($data), false);
         }
-        return ApiResponse::ErrorResponse('data not found', 404);
+        return ApiResponse::errorResponse('data not found', 404);
     }
 
     /**
@@ -222,16 +222,16 @@ class BarantinMitraController extends Controller
     {
         $data = MitraPerusahaan::find($mitra_id);
         if ($data) {
-            return ApiResponse::SuccessResponse('barantin mitra data', self::RenderDataResponse($data), false);
+            return ApiResponse::successResponse('barantin mitra data', self::renderDataResponse($data), false);
         }
-        return ApiResponse::ErrorResponse('data not found', 404);
+        return ApiResponse::errorResponse('data not found', 404);
     }
 
-    private static function RenderDataResponses($data, bool $pagination = false): array
+    private static function renderDataResponses($data, bool $pagination = false): array
     {
         $response = [];
         foreach ($data as $item) {
-            $response[] = self::RenderDataResponse($item);
+            $response[] = self::renderDataResponse($item);
         }
         if ($pagination) {
             $response = PaginationHelper::pagination($data, $response);
@@ -239,10 +239,10 @@ class BarantinMitraController extends Controller
         return $response;
     }
 
-    private static function RenderDataResponse($data): array
+    private static function renderDataResponse($data): array
     {
 
-        $provinsi = $data->master_provinsi_id ? BarantinApiHelper::GetMasterProvisiByID($data->master_provinsi_id) : null;
+        $provinsi = $data->master_provinsi_id ? BarantinApiHelper::GetMasterProvinsiByID($data->master_provinsi_id) : null;
         $kota = $data->master_kota_kab_id ? BarantinApiHelper::GetMasterKotaByID($data->master_kota_kab_id, $data->master_provinsi_id) : null;
 
         $data = [

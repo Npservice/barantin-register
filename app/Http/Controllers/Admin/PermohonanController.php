@@ -11,6 +11,7 @@ use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,38 +26,29 @@ class PermohonanController extends Controller
     {
         $this->middleware('ajax')->except('index');
     }
-    public function index(): View|JsonResponse
+    public function index(): View
     {
-        if (request()->ajax()) {
-            return $this->datatable();
-        }
         return view('admin.permohonan.index');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan detail permohonan berdasarkan ID.
+     *
+     * Metode ini mengambil data permohonan menggunakan ID yang diberikan.
+     * Jika pemohon adalah perorangan, tampilkan view perorangan.
+     * Jika pemohon adalah perusahaan induk atau tidak memiliki jenis, tampilkan view induk.
+     * Jika tidak, tampilkan view cabang.
+     *
+     * @param Request $request Request yang dikirim oleh user.
+     * @param string $id ID dari permohonan yang ingin ditampilkan.
+     * @return View Mengembalikan view yang sesuai dengan jenis pemohon.
      */
-    public function create()
+    public function show(Request $request, string $id): View
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Request $request, string $id)//: View
-    {
-        $data = PjBaratin::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama'])->find($id) ?? BarantinCabang::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama', 'baratininduk:nama_perusahaan,id'])->find($id);
+        $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
+
         if ($preregister->pemohon === 'perorangan') {
             return view('admin.permohonan.show.perorangan', compact('data', 'register'));
         } else {
@@ -67,53 +59,40 @@ class PermohonanController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
-     * Update the specified resource in storage.
+     * Menghapus entri permohonan dari database.
+     *
+     * Fungsi ini bertanggung jawab untuk menghapus entri permohonan berdasarkan ID yang diberikan.
+     * Jika penghapusan berhasil, fungsi akan mengembalikan response sukses.
+     * Jika penghapusan gagal, fungsi akan mengembalikan response error.
+     *
+     * @param string $id ID dari permohonan yang akan dihapus.
+     * @return JsonResponse yang mengindikasikan hasil operasi.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $res = Register::destroy($id);
         if ($res) {
-            return AjaxResponse::SuccessResponse('permohonan berhasil dihapus', 'permohonan-datatable');
+            return AjaxResponse::SuccessResponse('Permohonan berhasil dihapus', 'permohonan-datatable');
         }
         return AjaxResponse::ErrorResponse($res, 400);
-
     }
-    public function datatablePeoranganPerusahaanInduk(string $datatable): JsonResponse
+    /**
+     * Menghasilkan JSON response untuk DataTable berdasarkan jenis pemohon.
+     *
+     * Metode ini mengambil model yang sesuai berdasarkan jenis pemohon, kemudian
+     * membangun DataTable yang memungkinkan pencarian berdasarkan tanggal update.
+     * Kolom dan aksi spesifik ditambahkan melalui metode `columnDaerahRender`.
+     *
+     * @param string $pemohon Tipe pemohon yang digunakan untuk memfilter data.
+     * @return JsonResponse Response DataTable yang siap digunakan di frontend.
+     */
+    public function datatable(string $pemohon): JsonResponse
     {
-        /* get id upt bedasarkan user yang login */
-        $uptId = auth()->guard('admin')->user()->upt_id;
-        /* cek user apakah mempunyai id upt */
-        if ($uptId) {
-            $model = $this->QueryRegisterPeoranganAndInduk()->where('master_upt_id', $uptId)->whereHas('preregister', function ($query) use ($datatable) {
-                $query->where('pemohon', $datatable);
-            });
-        } else {
-            $model = $this->QueryRegisterPeoranganAndInduk()->whereHas('preregister', function ($query) use ($datatable) {
-                $query->where('pemohon', $datatable);
-            });
-        }
+        $model = $this->datatableQueryCheckUser($pemohon);
 
-        return DataTables::eloquent($model)->addIndexColumn()
-            ->addColumn('upt', function ($row) {
-                return $row->upt->nama_satpel . ' - ' . $row->upt->nama;
-            })
+        $datatable = DataTables::eloquent($model)->addIndexColumn()
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $range = explode(' - ', $keyword);
                 if (count($range) === 2) {
@@ -122,96 +101,110 @@ class PermohonanController extends Controller
                     $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
                 }
 
-            })
-            ->filterColumn('upt', function ($query, $keyword) {
-                $query->whereHas('upt', function ($subquery) use ($keyword) {
-                    $subquery->where('nama', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('nama_satpel', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('id', $keyword);
-                });
-
-            })
-            ->addColumn('action', 'admin.permohonan.action.induk')->make(true);
-    }
-    /* query master datatable */
-    public function QueryRegisterPeoranganAndInduk(): Builder
-    {
-        return Register::with([
-            'upt:nama,id,nama_satpel',
-            'baratin.kotas:nama,id',
-            'baratin.negara:id,nama',
-            'baratin.provinsi:id,nama',
-            'baratin' => function ($query) {
-                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
-            }
-        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('pj_barantin_id')->whereNot('registers.status', 'DISETUJUI');
-
+            });
+        return $this->columnDaerahRender($datatable, 'admin.permohonan.action.induk');
 
     }
 
-    public function datatableCabang(): JsonResponse
+    /**
+     * Menambahkan kolom-kolom daerah dan aksi ke DataTable.
+     *
+     * Metode ini menambahkan kolom UPT, negara, provinsi, dan kota berdasarkan ID yang terkait
+     * dari model yang diberikan. Kolom aksi juga ditambahkan berdasarkan parameter yang diterima.
+     *
+     * @param mixed $datatable DataTable yang sedang dibangun.
+     * @param string $action Nama view untuk kolom aksi.
+     * @return mixed DataTable yang telah dimodifikasi dengan kolom tambahan.
+     */
+    private function columnDaerahRender($datatable, string $action)
     {
-        /* get id upt bedasarkan user yang login */
+        return $datatable->addColumn('upt', function ($row) {
+            $upt = BarantinApiHelper::GetMasterUpyByID($row->master_upt_id);
+            return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+        })
+            ->addColumn('negara', function ($row) {
+                $negara = BarantinApiHelper::GetMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
+                return $negara['nama'];
+            })
+            ->addColumn('provinsi', function ($row) {
+                $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                return $provinsi['nama'];
+            })
+            ->addColumn('kota', function ($row) {
+                $kota = BarantinApiHelper::GetMasterKotaByID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                return $kota['nama'];
+            })
+            ->addColumn('action', $action)->make(true);
+    }
+
+    /**
+     * Membuat query untuk DataTable berdasarkan jenis pemohon.
+     * Metode ini memfilter data registrasi berdasarkan tipe pemohon ('cabang' atau 'perorangan dan induk')
+     * dan membatasi hasil berdasarkan UPT ID pengguna yang terautentikasi jika tersedia.
+     *
+     * @param string $pemohon Tipe pemohon yang digunakan untuk memfilter query.
+     * @return Builder Query builder yang sudah difilter.
+     */
+    private function datatableQueryCheckUser(string $pemohon)
+    {
         $uptId = auth()->guard('admin')->user()->upt_id;
-        /* cek user apakah mempunyai id upt */
+
+        $model = $pemohon === 'cabang' ? $this->queryRegisterCabang() : $this->queryRegisterPeoranganAndInduk();
+
+        $model = $model->whereHas('preregister', function ($query) use ($pemohon) {
+            $query->where('pemohon', $pemohon);
+        });
+
         if ($uptId) {
-            $model = $this->QueryRegisterCabang()->where('master_upt_id', $uptId)->whereHas('preregister', function ($query) {
-                $query->where('pemohon', 'perusahaan')->where('jenis_perusahaan', 'cabang');
-            });
-        } else {
-            $model = $this->QueryRegisterCabang()->whereHas('preregister', function ($query) {
-                $query->where('pemohon', 'perusahaan')->where('jenis_perusahaan', 'cabang');
-            });
+            $model = $model->where('master_upt_id', $uptId);
         }
-        // return response()->json($model->get());
-        return DataTables::eloquent($model)->addIndexColumn()
-            ->addColumn('upt', function ($row) {
-                return $row->upt->nama_satpel . ' - ' . $row->upt->nama;
-            })
-            ->filterColumn('updated_at', function ($query, $keyword) {
-                $range = explode(' - ', $keyword);
-                if (count($range) === 2) {
-                    $startDate = Carbon::parse($range[0])->startOfDay();
-                    $endDate = Carbon::parse($range[1])->endOfDay();
-                    $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
-                }
 
-            })
-            ->filterColumn('upt', function ($query, $keyword) {
-                $query->whereHas('upt', function ($subquery) use ($keyword) {
-                    $subquery->where('nama', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('nama_satpel', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('id', $keyword);
-                });
-
-            })
-            ->addColumn('action', 'admin.permohonan.action.cabang')->make(true);
+        return $model;
     }
-
-
+    /**
+     * Membuat query untuk mengambil data registrasi cabang.
+     * Data yang diambil meliputi informasi cabang dan induk perusahaan,
+     * dengan syarat bahwa ID cabang harus ada dan status registrasi tidak disetujui.
+     *
+     * @return Builder
+     */
     public function QueryRegisterCabang(): Builder
     {
         return Register::with([
-            'upt:nama,id,nama_satpel',
             'baratincabang.baratininduk:nama_perusahaan,id',
-            'baratincabang.kotas:nama,id',
-            'baratincabang.negara:id,nama',
-            'baratincabang.provinsi:id,nama',
             'baratincabang' => function ($query) {
                 $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
             }
         ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->whereNot('registers.status', 'DISETUJUI');
-
-
     }
-
-
+    /**
+     * Membuat query untuk mengambil data registrasi perorangan dan induk.
+     * Data yang diambil meliputi informasi perusahaan dan status registrasi,
+     * dengan syarat bahwa ID pj_barantin harus ada dan status registrasi tidak disetujui.
+     *
+     * @return Builder
+     */
+    private function queryRegisterPeoranganAndInduk(): Builder
+    {
+        return Register::with([
+            'baratin' => function ($query) {
+                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
+            }
+        ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('pj_barantin_id')->whereNot('registers.status', 'DISETUJUI');
+    }
+    /**
+     * Mengkonfirmasi status pendaftaran berdasarkan ID yang diberikan.
+     * Memvalidasi status yang diperlukan dan mengupdate register berdasarkan data yang diberikan.
+     * Mengembalikan response JSON yang sesuai berdasarkan hasil operasi.
+     *
+     * @param string $id ID dari register yang akan dikonfirmasi.
+     * @param Request $request Data request yang mengandung status dan keterangan.
+     * @return JsonResponse
+     */
     public function confirmRegister(string $id, Request $request): JsonResponse
     {
         $request->validate(['status' => 'required|in:DISETUJUI,DITOLAK', 'keterangan' => 'nullable']);
-        /* find register by id */
         $register = Register::find($id);
-        /* cek register  */
         if ($register) {
             $res = $register->update($request->all());
             if ($res) {
@@ -221,9 +214,15 @@ class PermohonanController extends Controller
         }
         return AjaxResponse::ErrorResponse('data register tidak ditemukan', 400);
     }
+    /**
+     * Menghasilkan JSON response untuk DataTables yang menampilkan dokumen pendukung.
+     *
+     * @param string $id ID dari baratin atau barantin cabang.
+     * @return JsonResponse
+     */
     public function datatablePendukung(string $id): JsonResponse
     {
-        $model = $model = DokumenPendukung::where('baratin_id', $id)->orWhere('barantin_cabang_id', $id);
+        $model = DokumenPendukung::where('baratin_id', $id)->orWhere('barantin_cabang_id', $id);
 
         return DataTables::eloquent($model)
             ->addIndexColumn()

@@ -73,9 +73,9 @@
                         <div class="card-header">
                             <div class="text-start">
                                 <button class="btn btn-info btn-sm"
-                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.perorangan') }}')">Perorangan</button>
+                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.perorangan', '#perorangan-permohonan-datatable') }}')">Perorangan</button>
                                 <button class="btn btn-warning btn-sm mx-3"
-                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.induk') }}')">
+                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.induk', '#induk-permohonan-datatable') }}')">
                                     <div class="d-none d-md-block">
                                         Perusahaan Induk
                                     </div>
@@ -84,7 +84,7 @@
                                     </div>
                                 </button>
                                 <button class="btn btn-success btn-sm"
-                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.cabang') }}')">
+                                    onclick="TableLoaded('{{ route('admin.permohonan.datatable.cabang', '#cabang-permohonan-datatable') }}')">
                                     <div class="d-none d-md-block">
                                         Perusahaan Cabang
                                     </div>

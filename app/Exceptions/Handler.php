@@ -55,27 +55,27 @@ class Handler extends ExceptionHandler
             if ($request->is('api/*')) {
 
                 if ($e instanceof NotFoundHttpException) {
-                    return ApiResponse::ErrorResponse('Record Not Found', 404, null);
+                    return ApiResponse::errorResponse('Record Not Found', 404, null);
                 }
                 if ($e instanceof UnauthorizedHttpException) {
-                    return ApiResponse::ErrorResponse('Unauthorized', 401, null);
+                    return ApiResponse::errorResponse('Unauthorized', 401, null);
                 }
                 if ($e instanceof BadRequestHttpException) {
-                    return ApiResponse::ErrorResponse('Bad Request', 400, $e->getTrace());
+                    return ApiResponse::errorResponse('Bad Request', 400, $e->getTrace());
                 }
                 if ($e instanceof MethodNotAllowedHttpException) {
-                    return ApiResponse::ErrorResponse('Method Not Allowed', 405, $e->getTrace());
+                    return ApiResponse::errorResponse('Method Not Allowed', 405, $e->getTrace());
                 }
                 if ($e instanceof HttpException) {
-                    return ApiResponse::ErrorResponse('Internal Server Error', 500, $e->getTrace());
+                    return ApiResponse::errorResponse('Internal Server Error', 500, $e->getTrace());
                 }
                 if ($e instanceof UnauthorizedHttpException) {
-                    return ApiResponse::ErrorResponse('Unauthorized', 401, null);
+                    return ApiResponse::errorResponse('Unauthorized', 401, null);
                 }
                 if ($e instanceof AuthenticationException) {
-                    return ApiResponse::ErrorResponse('Unauthenticated', 401, null);
+                    return ApiResponse::errorResponse('Unauthenticated', 401, null);
                 }
-                return ApiResponse::ErrorResponse($e->getMessage(), 500, $e->getTrace());
+                return ApiResponse::errorResponse($e->getMessage(), 500, $e->getTrace());
             }
         });
     }

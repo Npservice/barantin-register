@@ -21,7 +21,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     });
 
-    Route::middleware('auth:admin')->group(function () {
+    Route::middleware(['auth:admin', 'refresh.token'])->group(function () {
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::get('', [DashboardController::class, 'index'])->name('index');
         });
@@ -29,8 +29,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('permohonan')->name('permohonan.')->group(function () {
             Route::prefix('datatable')->name('datatable.')->group(function () {
                 Route::get('/dokumen/{id}', [PermohonanController::class, 'datatablePendukung'])->name('pendukung');
-                Route::get('data/cabang', [PermohonanController::class, 'datatableCabang'])->name('cabang');
-                Route::get('data/{pemohon}', [PermohonanController::class, 'datatablePeoranganPerusahaanInduk'])->name('pemohon');
+                Route::get('data/{pemohon}', [PermohonanController::class, 'datatable'])->name('pemohon');
 
                 Route::middleware('ajax')->group(function () {
                     Route::view('perorangan', 'admin.permohonan.table.perorangan')->name('perorangan');

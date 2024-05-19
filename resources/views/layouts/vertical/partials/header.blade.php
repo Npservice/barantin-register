@@ -33,7 +33,7 @@
                     <img class="rounded-circle header-profile-user" src="https://avatar.iran.liara.run/public"
                         alt="Header Avatar">
                     <span
-                        class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->nama ?? auth()->guard('web')->user()->nama }}</span>
+                        class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->role_name?? auth()->guard('web')->user()->nama }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
