@@ -22,9 +22,11 @@ class PermohonanController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private $uptPusatId;
     public function __construct()
     {
         $this->middleware('ajax')->except('index');
+        $this->uptPusatId = env('UPT_PUSAT_ID', 1000);
     }
     public function index(): View
     {
@@ -110,7 +112,8 @@ class PermohonanController extends Controller
                 }
 
             });
-        return $this->columnDaerahRender($datatable, 'admin.permohonan.action.induk');
+        $action = $pemohon == 'cabang' ? 'admin.permohonan.action.cabang' : 'admin.permohonan.action.induk';
+        return $this->columnDaerahRender($datatable, $action);
 
     }
 
@@ -163,7 +166,7 @@ class PermohonanController extends Controller
             $query->where('pemohon', $pemohon);
         });
 
-        if ($uptId) {
+        if ($uptId != $this->uptPusatId) {
             $model = $model->where('master_upt_id', $uptId);
         }
 

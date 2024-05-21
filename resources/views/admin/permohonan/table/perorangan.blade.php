@@ -2,7 +2,7 @@
        <h5>PERORANGAN</h5>
    </div>
    <div class="table-responsive">
-       <table id="perorangan-permohonan-datatable" class="table table-bordered dt-responsive nowrap w-100"
+       <table id="permohonan-datatable" class="table table-bordered dt-responsive nowrap w-100"
            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
            <thead>
                <tr>

@@ -13,24 +13,35 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $total = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
-            $query->where('master_upt_id', $uptId);
+        $uptId = auth()->guard('admin')->user()->upt_id;
+        $isPusat = $uptId == env('UPT_PUSAT_ID', 1000);
+
+        $total = Register::when($uptId, function ($query, $uptId) use ($isPusat) {
+            if (!$isPusat) {
+                $query->where('master_upt_id', $uptId);
+            }
         })->count();
 
-        $setuju = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
-            $query->where('master_upt_id', $uptId);
+        $setuju = Register::when($uptId, function ($query, $uptId) use ($isPusat) {
+            if (!$isPusat) {
+                $query->where('master_upt_id', $uptId);
+            }
         })
             ->where('status', 'DISETUJUI')
             ->count();
 
-        $tolak = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
-            $query->where('master_upt_id', $uptId);
+        $tolak = Register::when($uptId, function ($query, $uptId) use ($isPusat) {
+            if (!$isPusat) {
+                $query->where('master_upt_id', $uptId);
+            }
         })
             ->where('status', 'DITOLAK')
             ->count();
 
-        $menunggu = Register::when(auth()->guard('admin')->user()->upt_id, function ($query, $uptId) {
-            $query->where('master_upt_id', $uptId);
+        $menunggu = Register::when($uptId, function ($query, $uptId) use ($isPusat) {
+            if (!$isPusat) {
+                $query->where('master_upt_id', $uptId);
+            }
         })
             ->where('status', 'MENUNGGU')
             ->count();

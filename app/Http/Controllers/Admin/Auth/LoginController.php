@@ -38,19 +38,24 @@ class LoginController extends Controller
 
         $res = BarantinApiHelper::loginApiBarantin($request->username, $request->password);
 
+        $user = $res['data'];
 
-        if ($res['status'] !== '200') {
+        if ($res['status'] !== '200' || $user['detil'][0]['apps_id'] !== env('APP_ID', 'APP003')) {
             return back()->withErrors([
                 'username' => 'The provided credentials do not match our records.',
             ])->onlyInput('email');
         }
-        $user = $res['data'];
+
         $roleInstance = $user['detil'][0];
 
         $admin = Admin::updateOrCreate(['uid' => $user['uid']], [
             'uid' => $user['uid'],
+            'uname' => $user['uname'],
+            'nama' => $user['nama'],
+            'email' => $user['email'],
             'roles_id' => $roleInstance['roles_id'],
             'apps_id' => $roleInstance['apps_id'],
+            'upt_id' => $user['upt'] ?? null,
             'role_name' => $roleInstance['role_name'],
             'access_token' => $user['accessToken'],
             'refresh_token' => $user['refreshToken'],

@@ -12,6 +12,7 @@ use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
@@ -25,13 +26,14 @@ class PendaftarController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private $uptPusatId;
     public function __construct()
     {
         $this->middleware('ajax')->except('index');
+        $this->uptPusatId = env('UPT_PUSAT_ID', 1000);
     }
     public function index(): View|JsonResponse
     {
-        // return $this->datatableCabang();
         return view('admin.pendaftar.index');
     }
 
@@ -40,17 +42,25 @@ class PendaftarController extends Controller
      */
     public function show(Request $request, string $id): View
     {
-        $data = PjBaratin::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama'])->find($id) ?? BarantinCabang::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama', 'baratininduk:nama_perusahaan,id'])->find($id);
+        $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
+        $upt = BarantinApiHelper::GetMasterUpyByID($register->master_upt_id);
+
+        $dataMaster = [
+            'upt' => $upt['nama_satpel'] . ' - ' . $upt['nama'],
+            'provinsi' => BarantinApiHelper::GetMasterProvinsiByID($data->provinsi_id)['nama'],
+            'kota' => BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id)['nama'],
+            'negara' => BarantinApiHelper::GetMasterNegaraByID($data->negara_id)['nama'],
+        ];
 
         if ($preregister->pemohon === 'perorangan') {
-            return view('admin.pendaftar.show.perorangan', compact('data', 'register'));
+            return view('admin.pendaftar.show.perorangan', compact('data', 'register', 'dataMaster'));
         } else {
-            if ($preregister->jenis_perusahaan === 'induk') {
-                return view('admin.pendaftar.show.induk', compact('data', 'register'));
+            if ($preregister->jenis_perusahaan === 'induk' || !$preregister->jenis_perusahaan) {
+                return view('admin.pendaftar.show.induk', compact('data', 'register', 'dataMaster'));
             }
-            return view('admin.pendaftar.show.cabang', compact('data', 'register'));
+            return view('admin.pendaftar.show.cabang', compact('data', 'register', 'dataMaster'));
         }
     }
 
@@ -67,25 +77,11 @@ class PendaftarController extends Controller
     }
 
 
-    public function datatablePeoranganPerusahaanInduk(string $datatable): JsonResponse
+    public function datatable(string $pemohon): JsonResponse
     {
-        /* get id upt bedasarkan user yang login */
-        $uptId = auth()->guard('admin')->user()->upt_id;
-        /* cek user apakah mempunyai id upt */
-        if ($uptId) {
-            $model = $this->QueryRegisterPeoranganAndInduk()->where('master_upt_id', $uptId)->whereHas('preregister', function ($query) use ($datatable) {
-                $query->where('pemohon', $datatable);
-            });
-        } else {
-            $model = $this->QueryRegisterPeoranganAndInduk()->whereHas('preregister', function ($query) use ($datatable) {
-                $query->where('pemohon', $datatable);
-            });
-        }
+        $model = $this->datatableQueryCheckUser($pemohon);
 
-        return DataTables::eloquent($model)->addIndexColumn()
-            ->addColumn('upt', function ($row) {
-                return $row->upt->nama_satpel . ' - ' . $row->upt->nama;
-            })
+        $datatable = DataTables::eloquent($model)->addIndexColumn()
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $range = explode(' - ', $keyword);
                 if (count($range) === 2) {
@@ -94,26 +90,74 @@ class PendaftarController extends Controller
                     $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
                 }
 
-            })
-            ->filterColumn('upt', function ($query, $keyword) {
-                $query->whereHas('upt', function ($subquery) use ($keyword) {
-                    $subquery->where('nama', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('nama_satpel', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('id', $keyword);
-                });
+            });
+        $action = $pemohon == 'cabang' ? 'admin.pendaftar.action.cabang' : 'admin.pendaftar.action.induk';
+        return $this->columnDaerahRender($datatable, $action);
 
-            })
-            ->addColumn('action', 'admin.pendaftar.action.induk')->make(true);
     }
 
-    /* query for barantin master table */
+    /**
+     * Menambahkan kolom-kolom daerah dan aksi ke DataTable.
+     *
+     * Metode ini menambahkan kolom UPT, negara, provinsi, dan kota berdasarkan ID yang terkait
+     * dari model yang diberikan. Kolom aksi juga ditambahkan berdasarkan parameter yang diterima.
+     *
+     * @param mixed $datatable DataTable yang sedang dibangun.
+     * @param string $action Nama view untuk kolom aksi.
+     * @return mixed DataTable yang telah dimodifikasi dengan kolom tambahan.
+     */
+    private function columnDaerahRender($datatable, string $action)
+    {
+        return $datatable->addColumn('upt', function ($row) {
+            $upt = BarantinApiHelper::GetMasterUpyByID($row->master_upt_id);
+            return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+        })
+            ->addColumn('negara', function ($row) {
+                $negara = BarantinApiHelper::GetMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
+                return $negara['nama'];
+            })
+            ->addColumn('provinsi', function ($row) {
+                $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                return $provinsi['nama'];
+            })
+            ->addColumn('kota', function ($row) {
+                $kota = BarantinApiHelper::GetMasterKotaByID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                return $kota['nama'];
+            })
+            ->addColumn('action', $action)->make(true);
+    }
+
+    private function datatableQueryCheckUser(string $pemohon)
+    {
+        $uptId = auth()->guard('admin')->user()->upt_id;
+
+        $model = $pemohon === 'cabang' ? $this->queryRegisterCabang() : $this->queryRegisterPeoranganAndInduk();
+
+        $model = $model->whereHas('preregister', function ($query) use ($pemohon) {
+            $query->where('pemohon', $pemohon);
+        });
+
+        if ($uptId != $this->uptPusatId) {
+            $model = $model->where('master_upt_id', $uptId);
+        }
+
+        return $model;
+    }
+    public function QueryRegisterCabang(): Builder
+    {
+        return Register::with([
+            'baratincabang.baratininduk:nama_perusahaan,id',
+            'baratincabang' => function ($query) {
+                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
+            }
+        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI');
+
+
+    }
     public function QueryRegisterPeoranganAndInduk(): Builder
     {
         return Register::with([
-            'upt:nama,id,nama_satpel',
-            'baratin.kotas:nama,id',
-            'baratin.negara:id,nama',
-            'baratin.provinsi:id,nama',
+
             'baratin' => function ($query) {
                 $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
             }
@@ -122,66 +166,8 @@ class PendaftarController extends Controller
 
     }
 
-
-    /* query for barantin master table */
-    public function datatableCabang(): JsonResponse
-    {
-        /* get id upt bedasarkan user yang login */
-        $uptId = auth()->guard('admin')->user()->upt_id;
-        /* cek user apakah mempunyai id upt */
-        if ($uptId) {
-            $model = $this->QueryRegisterCabang()->where('master_upt_id', $uptId)->whereHas('preregister', function ($query) {
-                $query->where('pemohon', 'perusahaan')->where('jenis_perusahaan', 'cabang');
-            });
-        } else {
-            $model = $this->QueryRegisterCabang()->whereHas('preregister', function ($query) {
-                $query->where('pemohon', 'perusahaan')->where('jenis_perusahaan', 'cabang');
-            });
-        }
-        // return response()->json($model->get());
-        return DataTables::eloquent($model)->addIndexColumn()
-            ->addColumn('upt', function ($row) {
-                return $row->upt->nama_satpel . ' - ' . $row->upt->nama;
-            })
-            ->filterColumn('updated_at', function ($query, $keyword) {
-                $range = explode(' - ', $keyword);
-                if (count($range) === 2) {
-                    $startDate = Carbon::parse($range[0])->startOfDay();
-                    $endDate = Carbon::parse($range[1])->endOfDay();
-                    $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
-                }
-
-            })
-            ->filterColumn('upt', function ($query, $keyword) {
-                $query->whereHas('upt', function ($subquery) use ($keyword) {
-                    $subquery->where('nama', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('nama_satpel', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('id', $keyword);
-                });
-
-            })
-            ->addColumn('action', 'admin.pendaftar.action.cabang')->make(true);
-    }
-
-
-    public function QueryRegisterCabang(): Builder
-    {
-        return Register::with([
-            'upt:nama,id,nama_satpel',
-            'baratincabang.baratininduk:nama_perusahaan,id',
-            'baratincabang.kotas:nama,id',
-            'baratincabang.negara:id,nama',
-            'baratincabang.provinsi:id,nama',
-            'baratincabang' => function ($query) {
-                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
-            }
-        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI');
-
-
-    }
-
     // open blokir
-    public function BlockAccessPendaftar(string $id)//: JsonResponse
+    public function BlockAccessPendaftar(string $id): JsonResponse
     {
         $res = null;
 
@@ -235,17 +221,24 @@ class PendaftarController extends Controller
         $register = Register::find($id);
         $pre_register = $register->preregister;
         $barantin = $register->baratin ?? $register->baratincabang;
-        // dd($barantin);
+
+
+        // Tentukan role berdasarkan pemohon dan jenis perusahaan
+        $role = 'perorangan'; // nilai default
+        // dd($pre_register->pemohon);
+        if ($pre_register->pemohon === 'perusahaan') {
+            $role = ($pre_register->jenis_perusahaan === 'induk') ? 'induk' : 'cabang';
+        }
 
         $user_collect = collect([
             'nama' => $barantin->nama_perusahaan,
             'email' => $barantin->email,
-            'username' => $this->generateRandomString($length = 5, $pre_register->pemohon, $pre_register->jenis_perusahaan),
-            'role' => $pre_register->pemohon === 'perusahaan' ? ($pre_register->jenis_perusahaan === 'induk' ? 'induk' : 'cabang') : 'perorangan',
+            'username' => $this->generateRandomString(5, $pre_register->pemohon, $pre_register->jenis_perusahaan),
+            'role' => $role,
             'status_user' => 1,
             'password' => $this->generateRandomPassword(),
         ]);
-        // dd($user);
+
 
         $user = User::create($user_collect->all());
         $barantin->update(['user_id' => $user->id]);
@@ -254,12 +247,11 @@ class PendaftarController extends Controller
         return response()->json(['table' => 'pendaftar-datatable', 'nama' => $user->nama]);
     }
 
-    public function SendUsernamePasswordEmail(string $IdOrEmail): bool|JsonResponse
+    public function SendUsernamePasswordEmail(string $idOrEmail): bool|JsonResponse
     {
-        $user = User::where('email', $IdOrEmail)->orWhere('id', $IdOrEmail)->first();
+        $user = User::where('email', $idOrEmail)->orWhere('id', $idOrEmail)->first();
         $password = $this->generateRandomPassword(8);
-        $update = $user->update(['password' => $password]);
-        // return response()->json($update)
+        $user->update(['password' => $password]);
         Mail::to($user->email)->send(new MailSendUsernamePassword($user->username, $password));
 
         if (request()->input('reset')) {
@@ -269,7 +261,7 @@ class PendaftarController extends Controller
 
     }
     /* genareate username */
-    function generateRandomString(int $length = 5, string $pemohon, string $jenis_perusahaan)
+    public function generateRandomString(int $length, string $pemohon, string $jenis_perusahaan = null): string
     {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $random = [0, 1, 2, 3];
@@ -277,11 +269,20 @@ class PendaftarController extends Controller
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, strlen($characters) - 1)];
         }
-        return $pemohon === 'perusahaan' ? ($jenis_perusahaan === 'induk' ? 'C' . $randomString : 'C' . $randomString . implode('', array_rand($random, 2))) : 'P' . $randomString;
+
+        if ($pemohon === 'perusahaan') {
+            if ($jenis_perusahaan === 'induk') {
+                return 'C' . $randomString;
+            } else {
+                return 'C' . $randomString . implode('', array_rand($random, 2));
+            }
+        } else {
+            return 'P' . $randomString;
+        }
     }
 
     /* generate password */
-    function generateRandomPassword($length = 8)
+    public function generateRandomPassword(int $length = 8): string
     {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         $randomPassword = '';

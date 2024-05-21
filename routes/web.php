@@ -22,19 +22,7 @@ Route::get('/', function () {
     return redirect()->route('barantin.auth.index');
 });
 
-// Route::view('/user/register', 'user.register.index');
-// Route::view('/admin/template', 'welcome');
-// Route::view('/user/datatable', 'user.log.index');
-// Route::view('/admin/datatable', 'admin.data.index');
-// Route::view('/admin/dashboard', 'admin.dashboard.index');
-// Route::view('/user/form/perusahaan', 'user.register.form.perusahaan');
-// Route::view('/user/form/perorangan', 'user.register.form.perorangan');
-// Route::view('/register/ulang', 'auth.register_ulang')->name('register_ulang');
-// Route::view('/login', 'auth.index');
 
-// Route::middleware(['verified'])->group(function () {
-//     Route::view('/home', 'welcome')->name('home');
-// });
 
 
 require_once __DIR__ . '/admin.php';

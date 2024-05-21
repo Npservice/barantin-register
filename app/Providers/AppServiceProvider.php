@@ -4,6 +4,7 @@ namespace App\Providers;
 
 
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production') || $this->app->environment('staging')) {
             URL::forceScheme('https');
         }
+        View::share('uptPusatId', env('UPT_PUSAT_ID', 1000));
     }
 }

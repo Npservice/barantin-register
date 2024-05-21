@@ -44,8 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             Route::prefix('datatable')->name('datatable.')->group(function () {
                 Route::get('/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('pendukung');
-                Route::get('data/cabang', [PendaftarController::class, 'datatableCabang'])->name('cabang');
-                Route::get('data/{pemohon}', [PendaftarController::class, 'datatablePeoranganPerusahaanInduk'])->name('pemohon');
+                Route::get('data/{pemohon}', [PendaftarController::class, 'datatable'])->name('pemohon');
 
                 Route::middleware('ajax')->group(function () {
                     Route::view('perorangan', 'admin.pendaftar.table.perorangan')->name('perorangan');
@@ -61,7 +60,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/send/username/{id}', [PendaftarController::class, 'SendUsernamePasswordEmail'])->name('send.user');
         });
 
-        // Route::resource('master-upt', MasterUptController::class)->except('show');
         Route::resource('pendaftar', PendaftarController::class)->only(['index', 'show']);
         Route::resource('admin-user', AdminUserController::class)->except('show');
         Route::resource('permohonan', PermohonanController::class)->only(['index', 'destroy', 'show']);

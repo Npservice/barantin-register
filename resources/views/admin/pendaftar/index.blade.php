@@ -52,7 +52,7 @@
                                             <input type="text" class="form-control" id="tanggal-register">
                                         </div>
                                     </div>
-                                    @if (!auth()->guard('admin')->user()->upt_id)
+                                    @if (auth()->guard('admin')->user()->upt_id == $uptPusatId)
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label class="form-label">UPT</label>

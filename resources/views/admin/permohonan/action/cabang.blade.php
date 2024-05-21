@@ -1,8 +1,4 @@
-{{-- <a class="btn btn-outline-danger btn-sm"
-    onclick="DeleteAlert('{{ route('admin.permohonan.destroy', $model->id) }}','{{ $model->nama }}')"><i
-        class="fas fa-trash"></i></a> --}}
-
-@if (auth()->guard()->user()->upt_id)
+@if (auth()->guard()->user()->upt_id != $uptPusatId)
     @if (!$model->status || $model->status === 'MENUNGGU')
         <a class="btn btn-outline-success btn-sm xe-2"
             onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $model->id) }}', '{{ $model->baratincabang->nama_perusahaan }}')"><i

@@ -12,7 +12,7 @@ class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, HasUuids;
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $fillable = ['uid', 'roles_id', 'apps_id', 'role_name', 'access_token', 'refresh_token', 'expiry', 'password'];
+    protected $fillable = ['uid', 'uname', 'nama', 'email', 'roles_id', 'apps_id', 'role_name', 'access_token', 'refresh_token', 'expiry', 'password', 'upt_id'];
     protected $hidden = [
         'access_token',
         'password'

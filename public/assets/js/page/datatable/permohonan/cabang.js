@@ -1,4 +1,4 @@
-table = $("#cabang-permohonan-datatable").DataTable({
+table = $("#permohonan-datatable").DataTable({
     processing: true,
     serverSide: true,
     ajax: "/admin/permohonan/datatable/data/cabang",

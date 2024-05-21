@@ -55,13 +55,13 @@ table = $("#pendaftar-datatable").DataTable({
             data: "baratincabang.email", name: "baratincabang.email"
         },
         {
-            data: "baratincabang.negara.nama", name: "baratincabang.negara.nama"
+            data: "negara", name: "negara"
         },
         {
-            data: "baratincabang.provinsi.nama", name: "baratincabang.provinsi.nama"
+            data: "provinsi", name: "provinsi"
         },
         {
-            data: "baratincabang.kotas.nama", name: "baratincabang.kotas.nama"
+            data: "kota", name: "kota"
         },
         {
             data: "baratincabang.alamat", name: "baratincabang.alamat"

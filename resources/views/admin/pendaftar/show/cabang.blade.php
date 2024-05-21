@@ -32,7 +32,7 @@
                         @endif
                     @endif
                     {{-- create user --}}
-                    @if (!auth()->guard('admin')->user()->upt_id)
+                    @if (auth()->guard('admin')->user()->upt_id == $uptPusatId)
                         @if ($data->user_id)
                             <button class="btn btn-primary btn-sm me-2"
                                 onclick="UserSetting('{{ route('admin.pendaftar.send.user', $data->user_id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Kirim
@@ -142,7 +142,8 @@
                             <label for="negara" class="col-sm-3 col-form-label">Negara</label>
                             <div class="col-sm-9">
                                 <input class="form-control negara-select" type="text" placeholder="Negara"
-                                    id="negara" name="negara" disabled value="{{ $data->negara->nama ?? '' }}">
+                                    id="negara" name="negara" disabled
+                                    value="{{ $dataMaster['negara'] ?? '' }}">
                             </div>
                         </div>
 
@@ -150,7 +151,7 @@
                             <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                             <div class="col-sm-9">
                                 <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->provinsi->nama ?? ('' ?? '') }}" type="text"
+                                    value="{{ $dataMaster['provinsi'] ?? null }}" type="text"
                                     placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
@@ -159,7 +160,7 @@
                             <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
                             <div class="col-sm-9">
                                 <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->kotas->nama ?? '' }}" type="text" placeholder="Provinsi"
+                                    value="{{ $dataMaster['kota'] ?? '' }}" type="text" placeholder="Provinsi"
                                     id="provinsi" name="provinsi">
                             </div>
                         </div>

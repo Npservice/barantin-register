@@ -40,6 +40,7 @@ class PjBaratinSeeder extends Seeder
                     'nama' => $nama,
                     'email' => $email,
                     'verify_email' => Carbon::now(),
+                    'jenis_perusahaan' => $jenis_pemohon === 'perusahaan' ? 'induk' : null,
                 ]);
 
                 $baratin = PjBaratin::create([
@@ -85,7 +86,7 @@ class PjBaratinSeeder extends Seeder
 
                 Register::create([
                     'pj_barantin_id' => $baratin->id,
-                    'master_upt_id' => 1100,
+                    'master_upt_id' => 2100,
                     'status' => $status,
                     'pre_register_id' => $register->id
                 ]);
