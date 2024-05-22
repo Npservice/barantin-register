@@ -48,7 +48,7 @@
                             <span>Pendaftar</span>
                         </a>
                     </li>
-                    @if (!auth()->guard('admin')->user()->upt_id)
+                    {{-- @if (!auth()->guard('admin')->user()->upt_id)
                         <li class="menu-title">User</li>
                         <li>
                             <a href="{{ route('admin.admin-user.index') }}" class=" waves-effect">
@@ -56,7 +56,7 @@
                                 <span>Admin User</span>
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
                 @endauth
 
                 @auth('web')

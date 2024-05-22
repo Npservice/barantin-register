@@ -20,7 +20,7 @@ class KotaRule implements ValidationRule
     }
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $validUpts = collect(BarantinApiHelper::GetDataMasterKota($this->provinsiID)->original)->pluck('id')->toArray();
+        $validUpts = collect(BarantinApiHelper::getDataMasterKotaByProvinsi($this->provinsiID)->original)->pluck('id')->toArray();
         if (!in_array($value, $validUpts)) {
             $fail('Kota tidak ada.');
         }

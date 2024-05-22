@@ -21,7 +21,7 @@ class SelectController extends Controller
         if (request()->input('q')) {
             $data = JsonFilterHelper::searchDataByKeyword($data, request()->input('q'), 'nama_satpel', 'nama');
         } elseif (request()->input('upt_id')) {
-            $data = BarantinApiHelper::GetMasterUpyByID(request()->input('upt_id'));
+            $data = BarantinApiHelper::getMasterUptByID(request()->input('upt_id'));
         } elseif (request()->input('pre_register_id')) {
             $uptIdArray = Register::where('pre_register_id', request()->input('pre_register_id'))->pluck('master_upt_id')->toArray();
             $data = JsonFilterHelper::filterByID($data, $uptIdArray);
@@ -55,7 +55,7 @@ class SelectController extends Controller
     //  */
     public function SelectKota(string $id): JsonResponse
     {
-        $data = collect(BarantinApiHelper::GetDataMasterKota($id)->original);
+        $data = collect(BarantinApiHelper::getDataMasterKotaByProvinsi($id)->original);
         if (request()->input('kota_id')) {
             $data = BarantinApiHelper::GetMasterKotaByID(request()->input('kota_id'), $id);
         }

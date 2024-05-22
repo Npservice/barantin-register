@@ -9,6 +9,7 @@ use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Validation\Rule;
 use App\Helpers\BarantinApiHelper;
+use App\Rules\EmailTerdaftarCheckRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PreRegisterRequestStore extends FormRequest
@@ -45,27 +46,7 @@ class PreRegisterRequestStore extends FormRequest
                 'required',
                 'email',
                 'max:50',
-                function ($attr, $val, $fail) {
-                    /* ambil id user bedasarkan email */
-                    $preregister = PreRegister::with('register:id,master_upt_id,pre_register_id')->where('email', $val)->first();
-                    if ($preregister) {
-                        foreach ($preregister->register as $value) {
-                            foreach (request()->input('upt') as $upt) {
-                                if (in_array($upt, $preregister->register->pluck('master_upt_id')->all())) {
-                                    $register = Register::where('id', $value->id)->where('master_upt_id', $upt)->first();
-
-                                    if (isset ($register->status) && $register->status === 'MENUNGGU') {
-                                        $fail('email sudah terdaftar di upt yang dipilih status menunggu');
-                                    }
-                                    if (isset ($register->status) && $register->status === 'DISETUJUI') {
-                                        $fail('email sudah terdaftar di upt yang dipilih status disetujui');
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
+              new EmailTerdaftarCheckRule,
             ]
         ];
     }

@@ -6,7 +6,10 @@ use App\Rules\UptRule;
 use App\Models\Register;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
+use App\Rules\UptUserCheckRule;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -41,25 +44,28 @@ class UserUptController extends Controller
      */
     public function store(Request $request)
     {
-        /* get upt yang telah dipilih */
-        $register = Register::where(function ($query) {
-            $query->where('pj_barantin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
-        })->pluck('master_upt_id')->toArray();
+
         // validasi upt
         $request->validate([
             'upt' => [
                 'required',
                 new UptRule,
+                new UptUserCheckRule(auth()->user()->baratin->id ?? auth()->user()->baratincabang->id)
             ],
         ]);
+
         foreach ($request->upt as $value) {
-            if (in_array($value, $register)) {
-                $res = Register::where('master_upt_id', $value)->where(function ($query) {
-                    $query->where('pj_barantin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
-                })->update(['status' => 'MENUNGGU']);
-            } else {
-                $res = Register::create(['master_upt_id' => $value, 'pj_barantin_id' => auth()->user()->baratin->id ?? null, 'barantin_cabang_id' => auth()->user()->baraticabang->id ?? null, 'status' => 'MENUNGGU', 'pre_register_id' => auth()->user()->baratin->pre_register_id]);
-            }
+            $res = Register::updateOrCreate(
+                [
+                    'master_upt_id' => $value,
+                    'pj_barantin_id' => auth()->user()->baratin->id ?? null,
+                    'barantin_cabang_id' => auth()->user()->baratincabang->id ?? null,
+                ],
+                [
+                    'status' => 'MENUNGGU',
+                    'pre_register_id' => auth()->user()->baratin->pre_register_id ?? auth()->user()->baratincabang->pre_register_id,
+                ]
+            );
         }
         if ($res) {
             return AjaxResponse::SuccessResponse('Upt berhasil diajukan', 'user-upt-datatable');
@@ -70,17 +76,27 @@ class UserUptController extends Controller
     public function datatable(): JsonResponse
     {
         $model = $this->query();
-        return DataTables::eloquent($model)->addIndexColumn()->make(true);
+        return DataTables::eloquent($model)
+            ->addColumn('upt', function ($row) {
+                $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
+                return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+            })
+            ->filterColumn('upt', function ($query, $keyword) {
+                $upt = collect(BarantinApiHelper::getDataMasterUpt()->original);
+                $idUpt = JsonFilterHelper::searchDataByKeyword($upt, $keyword, 'nama_satpel', 'nama')->pluck('id');
+                $query->whereIn('master_upt_id', $idUpt);
+            })
+            ->addIndexColumn()->make(true);
     }
     // query model
     public function query()
     {
         if (auth()->user()->role === 'cabang') {
-            return Register::with('upt:nama,id')->whereHas('baratincabang', function ($query) {
+            return Register::whereHas('baratincabang', function ($query) {
                 $query->where('id', auth()->user()->baratincabang->id);
-            })->select('register.id', 'barantin_cabang_id', 'register.status', 'register.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
+            })->select('registers.id', 'barantin_cabang_id', 'registers.status', 'registers.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
         }
-        return Register::with('upt:nama,id')->whereHas('baratin', function ($query) {
+        return Register::whereHas('baratin', function ($query) {
             $query->where('id', auth()->user()->baratin->id);
         })->select('registers.id', 'pj_barantin_id', 'registers.status', 'registers.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
     }

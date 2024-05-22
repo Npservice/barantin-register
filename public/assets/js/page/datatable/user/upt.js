@@ -10,8 +10,8 @@ $('#user-upt-datatable').DataTable({
         orderable: false,
         searchable: false
     }, {
-        data: 'upt.nama',
-        name: 'upt.nama'
+        data: 'upt',
+        name: 'upt'
     }, {
         data: 'status',
         name: 'status',

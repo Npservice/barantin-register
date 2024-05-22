@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('mitra_perusahaans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pj_baratin_id');
+            $table->uuid('pj_baratin_id')->nullable();
             $table->uuid('barantin_cabang_id')->nullable();
 
             $table->string('nama_mitra')->nullable();

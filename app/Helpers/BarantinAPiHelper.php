@@ -11,7 +11,8 @@ class BarantinApiHelper
     private static $dataMasterUpt;
     private static $dataMasterNegara;
     private static $dataMasterProvinsi;
-    private static $dataMasterKota = [];
+    private static $dataMasterKota;
+    private static $dataMasterKotaByPronvisi = [];
     public static function getBaseUrl(): string
     {
         return self::$baseUrl;
@@ -90,30 +91,47 @@ class BarantinApiHelper
         return self::$dataMasterProvinsi;
     }
     /**
+     * Mengambil data master kota dari API dan menyimpannya dalam cache jika belum ada.
+     * @return JsonResponse Respon JSON yang mengandung data master kota.
+     */
+    public static function getDataMasterKota(): JsonResponse
+    {
+        $cacheKey = 'dataMasterKota';
+        $cacheDuration = 60 * 24; // 1 hari dalam menit
+        if (cache()->has($cacheKey) && now()->diffInMinutes(cache()->get($cacheKey . '_timestamp', now()->subDay())) < $cacheDuration) {
+            self::$dataMasterKota = cache()->get($cacheKey);
+        } else {
+            self::$dataMasterKota = self::makeApiCall('/barantin-sys/kota');
+            cache()->put($cacheKey, self::$dataMasterKota, $cacheDuration);
+            cache()->put($cacheKey . '_timestamp', now(), $cacheDuration);
+        }
+        return self::$dataMasterKota;
+    }
+    /**
      * Memperoleh data kota berdasarkan ID provinsi dari API dan melakukan caching data tersebut.
      * @param int $provisi_id ID dari provinsi yang ingin diambil datanya.
      * @return JsonResponse Respon JSON yang berisi data kota berdasarkan provinsi.
      */
-    public static function GetDataMasterKota(int $provisi_id): JsonResponse
+    public static function getDataMasterKotaByProvinsi(int $provisi_id): JsonResponse
     {
-        $cacheKey = 'dataMasterKota_' . $provisi_id;
+        $cacheKey = 'dataMasterKotaByProvinsi_' . $provisi_id;
         $cacheDuration = 60 * 24; // 1 hari dalam menit
 
         if (cache()->has($cacheKey) && now()->diffInMinutes(cache()->get($cacheKey . '_timestamp', now()->subDay())) < $cacheDuration) {
-            self::$dataMasterKota[$provisi_id] = cache()->get($cacheKey);
+            self::$dataMasterKotaByPronvisi[$provisi_id] = cache()->get($cacheKey);
         } else {
-            self::$dataMasterKota[$provisi_id] = self::makeApiCall('/barantin-sys/kota/prov/' . $provisi_id);
-            cache()->put($cacheKey, self::$dataMasterKota[$provisi_id], $cacheDuration);
+            self::$dataMasterKotaByPronvisi[$provisi_id] = self::makeApiCall('/barantin-sys/kota/prov/' . $provisi_id);
+            cache()->put($cacheKey, self::$dataMasterKotaByPronvisi[$provisi_id], $cacheDuration);
             cache()->put($cacheKey . '_timestamp', now(), $cacheDuration);
         }
-        return self::$dataMasterKota[$provisi_id];
+        return self::$dataMasterKotaByPronvisi[$provisi_id];
     }
     /**
      * Mengambil data master UPT berdasarkan ID.
      * @param mixed $id ID dari UPT yang ingin diambil.
      * @return mixed Mengembalikan data UPT jika ditemukan, atau null jika tidak ditemukan.
      */
-    public static function GetMasterUpyByID($id)
+    public static function getMasterUptByID($id)
     {
         $uptInstance = self::getDataMasterUpt();
         return collect($uptInstance->original)->where('id', $id)->first();
@@ -158,7 +176,7 @@ class BarantinApiHelper
      */
     public static function GetMasterKotaByID($id, $provinsi_id)
     {
-        $kotaInstance = self::GetDataMasterKota($provinsi_id);
+        $kotaInstance = self::getDataMasterKotaByProvinsi($provinsi_id);
         return collect($kotaInstance->original)->where('id', $id)->first();
     }
 

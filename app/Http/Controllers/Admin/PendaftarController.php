@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\BarantinApiHelper;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,7 @@ class PendaftarController extends Controller
         $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
-        $upt = BarantinApiHelper::GetMasterUpyByID($register->master_upt_id);
+        $upt = BarantinApiHelper::getMasterUptByID($register->master_upt_id);
 
         $dataMaster = [
             'upt' => $upt['nama_satpel'] . ' - ' . $upt['nama'],
@@ -92,7 +93,8 @@ class PendaftarController extends Controller
 
             });
         $action = $pemohon == 'cabang' ? 'admin.pendaftar.action.cabang' : 'admin.pendaftar.action.induk';
-        return $this->columnDaerahRender($datatable, $action);
+        $barantinKategori = $pemohon == 'cabang' ? 'baratincabang' : 'baratin';
+        return $this->columnDaerahRender($datatable, $action, $barantinKategori);
 
     }
 
@@ -106,23 +108,39 @@ class PendaftarController extends Controller
      * @param string $action Nama view untuk kolom aksi.
      * @return mixed DataTable yang telah dimodifikasi dengan kolom tambahan.
      */
-    private function columnDaerahRender($datatable, string $action)
+    private function columnDaerahRender($datatable, string $action, string $barantinKategori)
     {
         return $datatable->addColumn('upt', function ($row) {
-            $upt = BarantinApiHelper::GetMasterUpyByID($row->master_upt_id);
+            $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
             return $upt['nama_satpel'] . ' - ' . $upt['nama'];
         })
             ->addColumn('negara', function ($row) {
                 $negara = BarantinApiHelper::GetMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
                 return $negara['nama'];
             })
+            ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
+                $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
+                $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
+            })
             ->addColumn('provinsi', function ($row) {
                 $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
                 return $provinsi['nama'];
             })
+            ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
+                $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
+                $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
+            })
             ->addColumn('kota', function ($row) {
                 $kota = BarantinApiHelper::GetMasterKotaByID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
                 return $kota['nama'];
+            })
+            ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {
+                $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
+                $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('kota', $idKota));
+
             })
             ->addColumn('action', $action)->make(true);
     }
@@ -134,7 +152,7 @@ class PendaftarController extends Controller
         $model = $pemohon === 'cabang' ? $this->queryRegisterCabang() : $this->queryRegisterPeoranganAndInduk();
 
         $model = $model->whereHas('preregister', function ($query) use ($pemohon) {
-            $query->where('pemohon', $pemohon);
+            $query->where('pemohon', $pemohon == 'cabang' || $pemohon == 'perusahaan' ? 'perusahaan' : 'perorangan');
         });
 
         if ($uptId != $this->uptPusatId) {

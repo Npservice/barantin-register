@@ -5,7 +5,9 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\MitraPerusahaan;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -66,7 +68,12 @@ class UserMitraController extends Controller
     public function show(string $id)
     {
         $data = MitraPerusahaan::find($id);
-        return view('user.mitra.show', compact('data'));
+        $dataMaster = [
+            'provinsi' => BarantinApiHelper::GetMasterProvinsiByID($data->master_provinsi_id)['nama'],
+            'kota' => BarantinApiHelper::GetMasterKotaByID($data->master_kota_kab_id, $data->master_provinsi_id)['nama'],
+            'negara' => BarantinApiHelper::GetMasterNegaraByID($data->master_negara_id)['nama'],
+        ];
+        return view('user.mitra.show', compact('data', 'dataMaster'));
     }
 
     /**
@@ -110,21 +117,40 @@ class UserMitraController extends Controller
     public function datatable(): JsonResponse
     {
         $model = $this->query();
-        return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'user.mitra.action')->make(true);
+        return DataTables::eloquent($model)->addIndexColumn()
+            ->addColumn('negara', function ($row) {
+                $negara = BarantinApiHelper::GetMasterNegaraByID($row->master_negara_id ?? 0);
+                return $negara['nama'] ?? null;
+            })
+            ->filterColumn('negara', function ($query, $keyword) {
+                $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
+                $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
+                $query->whereIn('master_negara_id', $idNegara);
+            })
+            ->addColumn('provinsi', function ($row) {
+                $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->master_provinsi_id ?? 0);
+                return $provinsi['nama'] ?? null;
+            })
+            ->filterColumn('provinsi', function ($query, $keyword) {
+                $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
+                $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
+                $query->whereIn('master_provinsi_id', $idProvinsi);
+            })
+            ->addColumn('kota', function ($row) {
+                $kota = BarantinApiHelper::GetMasterKotaByID($row->master_kota_kab_id ?? 0, $row->master_provinsi_id ?? 0);
+                return $kota['nama'] ?? null;
+            })
+            ->filterColumn('kota', function ($query, $keyword) {
+                $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
+                $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
+                $query->whereIn('master_kota_kab_id', $idKota);
+            })
+            ->addColumn('action', 'user.mitra.action')->make(true);
     }
     public function query()
     {
-        $select = MitraPerusahaan::with(['negara:id,nama', 'provinsi:id,nama', 'kotas:id,nama'])->select(
-            'mitra_perusahaans.id',
-            'nama_mitra',
-            'jenis_identitas_mitra',
-            'nomor_identitas_mitra',
-            'alamat_mitra',
-            'telepon_mitra',
-            'master_negara_id',
-            'master_provinsi_id',
-            'master_kota_kab_id',
-        );
+        $select = MitraPerusahaan::query();
+
         if (auth()->user()->role === 'cabang') {
             return $select->where('barantin_cabang_id', auth()->user()->baratincabang->id);
         }

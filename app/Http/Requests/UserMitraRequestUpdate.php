@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\KotaRule;
+use App\Rules\NegaraRule;
+use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
+use App\Rules\NomerIdentitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserMitraRequestUpdate extends FormRequest
@@ -28,22 +32,14 @@ class UserMitraRequestUpdate extends FormRequest
             'nomor_identitas_mitra' => [
                 'required',
                 'numeric',
-                function ($attr, $val, $fail) {
-                    $jenis_dokumen = request()->input('jenis_identitas_mitra');
-                    if ($jenis_dokumen === 'KTP' || $jenis_dokumen === 'NPWP') {
-                        if (!preg_match('/^[0-9]{16}$/', $val)) {
-                            $fail('Nomor dokumen harus berupa 16 digit.');
-                        }
-                    }
-
-                }
+                new NomerIdentitasRule(request()->input('jenis_identitas_mitra'))
             ],
 
             'alamat_mitra' => 'required|string|max:255',
             'telepon_mitra' => 'required|string|max:255',
-            'negara' => 'required|exists:master_negaras,id',
-            'provinsi' => 'required_if:master_negara_id,99|exists:master_provinsis,id',
-            'kabupaten_kota' => 'required_if:negara,99|exists:master_kota_kabs,id',
+            'negara' => ['required', new NegaraRule],
+            'provinsi' => ['required_if:negara,99', new ProvinsiRule],
+            'kabupaten_kota' => ['required_if:negara,99', new KotaRule(request()->input('provinsi'))],
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\KotaRule;
+use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -36,8 +38,8 @@ class UserPppjkRequestStore extends FormRequest
                 new NomerIdentitasRule(request()->input('jenis_identitas_ppjk'))
             ],
 
-            'provinsi' => 'required|exists:master_provinsis,id',
-            'kabupaten_kota' => 'required|exists:master_kota_kabs,id',
+            'provinsi' => ['required', new ProvinsiRule],
+            'kabupaten_kota' => ['required', new KotaRule(request()->input('provinsi'))],
 
             'nama_cp_ppjk' => 'required|string|max:255',
             'alamat_cp_ppjk' => 'required|string|max:255',

@@ -35,22 +35,22 @@ $('#user-mitra-datatable').DataTable({
             name: 'telepon_mitra',
         },
         {
-            data: 'negara.nama',
-            name: 'negara.nama',
+            data: 'negara',
+            name: 'negara',
             render: function (data, type, row) {
                 return data || '<center>-</center>';
             }
         },
         {
-            data: 'provinsi.nama',
-            name: 'provinsi.nama',
+            data: 'provinsi',
+            name: 'provinsi',
             render: function (data, type, row) {
                 return data || '<center>-</center>';
             }
         },
         {
-            data: 'kotas.nama',
-            name: 'kotas.nama',
+            data: 'kota',
+            name: 'kota',
             render: function (data, type, row) {
                 return data || '<center>-</center>';
             }

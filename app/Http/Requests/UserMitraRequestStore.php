@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\KotaRule;
+use App\Rules\NegaraRule;
+use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,9 +37,9 @@ class UserMitraRequestStore extends FormRequest
 
             'alamat_mitra' => 'required|string|max:255',
             'telepon_mitra' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
-            'negara' => 'required|exists:master_negaras,id',
-            'provinsi' => 'required_if:negara,99|exists:master_provinsis,id',
-            'kabupaten_kota' => 'required_if:negara,99|exists:master_kota_kabs,id',
+            'negara' => ['required', new NegaraRule],
+            'provinsi' => ['required_if:negara,99',  new ProvinsiRule],
+            'kabupaten_kota' => ['required_if:negara,99', new KotaRule(request()->input('provinsi'))],
         ];
     }
 }

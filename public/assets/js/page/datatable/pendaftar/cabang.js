@@ -28,7 +28,7 @@ table = $("#pendaftar-datatable").DataTable({
             data: "blockir", name: "blockir", render: function (data) { return BlokirStatus(data) }
         },
         {
-            data: "upt", name: "upt."
+            data: "upt", name: "master_upt_id"
         },
         {
             data: "baratincabang.baratininduk.nama_perusahaan", name: "baratincabang.baratininduk.nama_perusahaan"
@@ -135,6 +135,6 @@ $('#tanggal-register').on('cancel.daterangepicker', function (ev, picker) {
 });
 $('#filter-upt').change(function () {
     var val = $(this).val();
-    if (val === "all") return table.column("upt:name").search("").draw();
-    return table.column("upt:name").search(val).draw();
+    if (val === "all") return table.column("master_upt_id:name").search("").draw();
+    return table.column("master_upt_id:name").search(val).draw();
 });

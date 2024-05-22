@@ -5,5 +5,5 @@
     onclick="DeleteAlert('{{ route('barantin.mitra.destroy', $model->id) }}', '{{ $model->nama_mitra }}')"><i
         class="fas fa-trash"></i></a>
 <a class="btn btn-outline-primary btn-sm"
-    onclick="modal('Edit Detail','modal-xl','static','{{ route('barantin.mitra.show', $model->id) }}')"><i
+    onclick="modal('Detail Mitra','modal-xl','static','{{ route('barantin.mitra.show', $model->id) }}')"><i
         class="fas fa-eye"></i></a>
