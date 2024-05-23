@@ -156,8 +156,8 @@ class BarantinController extends Controller
      */
     private static function renderResponseDataBarantin($data)
     {
-        $provinsi = BarantinApiHelper::GetMasterProvinsiByID($data->provinsi_id);
-        $kota = BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id);
+        $provinsi = BarantinApiHelper::getMasterProvinsiByID($data->provinsi_id);
+        $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($data->kota, $data->provinsi_id);
 
         return [
             'id' => $data->id,

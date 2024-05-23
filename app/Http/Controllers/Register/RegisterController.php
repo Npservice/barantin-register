@@ -152,7 +152,7 @@ class RegisterController extends Controller
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
                 'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktifitas),
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
             ]);
             $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
             return response()->json(['status' => true, 'message' => 'Register Perorangan Berhasil Dilakukan'], 200);
@@ -187,7 +187,7 @@ class RegisterController extends Controller
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
                 'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktifitas),
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
             ]);
 
             $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
@@ -227,7 +227,7 @@ class RegisterController extends Controller
                 'pre_register_id' => $id,
                 'pj_baratin_id' => $induk->id,
                 'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktifitas),
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
             ]);
 
             $this->SaveRegisterCabang($request, $id, $data);

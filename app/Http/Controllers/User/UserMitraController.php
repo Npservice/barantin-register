@@ -68,12 +68,8 @@ class UserMitraController extends Controller
     public function show(string $id)
     {
         $data = MitraPerusahaan::find($id);
-        $dataMaster = [
-            'provinsi' => BarantinApiHelper::GetMasterProvinsiByID($data->master_provinsi_id)['nama'],
-            'kota' => BarantinApiHelper::GetMasterKotaByID($data->master_kota_kab_id, $data->master_provinsi_id)['nama'],
-            'negara' => BarantinApiHelper::GetMasterNegaraByID($data->master_negara_id)['nama'],
-        ];
-        return view('user.mitra.show', compact('data', 'dataMaster'));
+
+        return view('user.mitra.show', compact('data'));
     }
 
     /**
@@ -119,7 +115,7 @@ class UserMitraController extends Controller
         $model = $this->query();
         return DataTables::eloquent($model)->addIndexColumn()
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::GetMasterNegaraByID($row->master_negara_id ?? 0);
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->master_negara_id ?? 0);
                 return $negara['nama'] ?? null;
             })
             ->filterColumn('negara', function ($query, $keyword) {
@@ -128,7 +124,7 @@ class UserMitraController extends Controller
                 $query->whereIn('master_negara_id', $idNegara);
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->master_provinsi_id ?? 0);
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->master_provinsi_id ?? 0);
                 return $provinsi['nama'] ?? null;
             })
             ->filterColumn('provinsi', function ($query, $keyword) {
@@ -137,7 +133,7 @@ class UserMitraController extends Controller
                 $query->whereIn('master_provinsi_id', $idProvinsi);
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::GetMasterKotaByID($row->master_kota_kab_id ?? 0, $row->master_provinsi_id ?? 0);
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->master_kota_kab_id ?? 0, $row->master_provinsi_id ?? 0);
                 return $kota['nama'] ?? null;
             })
             ->filterColumn('kota', function ($query, $keyword) {

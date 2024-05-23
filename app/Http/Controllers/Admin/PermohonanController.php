@@ -51,21 +51,13 @@ class PermohonanController extends Controller
         $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
-        $upt = BarantinApiHelper::getMasterUptByID($register->master_upt_id);
-
-        $dataMaster = [
-            'upt' => $upt['nama_satpel'] . ' - ' . $upt['nama'],
-            'provinsi' => BarantinApiHelper::GetMasterProvinsiByID($data->provinsi_id)['nama'],
-            'kota' => BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id)['nama'],
-            'negara' => BarantinApiHelper::GetMasterNegaraByID($data->negara_id)['nama'],
-        ];
         if ($preregister->pemohon === 'perorangan') {
-            return view('admin.permohonan.show.perorangan', compact('data', 'register', 'dataMaster'));
+            return view('admin.permohonan.show.perorangan', compact('data', 'register'));
         } else {
             if ($preregister->jenis_perusahaan === 'induk' || !$preregister->jenis_perusahaan) {
-                return view('admin.permohonan.show.induk', compact('data', 'register', 'dataMaster'));
+                return view('admin.permohonan.show.induk', compact('data', 'register'));
             }
-            return view('admin.permohonan.show.cabang', compact('data', 'register', 'dataMaster'));
+            return view('admin.permohonan.show.cabang', compact('data', 'register'));
         }
     }
 
@@ -135,7 +127,7 @@ class PermohonanController extends Controller
             return $upt['nama_satpel'] . ' - ' . $upt['nama'];
         })
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::GetMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
                 return $negara['nama'];
             })
             ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
@@ -144,7 +136,7 @@ class PermohonanController extends Controller
                 $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
                 return $provinsi['nama'];
             })
             ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
@@ -153,7 +145,7 @@ class PermohonanController extends Controller
                 $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::GetMasterKotaByID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
                 return $kota['nama'];
             })
             ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\User;
 use App\Models\Ppjk;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -109,11 +111,42 @@ class UserPpjkController extends Controller
     public function datatable(): JsonResponse
     {
         $model = $this->query();
-        return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'user.ppjk.action')->make(true);
+        $barantinKategori = auth()->user()->role == 'cabang' ? 'baratincabang' : 'baratin';
+        return DataTables::eloquent($model)->addIndexColumn()
+            ->addColumn('action', 'user.ppjk.action')
+            ->addColumn('negara', function ($row) {
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->master_negara_id);
+                return $negara['nama'];
+            })
+            ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
+                $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
+                $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('master_negara_id', $idNegara));
+            })
+            ->addColumn('provinsi', function ($row) {
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->master_provinsi_id);
+                return $provinsi['nama'];
+            })
+            ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
+                $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
+                $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('master_provinsi_id', $idProvinsi));
+            })
+            ->addColumn('kota', function ($row) {
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->master_kota_kab_id, $row->master_provinsi_id);
+                return $kota['nama'];
+            })
+            ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {
+                $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
+                $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('master_kota_kab_id', $idKota));
+
+            })
+            ->make(true);
     }
     public function query()
     {
-        $select = Ppjk::with(['negara:id,nama', 'provinsi:id,nama', 'kotas:id,nama'])->select(
+        $select = Ppjk::select(
             'ppjks.id',
             'nama_ppjk',
             'email_ppjk',
@@ -122,6 +155,8 @@ class UserPpjkController extends Controller
             'master_negara_id',
             'master_provinsi_id',
             'master_kota_kab_id',
+            'barantin_cabang_id',
+            'pj_baratin_id'
         );
         if (auth()->user()->role === 'cabang') {
             return $select->where('barantin_cabang_id', auth()->user()->baratincabang->id);

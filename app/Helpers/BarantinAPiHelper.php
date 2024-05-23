@@ -74,7 +74,7 @@ class BarantinApiHelper
      * Mengambil data master provinsi dari API dan menyimpannya dalam cache jika belum ada.
      * @return JsonResponse Respon JSON yang mengandung data master provinsi.
      */
-    public static function GetDataMasterProvinsi(): JsonResponse
+    public static function getDataMasterProvinsi(): JsonResponse
     {
         $cacheKey = 'dataMasterProvinsi';
         $cacheDuration = 60 * 24; // 1 hari dalam menit
@@ -144,7 +144,7 @@ class BarantinApiHelper
      * @param mixed $id ID dari negara yang ingin diambil.
      * @return mixed Mengembalikan data negara jika ditemukan, atau null jika tidak ditemukan.
      */
-    public static function GetMasterNegaraByID($id)
+    public static function getMasterNegaraByID($id)
     {
         $negaraInstance = self::getDataMasterNegara();
         return collect($negaraInstance->original)->where('id', $id)->first();
@@ -158,9 +158,9 @@ class BarantinApiHelper
      * @param int $id ID dari provinsi yang ingin diambil.
      * @return mixed Mengembalikan data provinsi jika ditemukan, atau null jika tidak ditemukan.
      */
-    public static function GetMasterProvinsiByID($id)
+    public static function getMasterProvinsiByID($id)
     {
-        $provinsiInstance = self::GetDataMasterProvinsi();
+        $provinsiInstance = self::getDataMasterProvinsi();
         return collect($provinsiInstance->original)->where('id', $id)->first();
     }
 
@@ -174,9 +174,22 @@ class BarantinApiHelper
      * @param int $provinsi_id ID dari provinsi yang berkaitan dengan kota.
      * @return mixed Mengembalikan data kota jika ditemukan, atau null jika tidak ditemukan.
      */
-    public static function GetMasterKotaByID($id, $provinsi_id)
+    public static function getMasterKotaByIDProvinsiID($id, $provinsi_id)
     {
         $kotaInstance = self::getDataMasterKotaByProvinsi($provinsi_id);
+        return collect($kotaInstance->original)->where('id', $id)->first();
+    }
+    /**
+     * Mengambil data master kota berdasarkan ID.
+     * Fungsi ini akan memanggil API untuk mengambil data master kota.
+     * Setelah itu, fungsi akan mencari kota dengan ID yang diberikan dan mengembalikan hasilnya.
+     *
+     * @param int $id ID dari kota yang ingin diambil.
+     * @return mixed Mengembalikan data kota jika ditemukan, atau null jika tidak ditemukan.
+     */
+    public static function getMasterKotaByID($id)
+    {
+        $kotaInstance = self::getDataMasterKota();
         return collect($kotaInstance->original)->where('id', $id)->first();
     }
 

@@ -29,16 +29,14 @@
                  <div class="row mb-3">
                      <label for="negara" class="col-md-3 col-form-label">Negara</label>
                      <div class="col-md-9">
-                         <input class="form-control negara-select" disabled
-                             value="{{ $dataMaster['negara'] ?? null }}"></input>
+                         <input class="form-control negara-select" disabled value="@negara($data->master_negara_id)"></input>
                      </div>
                  </div>
                  @if ($data->master_negara_id == 99)
                      <div class="row mb-3">
                          <label for="provinsi" class="col-md-3 col-form-label">Provinsi</label>
                          <div class="col-md-9">
-                             <input class="form-control " disabled type="text"
-                                 value="{{ $dataMaster['provinsi'] ?? null }}">
+                             <input class="form-control " disabled type="text" value="@provinsi($data->master_provinsi_id)">
                              <div class="invalid-feedback" id="provinsi-feedback"></div>
                          </div>
                      </div>
@@ -46,8 +44,7 @@
                      <div class="row mb-3">
                          <label for="kabupaten" class="col-md-3 col-form-label">Kabupaten</label>
                          <div class="col-md-9">
-                             <input class="form-control " disabled value="{{ $dataMaster['kota'] ?? null }}"
-                                 type="text"></input>
+                             <input class="form-control " disabled value="@kota($data->master_kota_kab_id)" type="text"></input>
                          </div>
                      </div>
                  @endif

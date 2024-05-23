@@ -51,7 +51,7 @@
                       <label for="provinsi" class="col-md-3 col-form-label">Provinsi</label>
                       <div class="col-md-9">
                           <input class="form-control provinsi-select" type="text" id="provinsi" disabled
-                              name="provinsi" value="{{ $data->provinsi->nama }}">
+                              name="provinsi" value="@provinsi($data->master_provinsi_id)">
 
                       </div>
                   </div>
@@ -60,7 +60,7 @@
                       <label for="kabupaten" class="col-md-3 col-form-label">Kabupaten/Kota</label>
                       <div class="col-md-9">
                           <input class="form-control kota-select" disabled type="text" id="kabupaten_kota"
-                              value="{{ $data->kotas->nama }}">
+                              value="@kota($data->master_kota_kab_id)">
 
                       </div>
                   </div>

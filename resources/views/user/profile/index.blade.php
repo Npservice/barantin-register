@@ -62,13 +62,13 @@
                                             id="nomor_identitas" name="nomor_identitas">
                                     </div>
                                 </div>
-                                @if (auth()->user()->role === 'cabang')
+                                @if (auth()->user()->role === 'cabang' || auth()->user()->role === 'induk')
                                     <div class="row mb-3">
                                         <label for="email" class="col-sm-3 col-form-label">NITKU</label>
                                         <div class="col-sm-9">
                                             <input class="form-control" disabled
-                                                value="{{ auth()->user()->baratincabang->nitku }}" type="text"
-                                                id="pemohon" name="pemohon">
+                                                value="{{ auth()->user()->baratin->nitku ?? auth()->user()->baratincabang->nitku }}"
+                                                type="text" id="pemohon" name="pemohon">
                                         </div>
                                     </div>
                                 @endif
@@ -96,20 +96,17 @@
                                             type="email" id="email" name="email">
                                     </div>
                                 </div>
-                                <div class="row mb-5">
+                                <div class="row mb-3">
                                     <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                                     <div class="col-sm-9">
-                                        <select class="form-control select-item" disabled id="status_import"
-                                            name="status_import">
-                                            <option value="25">Importir Umum</option>
-                                            <option value="26">Importir Produsen</option>
-                                            <option value="27">Importir Terdaftar</option>
-                                            <option value="28">Agen Tunggal</option>
-                                            <option value="29">BULOG</option>
-                                            <option value="30">PERTAMINA</option>
-                                            <option value="31">DAHANA</option>
-                                            <option value="32">IPTN</option>
-                                        </select>
+                                        <input class="form-control select-item" disabled value="@statusimport(auth()->user()->baratin->status_import ?? auth()->user()->baratincabang->status_import)">
+                                        <div class="invalid-feedback" id="status_import-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
+                                    <label for="status_import" class="col-sm-3 col-form-label">Lingkup Aktifitas</label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control select-item" disabled value="@aktifitas(auth()->user()->baratin->lingkup_aktifitas ?? auth()->user()->baratincabang->lingkup_aktifitas)">
                                         <div class="invalid-feedback" id="status_import-feedback"></div>
                                     </div>
                                 </div>
@@ -121,16 +118,14 @@
                                     <label for="negara" class="col-sm-3 col-form-label">Negara</label>
                                     <div class="col-sm-9">
                                         <input class="form-control negara-select" type="text" id="negara"
-                                            name="negara" disabled
-                                            value="{{ auth()->user()->baratin->negara->nama ?? auth()->user()->baratincabang->negara->nama }}">
+                                            name="negara" disabled value="@negara(auth()->user()->baratin->negara_id ?? auth()->user()->baratincabang->negara_id)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3" id="provinsi-form">
                                     <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control provinsi-select" disabled
-                                            value="{{ auth()->user()->baratin->provinsi->nama ?? auth()->user()->baratincabang->provinsi->nama }}"
+                                        <input class="form-control provinsi-select" disabled value="@provinsi(auth()->user()->baratin->provinsi_id ?? auth()->user()->baratincabang->provinsi_id)"
                                             type="text">
                                     </div>
                                 </div>
@@ -138,8 +133,7 @@
                                 <div class="row mb-3" id="kota-form">
                                     <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control provinsi-select" disabled
-                                            value="{{ auth()->user()->baratin->kotas->nama ?? auth()->user()->baratincabang->kotas->nama }}"
+                                        <input class="form-control provinsi-select" disabled value="@kota(auth()->user()->baratin->kota ?? auth()->user()->baratincabang->kota)"
                                             type="text">
                                     </div>
                                 </div>
@@ -229,14 +223,4 @@
             </div>
         </div>
     </div>
-
 @endsection
-@push('js')
-@endpush
-@push('custom-js')
-    <script>
-        $('#status_import')
-            .val('{{ auth()->user()->baratin->status_import ?? auth()->user()->baratincabang->status_import }}')
-            .trigger('change')
-    </script>
-@endpush

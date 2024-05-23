@@ -15,7 +15,7 @@ class ProvinsiRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $validUpts = collect(BarantinApiHelper::GetDataMasterProvinsi()->original)->pluck('id')->toArray();
+        $validUpts = collect(BarantinApiHelper::getDataMasterProvinsi()->original)->pluck('id')->toArray();
         if (!in_array($value, $validUpts)) {
             $fail('Provinsi tidak ada.');
         }

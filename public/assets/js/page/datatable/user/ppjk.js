@@ -31,16 +31,16 @@ $('#user-ppjk-datatable').DataTable({
             name: 'tanggal_kerjasama_ppjk',
         },
         {
-            data: 'negara.nama',
-            name: 'negara.nama',
+            data: 'negara',
+            name: 'negara',
         },
         {
-            data: 'provinsi.nama',
-            name: 'provinsi.nama'
+            data: 'provinsi',
+            name: 'provinsi'
         },
         {
-            data: 'kotas.nama',
-            name: 'kotas.nama',
+            data: 'kota',
+            name: 'kota',
         },
         {
             data: 'alamat_ppjk',

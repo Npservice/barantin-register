@@ -242,8 +242,8 @@ class BarantinMitraController extends Controller
     private static function renderDataResponse($data): array
     {
 
-        $provinsi = $data->master_provinsi_id ? BarantinApiHelper::GetMasterProvinsiByID($data->master_provinsi_id) : null;
-        $kota = $data->master_kota_kab_id ? BarantinApiHelper::GetMasterKotaByID($data->master_kota_kab_id, $data->master_provinsi_id) : null;
+        $provinsi = $data->master_provinsi_id ? BarantinApiHelper::getMasterProvinsiByID($data->master_provinsi_id) : null;
+        $kota = $data->master_kota_kab_id ? BarantinApiHelper::getMasterKotaByIDProvinsiID($data->master_kota_kab_id, $data->master_provinsi_id) : null;
 
         $data = [
             "id" => $data->id,

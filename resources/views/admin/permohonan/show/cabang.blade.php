@@ -110,18 +110,14 @@
                         <div class="row mb-3">
                             <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                             <div class="col-sm-9">
-                                <select class="form-control select-item" disabled id="status_import"
-                                    name="status_import">
-                                    <option value="">select item</option>
-                                    <option value="25">Importir Umum</option>
-                                    <option value="26">Importir Produsen</option>
-                                    <option value="27">Importir Terdaftar</option>
-                                    <option value="28">Agen Tunggal</option>
-                                    <option value="29">BULOG</option>
-                                    <option value="30">PERTAMINA</option>
-                                    <option value="31">DAHANA</option>
-                                    <option value="32">IPTN</option>
-                                </select>
+                                <input class="form-control select-item" disabled value="@statusimport($data->status_import)">
+                                <div class="invalid-feedback" id="status_import-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="status_import" class="col-sm-3 col-form-label">Lingkup Aktifitas</label>
+                            <div class="col-sm-9">
+                                <input class="form-control select-item" disabled value="@aktifitas($data->lingkup_aktifitas)">
                                 <div class="invalid-feedback" id="status_import-feedback"></div>
                             </div>
                         </div>
@@ -139,25 +135,23 @@
                             <label for="negara" class="col-sm-3 col-form-label">Negara</label>
                             <div class="col-sm-9">
                                 <input class="form-control negara-select" type="text" placeholder="Negara"
-                                    id="negara" name="negara" disabled value="{{ $data->negara->nama ?? '' }}">
+                                    id="negara" name="negara" disabled value="@negara($data->negara_id)">
                             </div>
                         </div>
 
                         <div class="row mb-3" id="provinsi-form">
                             <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->provinsi->nama ?? ('' ?? '') }}" type="text"
-                                    placeholder="Provinsi" id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="@provinsi($data->provinsi_id)"
+                                    type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
                         <div class="row mb-3" id="kota-form">
                             <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->kotas->nama ?? '' }}" type="text" placeholder="Provinsi"
-                                    id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="@kota($data->kota)"
+                                    type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
@@ -261,12 +255,6 @@
                     </table>
                 </div>
             </div>
-            {{-- <div class="card-footer">
-                <div class="text-end">
-                    <a class="btn btn-primary btn-sm me-2"
-                        onclick="ConfirmRegister('{{ route('admin.baratin.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}')">APROVE</a>
-                </div>
-            </div> --}}
         </div>
     </div>
 </div>

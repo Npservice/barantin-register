@@ -37,15 +37,15 @@ class SelectController extends Controller
     {
         $data = collect(BarantinApiHelper::GetDataMasterNegara()->original);
         if (request()->input('negara_id')) {
-            $data = BarantinApiHelper::GetMasterNegaraByID(request()->input('negara_id'));
+            $data = BarantinApiHelper::getMasterNegaraByID(request()->input('negara_id'));
         }
         return response()->json($data);
     }
     public function SelectProvinsi(): JsonResponse
     {
-        $data = collect(BarantinApiHelper::GetDataMasterProvinsi()->original);
+        $data = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
         if (request()->input('provinsi_id')) {
-            $data = BarantinApiHelper::GetMasterProvinsiByID(request()->input('provinsi_id'));
+            $data = BarantinApiHelper::getMasterProvinsiByID(request()->input('provinsi_id'));
         }
         return response()->json($data);
     }
@@ -57,7 +57,7 @@ class SelectController extends Controller
     {
         $data = collect(BarantinApiHelper::getDataMasterKotaByProvinsi($id)->original);
         if (request()->input('kota_id')) {
-            $data = BarantinApiHelper::GetMasterKotaByID(request()->input('kota_id'), $id);
+            $data = BarantinApiHelper::getMasterKotaByIDProvinsiID(request()->input('kota_id'), $id);
         }
         return response()->json($data);
     }

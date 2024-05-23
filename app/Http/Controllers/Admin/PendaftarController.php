@@ -50,9 +50,9 @@ class PendaftarController extends Controller
 
         $dataMaster = [
             'upt' => $upt['nama_satpel'] . ' - ' . $upt['nama'],
-            'provinsi' => BarantinApiHelper::GetMasterProvinsiByID($data->provinsi_id)['nama'],
-            'kota' => BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id)['nama'],
-            'negara' => BarantinApiHelper::GetMasterNegaraByID($data->negara_id)['nama'],
+            'provinsi' => BarantinApiHelper::getMasterProvinsiByID($data->provinsi_id)['nama'],
+            'kota' => BarantinApiHelper::getMasterKotaByIDProvinsiID($data->kota, $data->provinsi_id)['nama'],
+            'negara' => BarantinApiHelper::getMasterNegaraByID($data->negara_id)['nama'],
         ];
 
         if ($preregister->pemohon === 'perorangan') {
@@ -115,7 +115,7 @@ class PendaftarController extends Controller
             return $upt['nama_satpel'] . ' - ' . $upt['nama'];
         })
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::GetMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
                 return $negara['nama'];
             })
             ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
@@ -124,7 +124,7 @@ class PendaftarController extends Controller
                 $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::GetMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
                 return $provinsi['nama'];
             })
             ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
@@ -133,7 +133,7 @@ class PendaftarController extends Controller
                 $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::GetMasterKotaByID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
                 return $kota['nama'];
             })
             ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {

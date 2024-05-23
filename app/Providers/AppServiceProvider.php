@@ -28,35 +28,24 @@ class AppServiceProvider extends ServiceProvider
         }
         View::share('uptPusatId', env('UPT_PUSAT_ID', 1000));
         Blade::directive('statusimport', function ($expression) {
-            $statuses = [
-                25 => 'Importir Umum',
-                26 => 'Importir Produsen',
-                27 => 'Importir Terdaftar',
-                28 => 'Agen Tunggal',
-                29 => 'BULOG',
-                30 => 'PERTAMINA',
-                31 => 'DAHANA',
-                32 => 'IPTN',
-            ];
-            $status = $statuses[$expression] ?? null;
-            return "<?php echo {$status} ?>";
+            return "<?php echo  App\Helpers\StatusImportHelper::statusRender($expression) ?>";
         });
 
         Blade::directive('aktifitas', function ($expression) {
-            $data = [
-                1 => 'Import',
-                2 => 'Domestik Masuk',
-                3 => 'Export',
-                4 => 'Domestik Keluar',
-            ];
-            $array = explode(',', $expression);
-            $filteredData = array_filter($data, function ($key) use ($array) {
-                return in_array($key, $array);
-            }, ARRAY_FILTER_USE_KEY);
 
-            $value = implode(', ', $filteredData);
+            return "<?php echo  App\Helpers\StatusImportHelper::aktifitasRender($expression) ?>";
+        });
+        Blade::directive('negara', function ($expression) {
 
-            return "<?php echo {$value} ?>";
+            return "<?php echo  App\Helpers\BarantinApiHelper::getMasterNegaraByID($expression)['nama'] ?>";
+        });
+        Blade::directive('provinsi', function ($expression) {
+
+            return "<?php echo  App\Helpers\BarantinApiHelper:: getMasterProvinsiByID($expression)['nama'] ?>";
+        });
+        Blade::directive('kota', function ($expression) {
+
+            return "<?php echo  App\Helpers\BarantinApiHelper::getMasterKotaByID($expression)['nama'] ?>";
         });
     }
 }

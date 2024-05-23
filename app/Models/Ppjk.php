@@ -37,24 +37,11 @@ class Ppjk extends Model
 
     public function baratin(): BelongsTo
     {
-        return $this->belongsTo(PjBaratin::class);
+        return $this->belongsTo(PjBaratin::class, 'pj_baratin_id');
     }
     public function baratincabang(): BelongsTo
     {
-        return $this->belongsTo(BarantinCabang::class);
-    }
-    public function negara(): BelongsTo
-    {
-        return $this->belongsTo(MasterNegara::class, 'master_negara_id', 'id');
-    }
-
-    public function provinsi(): BelongsTo
-    {
-        return $this->belongsTo(MasterProvinsi::class, 'master_provinsi_id', 'id');
-    }
-    public function kotas(): BelongsTo
-    {
-        return $this->belongsTo(MasterKotaKab::class, 'master_kota_kab_id', 'id');
+        return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id');
     }
 
 }
