@@ -143,7 +143,7 @@ class RegisterController extends Controller
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
         if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
             $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
+            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['lingkup_aktifitas']);
             $data = collect($data);
             $data = $data->merge([
                 'fax' => $request->nomor_fax,
@@ -151,7 +151,8 @@ class RegisterController extends Controller
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
-                'kota' => $request->kota
+                'kota' => $request->kota,
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktifitas),
             ]);
             $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
             return response()->json(['status' => true, 'message' => 'Register Perorangan Berhasil Dilakukan'], 200);
@@ -185,7 +186,8 @@ class RegisterController extends Controller
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
-                'kota' => $request->kota
+                'kota' => $request->kota,
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktifitas),
             ]);
 
             $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
@@ -224,7 +226,8 @@ class RegisterController extends Controller
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
                 'pj_baratin_id' => $induk->id,
-                'kota' => $request->kota
+                'kota' => $request->kota,
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktifitas),
             ]);
 
             $this->SaveRegisterCabang($request, $id, $data);

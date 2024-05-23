@@ -92,18 +92,14 @@
                         <div class="row mb-5">
                             <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                             <div class="col-sm-9">
-                                <select class="form-control select-item" disabled id="status_import"
-                                    name="status_import">
-                                    <option value="">select item</option>
-                                    <option value="25">Importir Umum</option>
-                                    <option value="26">Importir Produsen</option>
-                                    <option value="27">Importir Terdaftar</option>
-                                    <option value="28">Agen Tunggal</option>
-                                    <option value="29">BULOG</option>
-                                    <option value="30">PERTAMINA</option>
-                                    <option value="31">DAHANA</option>
-                                    <option value="32">IPTN</option>
-                                </select>
+                                <input class="form-control select-item" disabled value="@statusimport($data->status_import)">
+                                <div class="invalid-feedback" id="status_import-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <label for="status_import" class="col-sm-3 col-form-label">Lingkup Aktifitas</label>
+                            <div class="col-sm-9">
+                                <input class="form-control select-item" disabled value="@aktifitas($data->lingkup_aktifitas)">
                                 <div class="invalid-feedback" id="status_import-feedback"></div>
                             </div>
                         </div>
@@ -114,7 +110,7 @@
                             <label for="negara" class="col-sm-3 col-form-label">Negara</label>
                             <div class="col-sm-9">
                                 <input class="form-control negara-select" type="text" placeholder="Negara"
-                                    id="negara" name="negara" disabled value="{{ $data->negara->nama ?? '' }}">
+                                    id="negara" name="negara" disabled value="{{ $dataMaster['negara'] }}">
                             </div>
                         </div>
 
@@ -249,7 +245,6 @@
     </div>
 </div>
 <script>
-    $('#status_import').val('{{ $data->status_import }}').trigger('change');
     $('#table-detail-dokumen').DataTable({
         processing: true,
         ajax: '/admin/permohonan/datatable/dokumen/{{ $data->id }}',

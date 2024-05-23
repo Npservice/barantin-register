@@ -45,6 +45,7 @@ class BarantinCabang extends Model
         'status_import',
         'negara_id',
         'is_active',
+        'lingkup_aktifitas',
         'status_prioritas',
     ];
 

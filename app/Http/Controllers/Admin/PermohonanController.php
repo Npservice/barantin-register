@@ -59,7 +59,6 @@ class PermohonanController extends Controller
             'kota' => BarantinApiHelper::GetMasterKotaByID($data->kota, $data->provinsi_id)['nama'],
             'negara' => BarantinApiHelper::GetMasterNegaraByID($data->negara_id)['nama'],
         ];
-
         if ($preregister->pemohon === 'perorangan') {
             return view('admin.permohonan.show.perorangan', compact('data', 'register', 'dataMaster'));
         } else {

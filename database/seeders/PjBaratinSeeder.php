@@ -80,6 +80,7 @@ class PjBaratinSeeder extends Seeder
                         31,
                         32,
                     ]),
+                    'lingkup_aktifitas' => '1,2,3,4',
                     'is_active' => $faker->boolean,
                     'status_prioritas' => $faker->boolean,
                 ]);

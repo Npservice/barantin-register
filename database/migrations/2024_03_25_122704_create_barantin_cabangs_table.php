@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->string('kontak_ppjk')->nullable();
             $table->string('email')->nullable();
             $table->string('fax')->nullable();
+            $table->string('lingkup_aktifitas')->nullable();
             $table->unsignedBigInteger('kecamatan_id')->nullable();
             $table->unsignedBigInteger('provinsi_id')->nullable();
             $table->unsignedBigInteger('status_import')->nullable();
