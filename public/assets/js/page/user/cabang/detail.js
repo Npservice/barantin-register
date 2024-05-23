@@ -46,8 +46,8 @@ $('#table-detail-upt').DataTable({
         data: 'DT_RowIndex'
     },
     {
-        data: 'upt.nama',
-        name: 'upt.nama'
+        data: 'upt',
+        name: 'upt'
     },
     {
         data: 'created_at',

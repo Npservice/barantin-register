@@ -73,18 +73,19 @@
                             </select>
                             <div class="invalid-feedback" id="jenis_identitas-feedback"></div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="email" class="col-sm-3 col-form-label">NITKU</label>
-                            <div class="col-sm-9">
-                                <input class="form-control" type="number" id="nitku" name="nitku">
-                                <div class="invalid-feedback" id="nitku-feedback"></div>
-                            </div>
-                        </div>
+
                         <div class="col">
                             <input class="form-control" type="number" placeholder="Nomor Identitas"
                                 id="nomor_identitas" name="nomor_identitas"
                                 value="{{ $baratan->nomor_identitas ?? '' }}">
                             <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="email" class="col-sm-3 col-form-label">NITKU</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="number" id="nitku" name="nitku">
+                            <div class="invalid-feedback" id="nitku-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">

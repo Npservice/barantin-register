@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
@@ -62,6 +64,7 @@ class UserCabangController extends Controller
                 'jenis_identitas' => $induk->jenis_identitas,
                 'nomor_identitas' => $induk->nomor_identitas,
                 'negara_id' => 99,
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
                 'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,
@@ -74,19 +77,19 @@ class UserCabangController extends Controller
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
     }
-    public function SaveRegisterCabang(Request $request, $id, $data): void
+    public function SaveRegisterCabang(Request $request, $id, $data): bool
     {
         DB::transaction(
             function () use ($data, $id, $request) {
                 $baratin_cabang = BarantinCabang::create($data->all());
                 PreRegister::find($id)->update(['nama' => $baratin_cabang->nama_perusahaan, 'email' => $baratin_cabang->email]);
-                foreach ($request->upt as $index => $upt) {
+                foreach ($request->upt as $upt) {
                     Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
                 }
                 DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'pre_register_id' => null]);
             }
         );
-        return;
+        return true;
     }
 
     public function cancel(Request $request): JsonResponse
@@ -104,42 +107,47 @@ class UserCabangController extends Controller
      */
     public function show(string $id)
     {
-        $data = BarantinCabang::with(['provinsi:nama,id', 'kotas:nama,id', 'negara:id,nama', 'baratininduk:nama_perusahaan,id'])->find($id);
+        $data = BarantinCabang::with('baratininduk:nama_perusahaan,id')->find($id);
         return view('user.cabang.show', compact('data'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
     public function datatable(): JsonResponse
     {
         $model = $this->query();
-        return DataTables::eloquent($model)->addIndexColumn()->addColumn('action', 'user.cabang.action')->make(true);
+        return DataTables::eloquent($model)->addIndexColumn()
+            ->addColumn('negara', function ($row) {
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->negara_id);
+                return $negara['nama'];
+            })
+            ->filterColumn('negara', function ($query, $keyword) {
+                $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
+                $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
+                $query->whereIn('negara_id', $idNegara);
+            })
+            ->addColumn('provinsi', function ($row) {
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->provinsi_id);
+                return $provinsi['nama'];
+            })
+            ->filterColumn('provinsi', function ($query, $keyword) {
+                $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
+                $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
+                $query->whereIn('provinsi_id', $idProvinsi);
+            })
+            ->addColumn('kota', function ($row) {
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->kota, $row->provinsi_id);
+                return $kota['nama'];
+            })
+            ->filterColumn('kota', function ($query, $keyword) {
+                $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
+                $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
+                $query->whereIn('kota', $idKota);
+
+            })
+            ->addColumn('action', 'user.cabang.action')->make(true);
     }
     public function query()
     {
-        return BarantinCabang::with('negara:id,nama', 'provinsi:nama,id', 'kotas:nama,id')
-            ->select('barantin_cabangs.id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'nitku', 'kota', 'barantin_cabangs.provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id')
+        return BarantinCabang::select('barantin_cabangs.id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'nitku', 'kota', 'barantin_cabangs.provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id')
             ->where('pj_baratin_id', auth()->user()->baratin->id);
     }
 
@@ -178,7 +186,7 @@ class UserCabangController extends Controller
     {
 
         $data = DokumenPendukung::find($id);
-        $file = Storage::disk('public')->delete($data->file);
+        Storage::disk('public')->delete($data->file);
         $res = $data->delete();
 
         if ($res) {
@@ -189,9 +197,18 @@ class UserCabangController extends Controller
 
     public function DatatableUptDetail(string $id): JsonResponse
     {
-        $model = Register::with('upt:id,nama')->where('barantin_cabang_id', $id);
+        $model = Register::where('barantin_cabang_id', $id);
         return DataTables::eloquent($model)
             ->addIndexColumn()
+            ->addColumn('upt', function ($row) {
+                $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
+                return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+            })
+            ->filterColumn('upt', function ($query, $keyword) {
+                $upt = collect(BarantinApiHelper::getDataMasterUpt()->original);
+                $idUpt = JsonFilterHelper::searchDataByKeyword($upt, $keyword, 'nama_satpel', 'nama')->pluck('id');
+                $query->whereIn('master_upt_id', $idUpt);
+            })
             ->toJson();
     }
 }
