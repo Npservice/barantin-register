@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Admin;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
+use App\Helpers\BarantinApiHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -31,14 +34,14 @@ class LoginController extends Controller
      *                      property="username",
      *                      type="string",
      *                      description="Username for login",
-     *                      default="admin",
+     *                      default="userpusat",
      *                  ),
      *                  @OA\Property(
      *                      property="password",
      *                      type="string",
      *                      format="password",
      *                      description="Password for login",
-     *                      default="12345678"
+     *                      default="Testing@123"
      *                  )
      *              )
      *          )
@@ -179,11 +182,37 @@ class LoginController extends Controller
                 return ApiResponse::errorResponse('Validation failed', 422, $error->all());
             }
 
-            if (Auth::guard('api')->attempt($request->only('username', 'password'))) {
-                $user = Admin::where('username', $request->username)->first();
-                $user->tokens()->delete();
-                $token = $user->createToken($user->id . 'BarantinK3y')->plainTextToken;
-                return ApiResponse::successResponse('Login Successfully', $user, false, ['token' => 'Bearer ' . $token]);
+            $res = BarantinApiHelper::loginApiBarantin($request->username, $request->password);
+
+            $user = $res['data'];
+
+            if ($res['status'] !== '200' || $user['detil'][0]['apps_id'] !== env('APP_ID', 'APP003')) {
+                return ApiResponse::errorResponse('Failed to login account', 401);
+            }
+
+            $roleInstance = $user['detil'][0];
+
+            $admin = Admin::updateOrCreate(['uid' => $user['uid']], [
+                'uid' => $user['uid'],
+                'uname' => $user['uname'],
+                'nama' => $user['nama'],
+                'email' => $user['email'],
+                'roles_id' => $roleInstance['roles_id'],
+                'apps_id' => $roleInstance['apps_id'],
+                'upt_id' => $user['upt'] ?? null,
+                'role_name' => $roleInstance['role_name'],
+                'access_token' => $user['accessToken'],
+                'refresh_token' => $user['refreshToken'],
+                'expiry' => Carbon::createFromFormat('Y-m-d\TH:i:sP', $user['expiry'])->toDateTimeString(),
+                'password' => $request->password,
+            ]);
+
+
+
+            if ($admin && Hash::check($request->password, $admin->password)) {
+                $admin->tokens()->delete();
+                $token = $admin->createToken($admin->id . 'BarantinK3y')->plainTextToken;
+                return ApiResponse::successResponse('Login Successfully', collect($admin)->except('refresh_token', 'created_at', 'updated_at'), false, ['token' => 'Bearer ' . $token]);
             }
 
             return ApiResponse::errorResponse('Unauthorized', 401, 'Account not found');

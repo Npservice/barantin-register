@@ -44,9 +44,13 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
-        'api' => [
+        'api-v1' => [
             'driver' => 'session',
             'provider' => 'admins',
+        ],
+        'api-v2' => [
+            'driver' => 'session',
+            'provider' => 'users',
         ]
     ],
 
