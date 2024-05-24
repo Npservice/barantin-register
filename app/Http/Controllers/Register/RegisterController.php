@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
+use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
+use App\Helpers\BarantinApiHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
@@ -75,18 +77,35 @@ class RegisterController extends Controller
     {
         if (request()->ajax()) {
             $model = Register::with([
-                'upt:nama,id',
                 'preregister:nama,id',
-                'baratin' => function ($query) {
-                    $query->with(['kotas:nama,id'])
-                        ->select('nama_perusahaan', 'kota', 'nama_tdd', 'jabatan_tdd', 'id');
-                }
+                'baratin'
             ])
                 ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'updated_at')
                 ->whereNotNull('pj_barantin_id')
                 ->whereNotNull('status')
                 ->orderBy('created_at', 'DESC');
-            return DataTables::eloquent($model)->addIndexColumn()->toJson();
+
+            return DataTables::eloquent($model)
+                ->addColumn('upt', function ($row) {
+                    $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
+                    return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+                })
+                ->filterColumn('upt', function ($query, $keyword) {
+                    $upt = collect(BarantinApiHelper::getDataMasterUpt()->original);
+                    $idUpt = JsonFilterHelper::searchDataByKeyword($upt, $keyword, 'nama_satpel', 'nama')->pluck('id');
+                    $query->whereIn('master_upt_id', $idUpt);
+                })
+                ->addColumn('kota', function ($row) {
+                    $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota, $row->baratin->provinsi_id);
+                    return $kota['nama'];
+                })
+                ->filterColumn('kota', function ($query, $keyword) {
+                    $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
+                    $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
+                    $query->whereHas('baratin', fn($query) => $query->whereIn('kota', $idKota));
+
+                })
+                ->addIndexColumn()->toJson();
         }
         return view('register.status.index');
     }

@@ -24,12 +24,12 @@ $('#status-datatable').dataTable({
         name: 'baratin.jabatan_tdd',
     },
     {
-        data: 'baratin.kotas.nama',
-        name: 'baratin.kotas.nama',
+        data: 'kota',
+        name: 'kota',
     },
     {
-        data: 'upt.nama',
-        name: 'upt.nama'
+        data: 'upt',
+        name: 'upt'
     },
     {
         data: 'updated_at',
