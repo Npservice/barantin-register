@@ -22,9 +22,9 @@ class LoginController extends Controller
      * @OA\Post(
      *      path="/login",
      *      operationId="userLogin",
-     *      tags={"Authentication"},
+     *      tags={"Authentication Admin"},
      *      summary="Login User Barantin",
-     *      description="User Access Login",
+     *      description="Admin Access Login with   endpoint '/api/v1' ",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\MediaType(

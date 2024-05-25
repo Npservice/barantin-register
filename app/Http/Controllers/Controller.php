@@ -21,8 +21,13 @@ use Illuminate\Routing\Controller as BaseController;
  * )
  *
  * @OA\Server(
- *      url=L5_SWAGGER_CONST_HOST,
- *      description="Api Barantin"
+ *      url=L5_SWAGGER_CONST_ADMIN_HOST,
+ *      description="Api Admin Barantin"
+ * )
+ *
+ * @OA\Server(
+ *      url=L5_SWAGGER_CONST_USER_HOST,
+ *      description="Api User Barantin Test"
  * )
  */
 class Controller extends BaseController

@@ -26,15 +26,13 @@ class PjBaratinSeeder extends Seeder
             'perusahaan',
             'perorangan'
         ];
-        foreach (range(1, 15) as $index) {
+        foreach (range(1, 50) as $index) {
             // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
             DB::transaction(function () use ($faker, $pemohon) {
 
                 $jenis_pemohon = $faker->randomElement($pemohon);
                 $nama = $faker->name;
                 $email = $faker->unique()->safeEmail;
-
-                $status = $faker->randomElement(['MENUNGGU', 'DISETUJUI', 'DITOLAK']);
                 $register = PreRegister::create([
                     'pemohon' => $jenis_pemohon,
                     'nama' => $nama,
@@ -88,7 +86,7 @@ class PjBaratinSeeder extends Seeder
                 Register::create([
                     'pj_barantin_id' => $baratin->id,
                     'master_upt_id' => 2100,
-                    'status' => $status,
+                    'status' => 'DISETUJUI',
                     'pre_register_id' => $register->id
                 ]);
             });

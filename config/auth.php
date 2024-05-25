@@ -45,11 +45,11 @@ return [
             'provider' => 'admins',
         ],
         'api-v1' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'admins',
         ],
         'api-v2' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'users',
         ]
     ],

@@ -25,7 +25,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/perusahaan/induk/{take}",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Dapatkan Data Barantin Perusahaan Induk",
      *     description="Mengambil data Barantin Perusahaan Induk menggunakan parameter take",
      *     operationId="getAllDataBarantinPerusahaanInduk",
@@ -93,7 +93,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/perusahaan/cabang/{take}",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Dapatkan Data Barantin Perusahaan Cabang",
      *     description="Mengambil data Barantin Perusahaan Cabang",
      *     operationId="getAllDataBarantinPerusahaanCabang",
@@ -102,7 +102,7 @@ class BarantinController extends Controller
      *         name="take",
      *         in="path",
      *         description="Jumlah data yang ingin diambil",
-     *         required=false,
+     *         required=true,
      *         @OA\Schema(
      *             type="integer",
      *         )
@@ -158,7 +158,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/perorangan/{take}",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Dapatkan Data Barantin Perorangan",
      *     description="Mengambil data Barantin dengan pemohon perorangan",
      *     operationId="getDataBarantinPerorangan",
@@ -224,7 +224,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/{register_id}/register",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Get Barantin Data By Register ID",
      *     description="Get Barantin Data By Register ID",
      *     security={{"bearer_token":{}}},
@@ -259,7 +259,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/perusahaan/induk/{barantin_id}/detil",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Get Barantin Data Detail By Barantin ID",
      *     description="Get Barantin Data Detail By Barantin ID",
      *     security={{"bearer_token":{}}},
@@ -293,7 +293,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/perusahaan/cabang/{barantin_id}/detil",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Get Barantin Data Detail By Barantin ID for Cabang",
      *     description="Get Barantin Data Detail By Barantin ID for Cabang",
      *     security={{"bearer_token":{}}},
@@ -327,7 +327,7 @@ class BarantinController extends Controller
     /**
      * @OA\Get(
      *     path="/barantin/perorangan/{barantin_id}/detil",
-     *     tags={"Barantin"},
+     *     tags={"Barantin Admin"},
      *     summary="Get Barantin Data Detail By Barantin ID for Perorangan",
      *     description="Get Barantin Data Detail By Barantin ID for Perorangan",
      *     security={{"bearer_token":{}}},

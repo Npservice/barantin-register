@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'ajax' => \App\Http\Middleware\AjaxRequest::class,
         'induk' => \App\Http\Middleware\IndukPerusahan::class,
         'registerfailed' => \App\Http\Middleware\RestricRegisterFailedMidlleware::class,
-        'refresh.token' => \App\Http\Middleware\RefreshTokenApiBarantin::class
+        'refresh.token' => \App\Http\Middleware\RefreshTokenApiBarantin::class,
+        'api.version' => \App\Http\Middleware\ApiVersionGuard::class,
     ];
 }

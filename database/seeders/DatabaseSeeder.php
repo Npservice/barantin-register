@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PjBaratanKppSeeder::class,
             PjBaratinSeeder::class,
-            PreRegisterSeeder::class
+            PreRegisterSeeder::class,
+            BarantinCabangSeeder::class,
+            MitraPerusahaanSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
