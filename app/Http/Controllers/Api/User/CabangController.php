@@ -55,7 +55,7 @@ class CabangController extends Controller
      *     description="Get Detail Cabang Perusahaan Induk",
      *     security={{"bearer_token":{}}},
      *     @OA\Parameter(
-     *         name="baratin_cabang_id",
+     *         name="barantin_cabang_id",
      *         in="path",
      *         description="ID of the Barantin Cabang",
      *         required=true,
@@ -75,6 +75,7 @@ class CabangController extends Controller
      */
     public function getDetailCabangPerusahaanInduk(string $barantin_cabang_id)
     {
+        // return $barantin_cabang_id;
         $data = BarantinCabang::find($barantin_cabang_id);
         if ($data) {
             return ApiResponse::successResponse('Cabang Perusahaaan induk berhasil ditemukan', self::renderResponseData($data), false);

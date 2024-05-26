@@ -1189,7 +1189,7 @@
                 "operationId": "getDetailCabangPerusahaanInduk",
                 "parameters": [
                     {
-                        "name": "baratin_cabang_id",
+                        "name": "barantin_cabang_id",
                         "in": "path",
                         "description": "ID of the Barantin Cabang",
                         "required": true,

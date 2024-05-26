@@ -36,12 +36,15 @@
                     </a>
                 </li> --}}
                     <li class="menu-title">Register</li>
-                    <li>
-                        <a href="{{ route('admin.permohonan.index') }}" class=" waves-effect">
-                            <i class="ri-file-user-line"></i>
-                            <span>Permohonan</span>
-                        </a>
-                    </li>
+                    @if (auth()->guard('admin')->user()->upt_id != $uptPusatId)
+                        <li>
+                            <a href="{{ route('admin.permohonan.index') }}" class=" waves-effect">
+                                <i class="ri-file-user-line"></i>
+                                <span>Permohonan</span>
+                            </a>
+                        </li>
+                    @endif
+
                     <li>
                         <a href="{{ route('admin.pendaftar.index') }}" class=" waves-effect">
                             <i class="ri-bookmark-2-line"></i>
@@ -89,7 +92,7 @@
                     <li>
                         <a href="{{ route('barantin.upt.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
-                            <span>UPT dipilih</span>
+                            <span>UPT Terdaftar</span>
                         </a>
                     </li>
 

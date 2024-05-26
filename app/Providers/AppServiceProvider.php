@@ -37,18 +37,17 @@ class AppServiceProvider extends ServiceProvider
         });
         Blade::directive('negara', function ($expression) {
 
-            return "<?php echo  App\Helpers\BarantinApiHelper::getMasterNegaraByID($expression)['nama'] ?>";
+            return "<?php echo  App\Helpers\BarantinApiHelper::getMasterNegaraByID($expression)['nama'] ?? 'NEGARA' ?>";
         });
         Blade::directive('provinsi', function ($expression) {
 
-            return "<?php echo  App\Helpers\BarantinApiHelper:: getMasterProvinsiByID($expression)['nama'] ?>";
+            return "<?php echo  App\Helpers\BarantinApiHelper:: getMasterProvinsiByID($expression)['nama'] ?? 'PROVINSI' ?>";
         });
         Blade::directive('kota', function ($expression) {
-
-            return "<?php echo  App\Helpers\BarantinApiHelper::getMasterKotaByID($expression)['nama'] ?>";
+            return "<?php echo  App\Helpers\BarantinApiHelper::getMasterKotaByID($expression)['nama'] ?? 'KOTA' ?>";
+        });
+        Blade::directive('upt', function ($expression) {
+            return "<?php echo  App\Helpers\BarantinApiHelper:: getMasterUptByID($expression)['nama'] ?? 'UPT PUSAT' ?>";
         });
     }
 }
-
-
-

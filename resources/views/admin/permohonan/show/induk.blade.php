@@ -156,7 +156,12 @@
                                     <input class="form-control provinsi-select" disabled value="{{ $data->nomor_identitas_tdd ?? '' }}" type="text" id="provinsi" name="provinsi">
                                 </div>
                             </div>
-
+                            <div class="row mb-3">
+                                <label for="upt" class="col-sm-3 col-form-label">NITKU</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="telepon" disabled value="{{ $data->nitku ?? '' }}" name="telepon" aria-describedby="inputGroupPrepend" required>
+                                </div>
+                            </div>
                             <div class="row mb-3">
                                 <label for="jabatan" class="col-sm-3 col-form-label">Jabatan</label>
                                 <div class="col-sm-9">

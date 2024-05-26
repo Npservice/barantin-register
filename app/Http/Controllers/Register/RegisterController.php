@@ -102,8 +102,7 @@ class RegisterController extends Controller
                 ->filterColumn('kota', function ($query, $keyword) {
                     $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
                     $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                    $query->whereHas('baratin', fn($query) => $query->whereIn('kota', $idKota));
-
+                    $query->whereHas('baratin', fn ($query) => $query->whereIn('kota', $idKota));
                 })
                 ->addIndexColumn()->toJson();
         }
@@ -200,7 +199,7 @@ class RegisterController extends Controller
             $data = $data->merge([
                 'fax' => $request->nomor_fax,
                 'negara_id' => 99,
-                'nitku' => $request->nitku ?? 000000,
+                'nitku' => $request->nitku ?? '000000',
                 'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,
@@ -279,7 +278,6 @@ class RegisterController extends Controller
                     } else {
                         Register::create(['master_upt_id' => $upt, 'pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
                     }
-
                 }
                 DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
             }
@@ -314,7 +312,6 @@ class RegisterController extends Controller
                     } else {
                         Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
                     }
-
                 }
                 DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'pre_register_id' => null]);
             }
@@ -344,7 +341,6 @@ class RegisterController extends Controller
             return AjaxResponse::SuccessResponse('dokumen pendukung berhasil ditambah', 'datatable-dokumen-pendukung');
         }
         return AjaxResponse::ErrorResponse('dokumen pendukung gagal ditambah', 200);
-
     }
 
     /**
@@ -389,5 +385,4 @@ class RegisterController extends Controller
         }
         return AjaxResponse::ErrorResponse('dokumen pendukung gagal dihapus', 200);
     }
-
 }

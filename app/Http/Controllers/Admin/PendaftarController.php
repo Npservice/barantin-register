@@ -90,12 +90,10 @@ class PendaftarController extends Controller
                     $endDate = Carbon::parse($range[1])->endOfDay();
                     $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
                 }
-
             });
         $action = $pemohon == 'cabang' ? 'admin.pendaftar.action.cabang' : 'admin.pendaftar.action.induk';
         $barantinKategori = $pemohon == 'cabang' ? 'baratincabang' : 'baratin';
         return $this->columnDaerahRender($datatable, $action, $barantinKategori);
-
     }
 
     /**
@@ -121,7 +119,7 @@ class PendaftarController extends Controller
             ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
                 $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
                 $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
+                $query->whereHas($barantinKategori, fn ($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
                 $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
@@ -130,7 +128,7 @@ class PendaftarController extends Controller
             ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
                 $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
                 $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
+                $query->whereHas($barantinKategori, fn ($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
                 $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
@@ -139,8 +137,7 @@ class PendaftarController extends Controller
             ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {
                 $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
                 $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('kota', $idKota));
-
+                $query->whereHas($barantinKategori, fn ($query) => $query->whereIn('kota', $idKota));
             })
             ->addColumn('action', $action)->make(true);
     }
@@ -169,8 +166,6 @@ class PendaftarController extends Controller
                 $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
             }
         ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI');
-
-
     }
     public function QueryRegisterPeoranganAndInduk(): Builder
     {
@@ -180,8 +175,6 @@ class PendaftarController extends Controller
                 $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
             }
         ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('pj_barantin_id')->where('registers.status', 'DISETUJUI');
-
-
     }
 
     // open blokir
@@ -198,7 +191,6 @@ class PendaftarController extends Controller
             if ($cek) {
                 $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 0]) : $register->baratincabang->user()->update(['status_user' => 0]);
             }
-
         });
         if ($res) {
             return AjaxResponse::SuccessResponse('blokir berhasil di aktifkan', 'pendaftar-datatable');
@@ -214,7 +206,6 @@ class PendaftarController extends Controller
             $register = Register::find($id);
             $register->update(['blockir' => 0]);
             $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 1]) : $register->baratincabang->user()->update(['status_user' => 1]);
-
         });
 
         if ($res) {
@@ -276,7 +267,6 @@ class PendaftarController extends Controller
             return response()->json(['table' => 'pendaftar-datatable', 'nama' => $user->nama]);
         }
         return true;
-
     }
     /* genareate username */
     public function generateRandomString(int $length, string $pemohon, string $jenis_perusahaan = null): string

@@ -34,7 +34,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
                 new UptRule
             ],
             'jenis_identitas' => ['required', Rule::in(['NPWP'])],
-            'pemohon' => 'required|exists:pre_registers,nama',
+            'pemohon' => 'required',
             'nomor_identitas' => [
                 'required',
                 'numeric',
