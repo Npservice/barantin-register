@@ -55,7 +55,7 @@ class UptController extends Controller
         }
 
         if ($data->exists()) {
-            return ApiResponse::successResponse('Upt berhasil ditemukan', self::renderResponseUpts($data->get()), false);
+            return ApiResponse::successResponse('Upt pengguna jasa berhasil ditemukan', self::renderResponseUpts($data->get()), false);
         }
         return ApiResponse::errorResponse('Data not found', 404);
     }

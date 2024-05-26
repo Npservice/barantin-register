@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -12,9 +13,10 @@ return new class extends Migration {
     {
         Schema::create('ppjks', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pj_baratin_id');
+            $table->uuid('pj_baratin_id')->nullable();
             $table->uuid('barantin_cabang_id')->nullable();
 
+            $table->enum('jenis_perusahaan', ['PEMILIK BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA'])->nullable()->default('PPJK');
             $table->string('nama_ppjk')->nullable();
             $table->string('email_ppjk')->nullable();
             $table->date('tanggal_kerjasama_ppjk')->nullable();

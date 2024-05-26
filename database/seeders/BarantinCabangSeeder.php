@@ -61,7 +61,7 @@ class BarantinCabangSeeder extends Seeder
                     'alamat_tdd' => $faker->address,
                     'nama_pendaftar' => $faker->name,
                     'ktp_pendaftar' => $faker->unique()->randomNumber(8),
-                    'jenis_perusahaan' => $faker->randomElement(['PEMILIK_BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA']),
+                    'jenis_perusahaan' => $faker->randomElement(['PEMILIK BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA']),
                     'kontak_ppjk' => $faker->phoneNumber,
                     'email' => $register->email,
                     'fax' => $faker->phoneNumber,
@@ -88,7 +88,6 @@ class BarantinCabangSeeder extends Seeder
                     'pre_register_id' => $register->id
                 ]);
             });
-
         }
     }
 }

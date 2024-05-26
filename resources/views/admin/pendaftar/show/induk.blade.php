@@ -55,51 +55,48 @@
                         <div class="row mb-3">
                             <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                             <div class="col-sm-9">
-                                <input class="form-control" disabled value="{{ $data->nama_perusahaan ?? '' }}"
-                                    type="text" id="pemohon" name="pemohon">
+                                <input class="form-control" disabled value="{{ $data->nama_perusahaan ?? '' }}" type="text" id="pemohon" name="pemohon">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="email" class="col-sm-3 col-form-label">Jenis Perusahaan</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" disabled value="{{ $data->jenis_perusahaan ?? '' }}" type="text" id="pemohon" name="pemohon">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
                                 Identitas</label>
                             <div class="col">
-                                <input value="{{ $data->jenis_identitas ?? '' }}" disabled
-                                    class="form-control select-item" type="text" placeholder="Jenis Identitas">
+                                <input value="{{ $data->jenis_identitas ?? '' }}" disabled class="form-control select-item" type="text" placeholder="Jenis Identitas">
                             </div>
                             <div class="col">
-                                <input class="form-control" type="number" disabled
-                                    value="{{ $data->nomor_identitas ?? '' }}" placeholder="Nomor Identitas"
-                                    id="nomor_identitas" name="nomor_identitas">
+                                <input class="form-control" type="number" disabled value="{{ $data->nomor_identitas ?? '' }}" placeholder="Nomor Identitas" id="nomor_identitas"
+                                    name="nomor_identitas">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="upt" class="col-sm-3 col-form-label">NITKU</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telepon" disabled
-                                    value="{{ $data->nitku ?? '' }}" name="telepon"
-                                    aria-describedby="inputGroupPrepend" required>
+                                <input type="text" class="form-control" id="telepon" disabled value="{{ $data->nitku ?? '' }}" name="telepon" aria-describedby="inputGroupPrepend" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telepon" disabled
-                                    value="{{ $data->telepon ?? '' }}" name="telepon"
-                                    aria-describedby="inputGroupPrepend" required>
+                                <input type="text" class="form-control" id="telepon" disabled value="{{ $data->telepon ?? '' }}" name="telepon" aria-describedby="inputGroupPrepend" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                             <div class="col-sm-9">
-                                <input class="form-control" type="text" placeholder="Fax" disabled
-                                    value="{{ $data->fax ?? '' }}" id="nomor_fax" name="nomor_fax">
+                                <input class="form-control" type="text" placeholder="Fax" disabled value="{{ $data->fax ?? '' }}" id="nomor_fax" name="nomor_fax">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="email" class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
-                                <input class="form-control" disabled value="{{ $data->email ?? '' }}" type="email"
-                                    placeholder="Email" id="email" name="email">
+                                <input class="form-control" disabled value="{{ $data->email ?? '' }}" type="email" placeholder="Email" id="email" name="email">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -119,8 +116,7 @@
                         <div class="row mb-5">
                             <label for="email" class="col-sm-3 col-form-label">Nama Alias</label>
                             <div class="col-sm-9">
-                                <input class="form-control" disabled
-                                    value="{{ $data->nama_alias_perusahaan ?? '' }}">
+                                <input class="form-control" disabled value="{{ $data->nama_alias_perusahaan ?? '' }}">
                             </div>
                         </div>
                         <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
@@ -129,33 +125,28 @@
                         <div class="row mb-3">
                             <label for="negara" class="col-sm-3 col-form-label">Negara</label>
                             <div class="col-sm-9">
-                                <input class="form-control negara-select" type="text" placeholder="Negara"
-                                    id="negara" name="negara" disabled value="@negara($data->negara_id)">
+                                <input class="form-control negara-select" type="text" placeholder="Negara" id="negara" name="negara" disabled value="@negara($data->negara_id)">
                             </div>
                         </div>
 
                         <div class="row mb-3" id="provinsi-form">
                             <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled value="@provinsi($data->provinsi_id)"
-                                    type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="@provinsi($data->provinsi_id)" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
                         <div class="row mb-3" id="kota-form">
                             <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled value="@kota($data->kota)"
-                                    type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="@kota($data->kota)" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
                         <div class="row mb-5">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->alamat ?? '' }}" type="text" placeholder="Provinsi"
-                                    id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="{{ $data->alamat ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
                     </div>
@@ -167,41 +158,35 @@
                             <div class="row mb-3">
                                 <label for="nama" class="col-sm-3 col-form-label">Nama</label>
                                 <div class="col-sm-9">
-                                    <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->nama_tdd ?? '' }}" type="text" placeholder="Provinsi"
-                                        id="provinsi" name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->nama_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
+                                        name="provinsi">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="jenis_identitas" class="col-sm-3 col-form-label">Jenis
                                     Identitas</label>
                                 <div class="col">
-                                    <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->jenis_identitas_tdd ?? '' }}" type="text"
-                                        placeholder="Provinsi" id="provinsi" name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->jenis_identitas_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
+                                        name="provinsi">
                                 </div>
                                 <div class="col">
-                                    <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->nomor_identitas_tdd ?? '' }}" type="text" id="provinsi"
-                                        name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->nomor_identitas_tdd ?? '' }}" type="text" id="provinsi" name="provinsi">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <label for="jabatan" class="col-sm-3 col-form-label">Jabatan</label>
                                 <div class="col-sm-9">
-                                    <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->jabatan_tdd ?? '' }}" type="text" placeholder="Provinsi"
-                                        id="provinsi" name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->jabatan_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
+                                        name="provinsi">
                                 </div>
                             </div>
 
                             <div class="row mb-5">
                                 <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                 <div class="col-sm-9">
-                                    <input class="form-control provinsi-select" disabled
-                                        value="{{ $data->alamat_tdd ?? '' }}" type="text" placeholder="Provinsi"
-                                        id="provinsi" name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->alamat_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
+                                        name="provinsi">
                                 </div>
                             </div>
                         </div>
@@ -213,27 +198,21 @@
                         <div class="row mb-3">
                             <label for="nama" class="col-sm-3 col-form-label">Nama</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->nama_cp ?? '' }}" type="text" placeholder="Provinsi"
-                                    id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="{{ $data->nama_cp ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->alamat_cp ?? '' }}" type="text" placeholder="Provinsi"
-                                    id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="{{ $data->alamat_cp ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
                         <div class="row mb-5">
                             <label for="telepon" class="col-sm-3 col-form-label">Telepon</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled
-                                    value="{{ $data->telepon_cp ?? '' }}" type="text" placeholder="Provinsi"
-                                    id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="{{ $data->telepon_cp ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
                     </div>

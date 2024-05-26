@@ -13,7 +13,7 @@ class MitraController extends Controller
     /**
      * @OA\Get(
      *     path="/user/mitra",
-     *     summary="Ambil Semua User Mitra di masing masing perngguna jas",
+     *     summary="Ambil Semua User Mitra di masing masing perngguna jasa",
      *     tags={"User"},
      *     security={{ "bearer_token": {} }},
      *     @OA\Response(
@@ -61,7 +61,7 @@ class MitraController extends Controller
             return ApiResponse::errorResponse('Data not found', 404);
         }
         if ($data->count() > 0) {
-            return ApiResponse::successResponse('Mitra pengguna jasa all', self::renderDataResponses($data->get()), false);
+            return ApiResponse::successResponse('Semua Mitra pengguna jasa', self::renderDataResponses($data->get()), false);
         }
         return ApiResponse::errorResponse('data not found', 404);
     }
@@ -115,7 +115,7 @@ class MitraController extends Controller
     {
         $data = MitraPerusahaan::find($mitra_id);
         if ($data) {
-            return ApiResponse::successResponse('Mitra pengguna jasa detail', self::renderDataResponse($data), false);
+            return ApiResponse::successResponse('Detail mitra pengguna jasa', self::renderDataResponse($data), false);
         }
         return ApiResponse::errorResponse('data not found', 404);
     }
@@ -153,5 +153,4 @@ class MitraController extends Controller
         ];
         return $data;
     }
-
 }

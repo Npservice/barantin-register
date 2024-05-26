@@ -73,6 +73,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
             ],
             'jabatan_tdd' => 'required',
             'alamat_tdd' => 'required',
+            'jenis_perusahaan' => 'required|in:PEMILIK BARANG,PPJK,EMKL,EMKU,LAINNYA',
 
         ];
     }

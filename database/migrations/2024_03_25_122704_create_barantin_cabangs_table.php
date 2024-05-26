@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -36,7 +37,7 @@ return new class extends Migration {
             $table->string('alamat_tdd')->nullable();
             $table->string('nama_pendaftar')->nullable();
             $table->string('ktp_pendaftar')->nullable();
-            $table->enum('jenis_perusahaan', ['PEMILIK_BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA'])->nullable();
+            $table->enum('jenis_perusahaan', ['PEMILIK BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA'])->nullable();
             $table->string('kontak_ppjk')->nullable();
             $table->string('email')->nullable();
             $table->string('fax')->nullable();

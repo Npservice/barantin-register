@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             BarantinCabangSeeder::class,
             MitraPerusahaanSeeder::class,
             UserSeeder::class,
+            PpjkSeeder::class,
         ]);
     }
 }

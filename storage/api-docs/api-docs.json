@@ -1041,12 +1041,184 @@
                 ]
             }
         },
+        "/ppjk/{take}": {
+            "get": {
+                "tags": [
+                    "PPJK Admin"
+                ],
+                "summary": "Get PPJK",
+                "description": "Get PPJK",
+                "operationId": "getPpjkAdmin",
+                "parameters": [
+                    {
+                        "name": "take",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/ppjk/{ppjk_id}/detil": {
+            "get": {
+                "tags": [
+                    "PPJK Admin"
+                ],
+                "summary": "Get Detail PPJK",
+                "description": "Get Detail PPJK",
+                "operationId": "getDetailPpjkAdmin",
+                "parameters": [
+                    {
+                        "name": "ppjk_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/ppjk/cek-npwp": {
+            "get": {
+                "tags": [
+                    "PPJK Admin"
+                ],
+                "summary": "Cek NPWP PPJK",
+                "description": "Cek NPWP PPJK",
+                "operationId": "cekNpwpPpjk",
+                "parameters": [
+                    {
+                        "name": "kd_upt",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "npwp_ppjk",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "npwp_pj",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/user/cabang": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get Cabang Perusahaan Induk",
+                "description": "Get Cabang Perusahaan Induk",
+                "operationId": "getCabangPerusahaanInduk",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/user/cabang/{barantin_cabang_id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get Detail Cabang Perusahaan Induk",
+                "description": "Get Detail Cabang Perusahaan Induk",
+                "operationId": "getDetailCabangPerusahaanInduk",
+                "parameters": [
+                    {
+                        "name": "baratin_cabang_id",
+                        "in": "path",
+                        "description": "ID of the Barantin Cabang",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
         "/user/mitra": {
             "get": {
                 "tags": [
                     "User"
                 ],
-                "summary": "Ambil Semua User Mitra di masing masing user",
+                "summary": "Ambil Semua User Mitra di masing masing perngguna jasa",
                 "operationId": "c84f56f1eedec5e96f85188a1f2ad418",
                 "responses": {
                     "200": {
@@ -1135,6 +1307,85 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/user/ppjk": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get PPJK",
+                "description": "Get PPJK Pengguna Jasa",
+                "operationId": "getPpjk",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/user/ppjk/{ppjk_id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get Detail PPJK Pengguna Jasa",
+                "description": "Get Detail PPJK",
+                "operationId": "getDetailPpjk",
+                "parameters": [
+                    {
+                        "name": "ppjk_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/user/profile": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get User Profile",
+                "description": "Get User Profile",
+                "operationId": "bfb90b10e3a49ea12c6614eb9db0ef95",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Data Not Found"
                     }
                 },
                 "security": [

@@ -5,8 +5,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BarantinController;
 use App\Http\Controllers\Api\User\UptController;
+use App\Http\Controllers\Api\User\PpjkController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\User\MitraController;
+use App\Http\Controllers\Api\User\CabangController;
+use App\Http\Controllers\Api\BarantinPpjkController;
+use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\BarantinMitraController;
 use App\Http\Controllers\Api\User\UserLoginController;
 
@@ -45,7 +49,6 @@ Route::prefix('v1')->name('api.')->group(function () {
                 Route::get('cabang/{take}', [BarantinController::class, 'getAllDataBarantinPerusahaanCabang'])->name('cabang.get');
                 Route::get('induk/{barantin_id}/detil', [BarantinController::class, 'detilDataBarantinPerusahaanIndukBarantinID'])->name('induk.detil');
                 Route::get('cabang/{barantin_id}/detil', [BarantinController::class, 'detilDataBarantinPerusahaanCabangByBarantinID'])->name('cabang.detil');
-
             });
 
             Route::get('perorangan/{take}', [BarantinController::class, 'getAllDataBarantinPerorangan'])->name('perorangan.get');
@@ -65,11 +68,14 @@ Route::prefix('v1')->name('api.')->group(function () {
                     Route::get('induk/{take}', [BarantinMitraController::class, 'GetAllDataMitraInduk'])->name('induk');
                     Route::get('cabang/{take}', [BarantinMitraController::class, 'GetAllDataMitraCabang'])->name('cabang');
                 });
-
             });
         });
+        Route::prefix('ppjk')->name('ppjk.')->group(function () {
+            Route::get('cek-npwp', [BarantinPpjkController::class, 'cekNpwpPpjk'])->name('cek.npwp');
+            Route::get('{take}', [BarantinPpjkController::class, 'getPpjk'])->name('all.admin');
+            Route::get('{ppjk_id}/detil', [BarantinPpjkController::class, 'getDetailPpjk'])->name('one.admin');
+        });
     });
-
 });
 /**
  * api user
@@ -82,12 +88,22 @@ Route::prefix('v2')->name('api.')->group(function () {
 
         Route::middleware(['auth:sanctum', 'api.version:v2'])->group(function () {
             Route::get('upt', [UptController::class, 'getAllUptUser'])->name('upt');
+            Route::get('profile', [ProfileController::class, 'getProfileUser'])->name('profile');
 
             Route::prefix('mitra')->name('mitra.')->group(function () {
                 Route::get('', [MitraController::class, 'getAllMitraUser'])->name('all');
                 Route::get('{mitra_id}', [MitraController::class, 'getMitraByID'])->name('one');
             });
 
+            Route::prefix('cabang')->name('cabang.')->group(function () {
+                Route::get('', [CabangController::class, 'getCabangPerusahaanInduk'])->name('all.user');
+                Route::get('{barantin_cabang_id}', [CabangController::class, 'getDetailCabangPerusahaanInduk'])->name('one.user');
+            });
+
+            Route::prefix('ppjk')->name('ppjk.')->group(function () {
+                Route::get('', [PpjkController::class, 'getPpjk'])->name('all.user');
+                Route::get('{ppjk_id}', [PpjkController::class, 'getDetailPpjk'])->name('one.user');
+            });
         });
     });
 });
