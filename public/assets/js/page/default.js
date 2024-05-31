@@ -1,18 +1,18 @@
 $(document).ready(function () {
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         error: function (response) {
             if (response.responseText) {
-                var error = JSON.parse(response.responseText)
+                var error = JSON.parse(response.responseText);
                 if (error.code === 401) {
-                    window.location.href = '/'
+                    window.location.href = "/";
                 }
             }
-        }
+        },
     });
-})
+});
 
 function logout(url) {
     Swal.fire({
@@ -27,28 +27,26 @@ function logout(url) {
         buttonsStyling: !1,
     }).then(function (t) {
         t.value
-            ?
-            $.post(url, function () {
-                window.location.href = '/';
-            })
-            : t.dismiss === Swal.DismissReason.cancel
+            ? $.post(url, function () {
+                  window.location.href = "/";
+              })
+            : t.dismiss === Swal.DismissReason.cancel;
     });
-
 }
 function modal(label, size, backdrop, url) {
-    $('#modal-dialog').addClass('modal-dialog ' + size);
-    $('#modal-label').html(label);
-    $('#modal-data').attr('data-bs-backdrop', backdrop);
-    $('#spinner').clone().removeClass('d-none').appendTo('#modal-body');
-    $('#modal-body').load(url);
-    $('#modal-data').modal('show');
+    $("#modal-dialog").addClass("modal-dialog " + size);
+    $("#modal-label").html(label);
+    $("#modal-data").attr("data-bs-backdrop", backdrop);
+    $("#spinner").clone().removeClass("d-none").appendTo("#modal-body");
+    $("#modal-body").load(url);
+    $("#modal-data").modal("show");
 }
 
-$('#modal-data').on('hidden.bs.modal', function (e) {
-    $('#modal-dialog').removeClass();
-    $('#modal-label').html('');
-    $('#modal-data').attr('data-bs-backdrop', 'true');
-    $('#modal-body').empty()
+$("#modal-data").on("hidden.bs.modal", function (e) {
+    $("#modal-dialog").removeClass();
+    $("#modal-label").html("");
+    $("#modal-data").attr("data-bs-backdrop", "true");
+    $("#modal-body").empty();
 });
 
 function ShowPage(url) {
@@ -118,13 +116,14 @@ function CreateCabang(url) {
 function TableLoaded(url, table_name) {
     let table = null;
     $(table_name).DataTable().destroy();
-    $('#table-loaded').empty().append('<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>');
+    $("#table-loaded")
+        .empty()
+        .append(
+            '<div class="text-center mt-5"><div class="spinner-border"  style="width: 3rem; height: 3rem;"></div></div>'
+        );
+    $("#table-loaded").load(url);
     // $('#filter-status-import').length > 0 && $('#filter-upt').empty().trigger('change');
     // $('#filter-status-import').length > 0 && $('#filter-status-import').val('all').trigger('change');
-    $('#table-loaded').load(url);
-
-
-
 }
 
 function submit(url, image) {
@@ -146,7 +145,9 @@ function submit(url, image) {
         }
         return FormSendImage(url, form_data);
     }
-    var data = $("#form-data").length ? $("#form-data").serialize() : $('.form-data').serialize();
+    var data = $("#form-data").length
+        ? $("#form-data").serialize()
+        : $(".form-data").serialize();
     FormSend(url, data);
 }
 
@@ -179,9 +180,11 @@ function FormSend(url, data) {
             if (respon && error) {
                 $.each(error, function (key, value) {
                     $("#" + key).addClass("is-invalid");
-                    $("#" + key + "-feedback").addClass("d-block").html(value);
+                    $("#" + key + "-feedback")
+                        .addClass("d-block")
+                        .html(value);
                 });
-                notif('error', 'data tidak valid.');
+                notif("error", "data tidak valid.");
                 return;
             }
             notif("error", "terjadi kesalahan");
@@ -190,24 +193,24 @@ function FormSend(url, data) {
 }
 
 function notif(type, message) {
-    toastr[type](message)
+    toastr[type](message);
     toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": 300,
-        "hideDuration": 1000,
-        "timeOut": 1500,
-        "extendedTimeOut": 1000,
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    }
+        closeButton: false,
+        debug: false,
+        newestOnTop: false,
+        progressBar: false,
+        positionClass: "toast-top-right",
+        preventDuplicates: false,
+        onclick: null,
+        showDuration: 300,
+        hideDuration: 1000,
+        timeOut: 1500,
+        extendedTimeOut: 1000,
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut",
+    };
 }
 
 function TableReload(table) {
@@ -261,7 +264,7 @@ function ConfirmRegister(url, type, urlReload) {
                 url: url,
                 type: "POST",
                 data: {
-                    status: 'DISETUJUI'
+                    status: "DISETUJUI",
                 },
                 success: function (response) {
                     if (response.status) {
@@ -275,32 +278,34 @@ function ConfirmRegister(url, type, urlReload) {
                     }
                 },
                 error: function (response) {
-                    notif("error", response.message ?? "register gagal di aprove");
+                    notif(
+                        "error",
+                        response.message ?? "register gagal di aprove"
+                    );
                 },
             });
         }
-        if (result.dismiss === 'cancel') {
-            $('#url-tolak').val(url)
+        if (result.dismiss === "cancel") {
+            $("#url-tolak").val(url);
             if (urlReload) {
-                $('#url-reload').val(urlReload)
+                $("#url-reload").val(urlReload);
             }
-            $('#form-tolak').trigger('reset')
-            $('#modal-tolak-keterangan').modal('show')
-
+            $("#form-tolak").trigger("reset");
+            $("#modal-tolak-keterangan").modal("show");
         }
     });
 }
-$('#button-tolak').click(function () {
-    let linkReload = $('#url-reload').val()
+$("#button-tolak").click(function () {
+    let linkReload = $("#url-reload").val();
     $.ajax({
-        url: $('#url-tolak').val(),
+        url: $("#url-tolak").val(),
         type: "POST",
         data: {
-            status: 'DITOLAK',
-            keterangan: $('#keterangan-tolak').val()
+            status: "DITOLAK",
+            keterangan: $("#keterangan-tolak").val(),
         },
         success: function (response) {
-            $('#modal-tolak-keterangan').modal('hide')
+            $("#modal-tolak-keterangan").modal("hide");
             if (response.status) {
                 notif("warning", response.message);
                 TableReload(response.table);
@@ -312,12 +317,11 @@ $('#button-tolak').click(function () {
             }
         },
         error: function (response) {
-            $('#modal-tolak-keterangan').modal('hide')
+            $("#modal-tolak-keterangan").modal("hide");
             notif("error", response.message ?? "register gagal di aprove");
         },
     });
-
-})
+});
 
 function Block(url, type, urlReload) {
     Swal.fire({
@@ -335,7 +339,7 @@ function Block(url, type, urlReload) {
                 url: url,
                 type: "POST",
                 data: {
-                    status: 'BLOCKIR'
+                    status: "BLOCKIR",
                 },
                 success: function (response) {
                     if (response.status) {
@@ -349,15 +353,17 @@ function Block(url, type, urlReload) {
                     }
                 },
                 error: function (response) {
-                    notif("error", response.message ?? "register gagal di blockir");
+                    notif(
+                        "error",
+                        response.message ?? "register gagal di blockir"
+                    );
                 },
             });
         }
-        if (result.dismiss === 'cancel') {
-            $('#url-tolak').val(url)
-            $('#form-tolak').trigger('reset')
-            $('#modal-tolak-keterangan').modal('show')
-
+        if (result.dismiss === "cancel") {
+            $("#url-tolak").val(url);
+            $("#form-tolak").trigger("reset");
+            $("#modal-tolak-keterangan").modal("show");
         }
     });
 }
@@ -378,7 +384,7 @@ function Open(url, type, urlReload) {
                 url: url,
                 type: "POST",
                 data: {
-                    status: 'BLOCKIR'
+                    status: "BLOCKIR",
                 },
                 success: function (response) {
                     if (response.status) {
@@ -392,15 +398,17 @@ function Open(url, type, urlReload) {
                     }
                 },
                 error: function (response) {
-                    notif("error", response.message ?? "register gagal di blockir");
+                    notif(
+                        "error",
+                        response.message ?? "register gagal di blockir"
+                    );
                 },
             });
         }
-        if (result.dismiss === 'cancel') {
-            $('#url-tolak').val(url)
-            $('#form-tolak').trigger('reset')
-            $('#modal-tolak-keterangan').modal('show')
-
+        if (result.dismiss === "cancel") {
+            $("#url-tolak").val(url);
+            $("#form-tolak").trigger("reset");
+            $("#modal-tolak-keterangan").modal("show");
         }
     });
 }
@@ -435,11 +443,10 @@ function Changeprofile() {
             //     },
             // });
         }
-        if (result.dismiss === 'cancel') {
+        if (result.dismiss === "cancel") {
             // $('#url-tolak').val(url)
             // $('#form-tolak').trigger('reset')
             // $('#modal-tolak-keterangan').modal('show')
-
         }
     });
 }
@@ -460,8 +467,11 @@ function CreateUser(url, text, urlReload) {
                 url: url,
                 type: "POST",
                 success: function (response) {
-                    TableReload(response.table)
-                    notif('success', 'user berhasil ' + response.nama + ' dibuat');
+                    TableReload(response.table);
+                    notif(
+                        "success",
+                        "user berhasil " + response.nama + " dibuat"
+                    );
                     if (urlReload) {
                         ClosePageLink(urlReload);
                     }
@@ -471,13 +481,9 @@ function CreateUser(url, text, urlReload) {
                 },
             });
         }
-        if (result.dismiss === 'cancel') {
-
-
+        if (result.dismiss === "cancel") {
         }
     });
-
-
 }
 
 function UserSetting(url, text, urlReload) {
@@ -496,11 +502,16 @@ function UserSetting(url, text, urlReload) {
                 url: url,
                 type: "POST",
                 data: {
-                    reset: 'true',
+                    reset: "true",
                 },
                 success: function (response) {
                     TableReload(response.table);
-                    notif('success', 'username & password berhasil ' + response.nama + ' diubah');
+                    notif(
+                        "success",
+                        "username & password berhasil " +
+                            response.nama +
+                            " diubah"
+                    );
                     if (urlReload) {
                         ClosePageLink(urlReload);
                     }
@@ -510,8 +521,7 @@ function UserSetting(url, text, urlReload) {
                 },
             });
         }
-        if (result.dismiss === 'cancel') {
-
+        if (result.dismiss === "cancel") {
         }
     });
 }
@@ -522,5 +532,42 @@ function alertBlockirUser() {
         text: "Silahkan buat user untuk akses blockir user",
         icon: "warning",
         confirmButtonColor: "#0f9cf3",
+    });
+}
+
+function ConfirmCabang(url, type) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: `Anda ingin menyetujui cabang ${type}`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Terima",
+        cancelButtonText: "Tolak",
+    }).then((result) => {
+        if (result.isConfirmed || result.dismiss === "cancel") {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    status: result.isConfirmed ? "DISETUJUI" : "DITOLAK",
+                },
+                success: function (response) {
+                    if (response.status) {
+                        notif("success", response.message);
+                        TableReload(response.table);
+                    } else {
+                        notif("error", response.message);
+                    }
+                },
+                error: function (response) {
+                    notif(
+                        "error",
+                        response.message ?? "register gagal di aprove"
+                    );
+                },
+            });
+        }
     });
 }

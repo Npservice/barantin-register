@@ -33,6 +33,7 @@ class Ppjk extends Model
         'nomor_identitas_tdd_ppjk',
         'jabatan_tdd_ppjk',
         'alamat_tdd_ppjk',
+        'status_ppjk'
     ];
 
     public function baratin(): BelongsTo

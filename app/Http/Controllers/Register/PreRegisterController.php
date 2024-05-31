@@ -170,7 +170,7 @@ class PreRegisterController extends Controller
             return redirect()->route('register.message')->with(['message_token' => 'Token habis silahkan register ulang']);
         }
         DB::transaction(function () use ($id) {
-            $mail_token = MailToken::where('pre_register_id', $id)->delete();
+            MailToken::where('pre_register_id', $id)->delete();
             PreRegister::find($id)->update(['verify_email' => now()]);
         });
 

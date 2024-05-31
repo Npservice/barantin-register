@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -48,6 +47,7 @@ return new class extends Migration
             $table->unsignedBigInteger('negara_id')->nullable();
             $table->tinyInteger('is_active')->unsigned()->default(1);
             $table->tinyInteger('status_prioritas')->default(0)->comment('1: layanan prioritas; 5: draft ekspor');
+            $table->enum('persetujuan_induk', ['MENUNGGU', 'DITOLAK', 'DISETUJUI'])->nullable()->default('MENUNGGU');
 
             $table->foreign('pre_register_id')->references('id')->on('pre_registers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDelete()->cascadeOnUpdate();

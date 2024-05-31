@@ -3,8 +3,7 @@
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/libs/twitter-bootstrap-wizard/prettify.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/libs/dropify/dist/dropify.min.css') }}">
-    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
 @endpush
 @section('content')
@@ -30,18 +29,17 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-primary btn-sm"
-                                    onclick="CreateCabang('{{ route('barantin.cabang.create') }}')">tambah cabang</button>
+                                <button class="btn btn-primary btn-sm" onclick="CreateCabang('{{ route('barantin.cabang.create') }}')">tambah cabang</button>
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="user-cabang-datatable" class="table table-bordered dt-responsive nowrap w-100"
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <table id="user-cabang-datatable" class="table table-bordered dt-responsive nowrap w-100" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Opsi</th>
+                                            <th>Persetujuan Kantor Induk</th>
                                             <th>Nama Perusahaan</th>
                                             <th>Jenis Identitas Induk</th>
                                             <th>Nomor Identitas Induk</th>

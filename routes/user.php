@@ -24,6 +24,8 @@ Route::prefix('barantin')->name('barantin.')->group(function () {
             Route::post('cancel', [UserCabangController::class, 'cancel'])->name('cancel');
             Route::get('upt/detail/{id}', [UserCabangController::class, 'DatatableUptDetail'])->name('upt.detail');
 
+            Route::post('confirmasi/{cabang_id}', [UserCabangController::class, 'confirmasi'])->name('confirmasi');
+
             Route::prefix('pendukung')->name('pendukung.')->group(function () {
                 Route::get('datatable/{id}', [UserCabangController::class, 'DokumenPendukungDataTable'])->name('datatable');
                 Route::post('store/{id}', [UserCabangController::class, 'DokumenPendukungStore'])->name('store');

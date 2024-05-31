@@ -25,15 +25,13 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary btn-sm"
-                                onclick="modal('Tambah PPJK','modal-xl','static','{{ route('barantin.ppjk.create') }}')">tambah
+                            <button class="btn btn-primary btn-sm" onclick="modal('Tambah PPJK','modal-xl','static','{{ route('barantin.ppjk.create') }}')">tambah
                                 PPJK</button>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="user-ppjk-datatable" class="table table-bordered dt-responsive nowrap w-100"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table id="user-ppjk-datatable" class="table table-bordered dt-responsive nowrap w-100" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -45,6 +43,7 @@
                                         <th>Provinsi</th>
                                         <th>Kota/Kab</th>
                                         <th>Alamat</th>
+                                        <th>Status PPJK</th>
                                     </tr>
                                 </thead>
                             </table>

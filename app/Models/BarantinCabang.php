@@ -47,6 +47,7 @@ class BarantinCabang extends Model
         'is_active',
         'lingkup_aktifitas',
         'status_prioritas',
+        'persetujuan_induk'
     ];
 
     public function register(): HasMany

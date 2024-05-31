@@ -8,7 +8,10 @@ let table = $("#user-cabang-datatable").DataTable({
             next: "<i class='mdi mdi-chevron-right'>",
         },
     },
-    order: [[2, "asc"]],
+    order: [
+        [2, "asc"],
+        [3, "asc"],
+    ],
     columns: [
         {
             data: "DT_RowIndex",
@@ -22,49 +25,56 @@ let table = $("#user-cabang-datatable").DataTable({
             width: 60,
         },
         {
+            data: "persetujuan_induk",
+            name: "persetujuan_induk",
+            render: function (data) {
+                return StatusPersetujuan(data);
+            },
+        },
+        {
             data: "nama_perusahaan",
-            name: "nama_perusahaan"
+            name: "nama_perusahaan",
         },
         {
             data: "jenis_identitas",
-            name: "jenis_identitas"
+            name: "jenis_identitas",
         },
 
         {
             data: "nomor_identitas",
-            name: "nomor_identitas"
+            name: "nomor_identitas",
         },
         {
             data: "nitku",
-            name: "nitku"
+            name: "nitku",
         },
         {
             data: "telepon",
-            name: "telepon"
+            name: "telepon",
         },
         {
             data: "fax",
-            name: "fax"
+            name: "fax",
         },
         {
             data: "email",
-            name: "email"
+            name: "email",
         },
         {
             data: "negara",
-            name: "negara"
+            name: "negara",
         },
         {
             data: "provinsi",
-            name: "provinsi"
+            name: "provinsi",
         },
         {
             data: "kota",
-            name: "kota"
+            name: "kota",
         },
         {
             data: "alamat",
-            name: "alamat"
+            name: "alamat",
         },
         {
             data: "status_import",
@@ -86,18 +96,16 @@ let table = $("#user-cabang-datatable").DataTable({
     },
 });
 
-
 function BlokirStatus(data) {
     switch (data) {
         case 0:
-            return '<h5><span class="badge bg-success">NONAKTIF</span></h5>'
+            return '<h5><span class="badge bg-success">NONAKTIF</span></h5>';
         case 1:
-            return '<h5><span class="badge bg-danger">AKTIF</span></h5>'
+            return '<h5><span class="badge bg-danger">AKTIF</span></h5>';
         default:
             return "Tidak Diketahui";
     }
 }
-
 
 function renderStatus(data) {
     switch (data) {
@@ -122,19 +130,13 @@ function renderStatus(data) {
     }
 }
 
-/* table filter handler */
-// $('#filter-status-import').select2();
-// $('#filter-status-import').change(function () {
-//     var val = $(this).val();
-//     if (val === 'all') return table.column('baratin.status_import:name').search('').draw();
-//     return table.column('baratin.status_import:name').search(val).draw();
-// })
-// $('#tanggal-register').daterangepicker();
-// $('#tanggal-register').on('apply.daterangepicker', function (ev, picker) {
-//     var startDate = picker.startDate.format('YYYY-MM-DD');
-//     var endDate = picker.endDate.format('YYYY-MM-DD');
-//     table.column('updated_at:name').search(startDate + ' - ' + endDate).draw();
-// });
-// $('#tanggal-register').on('cancel.daterangepicker', function (ev, picker) {
-//     table.column('updated_at:name').search('').draw();
-// });
+function StatusPersetujuan(data) {
+    switch (data) {
+        case "DISETUJUI":
+            return '<h5 class="text-center"><span class="badge bg-success">DISETUJUI</span></h5>';
+        case "DITOLAK":
+            return '<h5 class="text-center"><span class="badge bg-danger">DITOLAK</span></h5>';
+        default:
+            return '<h5 class="text-center"><span class="badge text-dark bg-warning">MENUNGGU</span></h5>';
+    }
+}

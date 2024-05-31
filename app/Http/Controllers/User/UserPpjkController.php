@@ -156,7 +156,8 @@ class UserPpjkController extends Controller
             'master_provinsi_id',
             'master_kota_kab_id',
             'barantin_cabang_id',
-            'pj_baratin_id'
+            'pj_baratin_id',
+            'status_ppjk'
         );
         if (auth()->user()->role === 'cabang') {
             return $select->where('barantin_cabang_id', auth()->user()->baratincabang->id);

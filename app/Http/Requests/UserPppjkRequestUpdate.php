@@ -58,6 +58,7 @@ class UserPppjkRequestUpdate extends FormRequest
 
             'jabatan_tdd_ppjk' => 'required|string|max:255',
             'alamat_tdd_ppjk' => 'required|string|max:255',
+            'status_ppjk' => 'required|in:AKTIF,NONAKTIF',
         ];
     }
 }

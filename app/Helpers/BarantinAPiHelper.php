@@ -112,7 +112,7 @@ class BarantinApiHelper
      * @param int $provisi_id ID dari provinsi yang ingin diambil datanya.
      * @return JsonResponse Respon JSON yang berisi data kota berdasarkan provinsi.
      */
-    public static function getDataMasterKotaByProvinsi(int $provisi_id): JsonResponse
+    public static function getDataMasterKotaByProvinsi(?int $provisi_id): JsonResponse
     {
         $cacheKey = 'dataMasterKotaByProvinsi_' . $provisi_id;
         $cacheDuration = 60 * 24; // 1 hari dalam menit
@@ -174,7 +174,7 @@ class BarantinApiHelper
      * @param int $provinsi_id ID dari provinsi yang berkaitan dengan kota.
      * @return mixed Mengembalikan data kota jika ditemukan, atau null jika tidak ditemukan.
      */
-    public static function getMasterKotaByIDProvinsiID($id, $provinsi_id)
+    public static function getMasterKotaByIDProvinsiID(?int $id, ?int $provinsi_id)
     {
         $kotaInstance = self::getDataMasterKotaByProvinsi($provinsi_id);
         return collect($kotaInstance->original)->where('id', $id)->first();

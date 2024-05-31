@@ -52,6 +52,7 @@ class BarantinCabangSeeder extends Seeder
                     'alamat_cp' => $faker->address,
                     'telepon_cp' => $faker->phoneNumber,
                     'kota' => 1101,
+                    'nitku' => $faker->numerify('######'),
                     'provinsi_id' => 11,
                     'negara_id' => 99, // assuming flat 99 for country
                     'nama_tdd' => $faker->name,

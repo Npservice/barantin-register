@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -35,6 +34,7 @@ return new class extends Migration
             $table->string('nomor_identitas_tdd_ppjk')->nullable();
             $table->string('jabatan_tdd_ppjk')->nullable();
             $table->string('alamat_tdd_ppjk')->nullable();
+            $table->enum('status_ppjk', ['AKTIF', 'NONAKTIF'])->nullable()->default('NONAKTIF');
 
             $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDeleter()->cascadeOnUpdate();
             $table->foreign('barantin_cabang_id')->references('id')->on('barantin_cabangs')->cascadeOnDelete()->cascadeOnUpdate();

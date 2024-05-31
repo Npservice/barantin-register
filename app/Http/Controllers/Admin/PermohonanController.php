@@ -193,9 +193,13 @@ class PermohonanController extends Controller
         return Register::with([
             'baratincabang.baratininduk:nama_perusahaan,id',
             'baratincabang' => function ($query) {
-                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
+                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id', 'persetujuan_induk');
+
             }
-        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->whereNot('registers.status', 'DISETUJUI');
+        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->whereNot('registers.status', 'DISETUJUI')
+            ->whereHas('baratincabang', function ($query) {
+                $query->where('persetujuan_induk', 'DISETUJUI');
+            });
     }
     /**
      * Membuat query untuk mengambil data registrasi perorangan dan induk.

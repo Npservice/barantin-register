@@ -109,35 +109,35 @@ class PendaftarController extends Controller
     private function columnDaerahRender($datatable, string $action, string $barantinKategori)
     {
         return $datatable->addColumn('upt', function ($row) {
-            $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
-            return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+            $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id ?? null);
+            return $upt['nama_satpel'] ?? null . ' - ' . $upt['nama'] ?? null;
         })
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::getMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id);
-                return $negara['nama'];
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id ?? null);
+                return $negara['nama'] ?? null;
             })
             ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
                 $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
                 $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn ($query) => $query->whereIn('negara_id', $idNegara));
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
-                return $provinsi['nama'];
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id ?? null);
+                return $provinsi['nama'] ?? null;
             })
             ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
                 $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
                 $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn ($query) => $query->whereIn('provinsi_id', $idProvinsi));
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota ?? $row->baratincabang->kota, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id);
-                return $kota['nama'];
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota ?? $row->baratincabang->kota ?? null, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id ?? null);
+                return $kota['nama'] ?? null;
             })
             ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {
                 $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
                 $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn ($query) => $query->whereIn('kota', $idKota));
+                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('kota', $idKota));
             })
             ->addColumn('action', $action)->make(true);
     }
@@ -165,7 +165,10 @@ class PendaftarController extends Controller
             'baratincabang' => function ($query) {
                 $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
             }
-        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI');
+        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI')
+            ->whereHas('baratincabang', function ($query) {
+                $query->where('persetujuan_induk', 'DISETUJUI');
+            });
     }
     public function QueryRegisterPeoranganAndInduk(): Builder
     {

@@ -70,7 +70,8 @@ class UserCabangController extends Controller
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $request->id_pre_register,
                 'pj_baratin_id' => $induk->id,
-                'kota' => $request->kota
+                'kota' => $request->kota,
+                'persetujuan_induk' => 'DISETUJUI',
             ]);
             $this->SaveRegisterCabang($request, $request->id_pre_register, $data);
             return response()->json(['status' => true, 'message' => 'Cabang berhasil dibuat silahkan tunggu konfirmasi upt yang dipilih']);
@@ -147,7 +148,7 @@ class UserCabangController extends Controller
     }
     public function query()
     {
-        return BarantinCabang::select('barantin_cabangs.id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'nitku', 'kota', 'barantin_cabangs.provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id')
+        return BarantinCabang::select('barantin_cabangs.id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'nitku', 'kota', 'barantin_cabangs.provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'persetujuan_induk')
             ->where('pj_baratin_id', auth()->user()->baratin->id);
     }
 
@@ -210,5 +211,16 @@ class UserCabangController extends Controller
                 $query->whereIn('master_upt_id', $idUpt);
             })
             ->toJson();
+    }
+    public function confirmasi(Request $request, string $cabang_id): JsonResponse
+    {
+        $request->validate([
+            'status' => 'required|in:DISETUJUI,DITOLAK',
+        ]);
+        $res = BarantinCabang::find($cabang_id)->update(['persetujuan_induk' => $request->status]);
+        if ($res) {
+            return AjaxResponse::SuccessResponse('cabang berhasil disetujui', 'user-cabang-datatable');
+        }
+        return AjaxResponse::ErrorResponse('cabang gagal disetujui', 200);
     }
 }
