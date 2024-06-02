@@ -1,12 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\PendaftarController;
-use App\Http\Controllers\Admin\PermohonanController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MasterUptController;
+use App\Http\Controllers\Admin\PendaftarController;
 use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\PermohonanController;
+use App\Http\Controllers\Admin\PermohonanUpdateDataController;
 
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -58,6 +59,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/open/akses/{id}', [PendaftarController::class, 'OpenkAccessPendaftar'])->name('open.akses');
             Route::post('/create/user/{id}', [PendaftarController::class, 'CreateUser'])->name('create.user');
             Route::post('/send/username/{id}', [PendaftarController::class, 'SendUsernamePasswordEmail'])->name('send.user');
+        });
+        Route::prefix('permohon-update')->name('permohonan-update.')->group(function () {
+            Route::get('', [PermohonanUpdateDataController::class, 'index'])->name('index');
+            Route::post('confirm/{pengajuan_id}', [PermohonanUpdateDataController::class, 'confirmUpdate'])->name('confirm');
         });
 
         Route::resource('pendaftar', PendaftarController::class)->only(['index', 'show']);

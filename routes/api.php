@@ -60,8 +60,9 @@ Route::prefix('v1')->name('api.')->group(function () {
             Route::get('{mitra_id}', [BarantinMitraController::class, 'GetAllDataMitraByID'])->name('find.one');
 
             Route::prefix('pj')->name('pj.')->group(function () {
+                Route::get('{barantin_id}', [BarantinMitraController::class, 'GetAllDataMitraByBaratinID'])->name('induk.get');
 
-                Route::get('induk/{barantin_id}', [BarantinMitraController::class, 'GetAllDataMitraByBaratinID'])->name('induk.get');
+                Route::get('induk/{barantin_id}', [BarantinMitraController::class, 'GetAllDataMitraByBaratinIndukID'])->name('induk.get');
                 Route::get('cabang/{barantin_cabang_id}', [BarantinMitraController::class, 'GetAllDataMitraByBaratinCabangID'])->name('cabang.get');
 
                 Route::prefix('all')->name('all.')->group(function () {
@@ -72,7 +73,8 @@ Route::prefix('v1')->name('api.')->group(function () {
         });
         Route::prefix('ppjk')->name('ppjk.')->group(function () {
             Route::get('cek-npwp', [BarantinPpjkController::class, 'cekNpwpPpjk'])->name('cek.npwp');
-            Route::get('{take}', [BarantinPpjkController::class, 'getPpjk'])->name('all.admin');
+            // Route::get('{take}', [BarantinPpjkController::class, 'getPpjk'])->name('all.admin');
+            Route::get('{barantin_id}', [BarantinPpjkController::class, 'getPpjkByBarantinId'])->name('barantin-id.admin');
             Route::get('{ppjk_id}/detil', [BarantinPpjkController::class, 'getDetailPpjk'])->name('one.admin');
         });
     });
@@ -92,6 +94,7 @@ Route::prefix('v2')->name('api.')->group(function () {
 
             Route::prefix('mitra')->name('mitra.')->group(function () {
                 Route::get('', [MitraController::class, 'getAllMitraUser'])->name('all');
+                Route::post('store', [MitraController::class, 'createMitra'])->name('store');
                 Route::get('{mitra_id}', [MitraController::class, 'getMitraByID'])->name('one');
             });
 

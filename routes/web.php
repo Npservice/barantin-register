@@ -60,5 +60,4 @@ Route::get('link', function () {
 });
 /* only test */
 
-Route::get('testonly', [ExampleFetchDataFromAPi::class, 'OnlyTestGetDataFromAPi']);
 
