@@ -22,6 +22,10 @@ use App\Http\Requests\RequestUpdatePerusahaanCabang;
 
 class UpdatePenggunaJasaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('ajax')->except(['Message', 'UpdateIndex']);
+    }
     public function Message(): View
     {
         return view('register.message');
@@ -29,6 +33,14 @@ class UpdatePenggunaJasaController extends Controller
     public function UpdateIndex(string $barantin_id, string $token): View
     {
         return view('user.update.index', compact('barantin_id', 'token'));
+    }
+    public function UpdateForm(string $barantin_id, string $token): View
+    {
+        $data = PengajuanUpdatePj::where('update_token', $token)->where(function ($query) use ($barantin_id) {
+            $query->where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
+        })->where('persetujuan', 'disetujui')->first();
+        $view = isset($data->baratin->preregister) ? ($data->baratin->preregister->pemohon === 'perusahaan' ? 'user.update.partial.induk' : 'user.update.partial.perorangan') : 'user.update.partial.cabang';
+        return view($view, compact('data'));
     }
 
     public function StoreRegisterPerorangan(RequestUpdatePerorangan $request, string $id)
@@ -111,14 +123,6 @@ class UpdatePenggunaJasaController extends Controller
             return response()->json(['status' => true, 'message' => 'Update Perusahaan cabang Berhasil Dilakukan'], 200);
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
-    }
-    public function UpdateForm(string $barantin_id, string $token): View
-    {
-        $data = PengajuanUpdatePj::where('update_token', $token)->where(function ($query) use ($barantin_id) {
-            $query->where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
-        })->where('persetujuan', 'disetujui')->first();
-        $view = isset($data->baratin->preregister) ? ($data->baratin->preregister->pemohon === 'perusahaan' ? 'user.update.partial.induk' : 'user.update.partial.perorangan') : 'user.update.partial.cabang';
-        return view($view, compact('data'));
     }
 
     public function DokumenPendukungStore(string $id, RequestUpdateDokumenPendukung $request): JsonResponse
