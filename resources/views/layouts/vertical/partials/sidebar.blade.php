@@ -51,6 +51,16 @@
                             <span>Pendaftar</span>
                         </a>
                     </li>
+                    @if (auth()->guard('admin')->user()->upt_id == $uptPusatId)
+                        <li class="menu-title">Update Data</li>
+                        <li>
+                            <a href="{{ route('admin.permohonan-update.index') }}" class=" waves-effect">
+                                <i class="ri-bookmark-2-line"></i>
+                                <span>Permohonan</span>
+                            </a>
+                        </li>
+                    @endif
+
                     {{-- @if (!auth()->guard('admin')->user()->upt_id)
                         <li class="menu-title">User</li>
                         <li>

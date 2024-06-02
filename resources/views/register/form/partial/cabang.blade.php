@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Jenis Perusahaan</label>
+                        <label for="email" class="col-sm-3 col-form-label">Perusahaan</label>
                         <div class="col-sm-9">
                             <input class="form-control" readonly value="CABANG" type="text" id="" name="">
                             <div class="invalid-feedback" id="feedback"></div>
@@ -248,8 +248,7 @@
                             <div class="invalid-feedback" id="jenis_identitas_tdd-feedback"></div>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="number" placeholder="Nomer Identitas" id="nomor_identitas_tdd" name="nomor_identitas_tdd"
-                                value="{{ $baratan->nomor_identitas_tdd ?? '' }}">
+                            <input class="form-control" type="number" placeholder="Nomer Identitas" id="nomor_identitas_tdd" name="nomor_identitas_tdd" value="{{ $baratan->nomor_identitas_tdd ?? '' }}">
                             <div class="invalid-feedback" id="nomor_identitas_tdd-feedback"></div>
                         </div>
                     </div>
@@ -315,8 +314,7 @@
                 </div>
                 <div class="row mb-5">
                     <div class="table-responsive">
-                        <table id="datatable-dokumen-pendukung" data-pre-register="{{ $register->id }}" class="table table-bordered dt-responsive nowrap"
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <table id="datatable-dokumen-pendukung" data-pre-register="{{ $register->id }}" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
                                     <th>#</th>
