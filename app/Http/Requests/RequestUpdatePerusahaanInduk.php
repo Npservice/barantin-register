@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\LingkupAktifitasRule;
-use App\Rules\UptRule;
 use App\Rules\KotaRule;
-use App\Models\MasterUpt;
+use App\Models\PjBaratin;
 use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
+use App\Rules\LingkupAktifitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequestPerusahaanCabangStore extends FormRequest
+class RequestUpdatePerusahaanInduk extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,22 +27,34 @@ class RegisterRequestPerusahaanCabangStore extends FormRequest
      */
     public function rules(): array
     {
+        $pjBarantinId = $this->route('id');
+        $pjBarantin = PjBaratin::find($pjBarantinId);
+        $preRegisterId = $pjBarantin ? $pjBarantin->pre_register_id : null;
         return [
-            'id_induk' => 'required|exists:pj_baratins,id',
+            //    'upt' => [
+            //         'required',
+            //         new UptRule
+            //     ],
+            'jenis_identitas' => ['required', Rule::in(['NPWP'])],
             'pemohon' => 'required',
-            'upt' => [
+            'nomor_identitas' => [
                 'required',
-                new UptRule
+                'numeric',
+                'unique:pj_baratins,nomor_identitas,' . $this->route('id'),
+                new NomerIdentitasRule(request()->input('jenis_identitas'))
             ],
-            'nitku' => 'required|unique:barantin_cabangs,nitku|digits:6',
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
             'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
 
-            'email' => 'required|exists:pre_registers,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('pj_baratins', 'email')->ignore($pjBarantinId),
+                Rule::unique('pre_registers', 'email')->ignore($preRegisterId),
+            ],
             'lingkup_aktivitas' => [
                 'required',
                 new LingkupAktifitasRule
-
             ],
             'nama_alias_perusahaan' => Rule::requiredIf(function () {
                 $lingkup_aktivitas = request()->input('lingkup_aktivitas');
@@ -69,9 +80,7 @@ class RegisterRequestPerusahaanCabangStore extends FormRequest
             ],
             'jabatan_tdd' => 'required',
             'alamat_tdd' => 'required',
-
             'jenis_perusahaan' => 'required|in:PEMILIK BARANG,PPJK,EMKL,EMKU,LAINNYA',
-
         ];
     }
 }

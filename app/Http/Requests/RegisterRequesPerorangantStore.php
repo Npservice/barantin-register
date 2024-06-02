@@ -31,7 +31,7 @@ class RegisterRequesPerorangantStore extends FormRequest
         return [
             'upt' => ['required', new UptRule],
             'jenis_identitas' => ['required', Rule::in(['KTP', 'NPWP', 'PASSPORT'])],
-            'pemohon' => 'required|exists:pre_registers,nama',
+            'pemohon' => 'required',
             'nomor_identitas' => [
                 'required',
                 'numeric',

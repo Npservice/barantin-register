@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\LingkupAktifitasRule;
-use App\Rules\UptRule;
 use App\Rules\KotaRule;
-use App\Models\MasterUpt;
 use App\Rules\ProvinsiRule;
+use App\Models\BarantinCabang;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
+use App\Rules\LingkupAktifitasRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequestPerusahaanCabangStore extends FormRequest
+class RequestUpdatePerusahaanCabang extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,18 +27,25 @@ class RegisterRequestPerusahaanCabangStore extends FormRequest
      */
     public function rules(): array
     {
+        $pjBarantinId = $this->route('id');
+        $pjBarantin = BarantinCabang::find($pjBarantinId);
+        $preRegisterId = $pjBarantin ? $pjBarantin->pre_register_id : null;
         return [
             'id_induk' => 'required|exists:pj_baratins,id',
             'pemohon' => 'required',
-            'upt' => [
-                'required',
-                new UptRule
-            ],
-            'nitku' => 'required|unique:barantin_cabangs,nitku|digits:6',
+            // 'upt' => [
+            //     'required',
+            //     new UptRule
+            // ],
+            'nitku' => 'required|digits:6|unique:barantin_cabangs,nitku,' . $this->route('id'),
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
             'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
-
-            'email' => 'required|exists:pre_registers,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('pj_baratins', 'email')->ignore($pjBarantinId),
+                Rule::unique('pre_registers', 'email')->ignore($preRegisterId),
+            ],
             'lingkup_aktivitas' => [
                 'required',
                 new LingkupAktifitasRule
@@ -71,7 +77,6 @@ class RegisterRequestPerusahaanCabangStore extends FormRequest
             'alamat_tdd' => 'required',
 
             'jenis_perusahaan' => 'required|in:PEMILIK BARANG,PPJK,EMKL,EMKU,LAINNYA',
-
         ];
     }
 }
