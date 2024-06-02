@@ -12,10 +12,10 @@ class AjaxResponse
         'table' => null
     ];
 
-    public static function SuccessResponse(string $message, string $table): JsonResponse
+    public static function SuccessResponse(string $message, string $table = null): JsonResponse
     {
         self::$response['message'] = $message;
-        self::$response['table'] = $table;
+        self::$response['table'] = $table ?? null;
         return response()->json(self::$response, 200);
 
     }
