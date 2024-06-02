@@ -16,34 +16,10 @@ class BarantinPpjkController extends Controller
     {
         $this->uptPusatId = env('UPT_PUSAT_ID', 1000);
     }
-    /**
-     * @OA\Get(
-     *     path="/ppjk/{take}",
-     *     operationId="getPpjkAdmin",
-     *     tags={"PPJK Admin"},
-     *     summary="Get PPJK",
-     *     description="Get PPJK",
-     *     security={{"bearer_token":{}}},
-     *      @OA\Parameter(
-     *         name="take",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Data Not Found"
-     *     )
-     * )
-     */
     public function getPpjk(int $take)
     {
         $data = Ppjk::query();
-        if (auth('sanctum')->user()->upt_id !=  $this->uptPusatId) {
+        if (auth('sanctum')->user()->upt_id != $this->uptPusatId) {
             $registerData = Register::where('master_upt_id', auth('sanctum')->user()->upt_id)
                 ->select('pj_barantin_id', 'barantin_cabang_id')
                 ->distinct()
@@ -60,7 +36,39 @@ class BarantinPpjkController extends Controller
             $data = Ppjk::whereIn('pj_baratin_id', $registerData)->orWhereIn('barantin_cabang_id', $registerData);
         }
         if ($data->exists()) {
-            return ApiResponse::successResponse('Semua PPJK pengguna jasa', self::renderResponseDatas($data->paginate($take)), true);
+            return ApiResponse::successResponse('Semua PPJK pengguna jasa', self::renderResponseDatas($data->paginate($take), true), true);
+        }
+        return ApiResponse::errorResponse('data not found', 404);
+    }
+    /**
+     * @OA\Get(
+     *     path="/ppjk/{barantin_id}",
+     *     operationId="getPpjkByPerusahaanId",
+     *     tags={"PPJK Admin"},
+     *     summary="Get PPJK by  Perusahaan induk / Perusahaan Cabang / Perorangan Berdasarkan ID Barantin / ID Barantin Cabang",
+     *     description="Get PPJK by Perusahaan ID",
+     *     security={{"bearer_token":{}}},
+     *     @OA\Parameter(
+     *         name="barantin_id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OK"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data Not Found"
+     *     )
+     * )
+     */
+    public function getPpjkByBarantinId(string $barantin_id)
+    {
+        $data = Ppjk::where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
+        if ($data->exists()) {
+            return ApiResponse::successResponse('Semua PPJK pengguna jasa', self::renderResponseDatas($data->get(), false), false);
         }
         return ApiResponse::errorResponse('data not found', 404);
     }
@@ -139,45 +147,62 @@ class BarantinPpjkController extends Controller
         $npwpPpjk = request()->input('npwp_ppjk');
         $npwpPj = request()->input('npwp_pj');
 
-        if ($npwpPj != null) {
+        if ($npwpPpjk != null) {
+            $data = Register::with(['baratin', 'baratin.ppjk'])->where('master_upt_id', $kdUpt)->whereHas('baratin', function ($query) use ($npwpPj) {
+                $query->where('jenis_identitas', 'NPWP')->where('nomor_identitas', $npwpPj);
+            })->whereHas('baratin.ppjk', function ($query) use ($npwpPpjk) {
+                $query->where('nomor_identitas_ppjk', $npwpPpjk);
+            })->first();
+            $data['ppjk'] = true;
+        } elseif ($npwpPj != null) {
             $data = Register::with(['baratin'])
                 ->where('master_upt_id', $kdUpt)
                 ->whereHas('baratin', function ($query) use ($npwpPj) {
                     $query->where('jenis_identitas', 'NPWP')->where('nomor_identitas', $npwpPj);
                 })
                 ->first();
-        } elseif ($npwpPpjk != null) {
-            $data = Register::with(['baratin', 'baratin.ppjk'])->where('master_upt_id', $kdUpt)->whereHas('baratin', function ($query) use ($npwpPj) {
-                $query->where('jenis_identitas', 'NPWP')->where('nomor_identitas', $npwpPj);
-            })->whereHas('baratin.ppjk', function ($query) use ($npwpPpjk) {
-                $query->where('nomor_identitas_ppjk', $npwpPpjk);
-            })->first();
         }
-
         if ($kdUpt && $data) {
             return ApiResponse::successResponse('Pengecekan ditemukan', self::renderResponseCek($data), false);
         }
         return ApiResponse::errorResponse('data not found', 404);
+
     }
 
     private static function renderResponseCek($data)
     {
-        return   [
+        if (isset($data['ppjk'])) {
+            $dataRes = [
+                'ppjk_id' => $data->baratin->ppjk[0]->id,
+                // 'kode_perusahaan' => $data->baratin->ppjk->kode_perusahaan,
+                'jenis_perusahaan' => $data->baratin->ppjk[0]->jenis_perusahaan,
+                'provinsi' => $data->baratin->ppjk[0]->master_provinsi_id,
+                'kota' => $data->baratin->ppjk[0]->master_kota_kab_id
+            ];
+            return $dataRes;
+        }
+        $dataRes = [
             'barantin_id' => $data->baratin->id,
             'kode_perusahaan' => $data->baratin->kode_perusahaan,
             'jenis_perusahaan' => $data->baratin->jenis_perusahaan,
             'provinsi' => $data->baratin->provinsi_id,
             'kota' => $data->baratin->kota
         ];
+        return $dataRes;
     }
 
-    private static function renderResponseDatas($data)
+    private static function renderResponseDatas($data, bool $pagination)
     {
         $dataArray = [];
         foreach ($data as $key => $item) {
             $dataArray[$key] = self::renderResponseData($item);
         }
-        return PaginationHelper::pagination($data, $dataArray);
+
+        if ($pagination) {
+            return PaginationHelper::pagination($data, $dataArray);
+        }
+
+        return $dataArray;
     }
     private static function renderResponseData($data)
     {
@@ -187,7 +212,7 @@ class BarantinPpjkController extends Controller
         return [
             'ppjk_id' => $data->id,
             'barantin_id' => $data->pj_baratin_id ?? null,
-            'barantin_cabang_id' =>  $data->barantin_cabang_id ?? null,
+            'barantin_cabang_id' => $data->barantin_cabang_id ?? null,
             'nama_ppjk' => $data->nama_ppjk,
             'jenis_identitas_ppjk' => $data->jenis_identitas_ppjk,
             'nomor_identitas_ppjk' => $data->nomor_identitas_ppjk,

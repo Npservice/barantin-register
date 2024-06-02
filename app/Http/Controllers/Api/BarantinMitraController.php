@@ -20,49 +20,7 @@ class BarantinMitraController extends Controller
     {
         $this->uptPusatId = env('UPT_PUSAT_ID', 1000);
     }
-    /**
-     * @OA\Get(
-     *     path="/mitra/pj/all/induk/{take}",
-     *     tags={"Mitra Admin"},
-     *     summary="Semua Data Mitra Induk Perusahaan bedasaran role upt",
-     *     description="Endpoint untuk mendapatkan semua data mitra induk berdasarkan ID UPT",
-     *     operationId="getAllDataMitraInduk",
-     *     security={{"bearer_token":{}}},
-     *     @OA\Parameter(
-     *         name="take",
-     *         in="path",
-     *         description="Banyak data yang akan diambil",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             default=25
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Data mitra induk ditemukan"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="nama_mitra", type="string", example="PT. Mitra Sejahtera"),
-     *                     @OA\Property(property="email", type="string", example="mitra.induk@example.com"),
-     *                     @OA\Property(property="no_hp", type="string", example="081234567890"),
-     *                     @OA\Property(property="alamat", type="string", example="Jl. Kemerdekaan No. 45"),
-     *                     @OA\Property(property="created_at", type="string", example="2023-03-01 12:00:00"),
-     *                     @OA\Property(property="updated_at", type="string", example="2023-03-01 12:00:00"),
-     *                 )
-     *             )
-     *         )
-     *     )
-     * )
-     */
+
     public function GetAllDataMitraInduk(int $take): JsonResponse
     {
         $data = MitraPerusahaan::whereNull('barantin_cabang_id')->select('mitra_perusahaans.*');
@@ -78,49 +36,7 @@ class BarantinMitraController extends Controller
         return ApiResponse::errorResponse('Data not found', 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/mitra/pj/all/cabang/{take}",
-     *     tags={"Mitra Admin"},
-     *     summary="Semua Data Mitra Perusahaan Cabang Berdasarkan role upt",
-     *     description="Semua Data Mitra Perusahaan Cabang Berdasarkan ID Cabang Barantin endpoint: '/barantin-cabang/{take}' take  adalah banyaknya data yang akan diambil",
-     *     operationId="getAllDataMitraCabang",
-     *     security={{"bearer_token":{}}},
-     *     @OA\Parameter(
-     *         name="take",
-     *         in="path",
-     *         description="Banyak data yang akan diambil",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             default=25
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Data mitra cabang ditemukan"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="nama_mitra", type="string", example="PT. Cabang Mitra Sejahtera"),
-     *                     @OA\Property(property="email", type="string", example="cabang.mitra@example.com"),
-     *                     @OA\Property(property="no_hp", type="string", example="081234567890"),
-     *                     @OA\Property(property="alamat", type="string", example="Jl. Kemerdekaan No. 45"),
-     *                     @OA\Property(property="created_at", type="string", example="2023-03-01 12:00:00"),
-     *                     @OA\Property(property="updated_at", type="string", example="2023-03-01 12:00:00"),
-     *                 )
-     *             )
-     *         )
-     *     )
-     * )
-     */
+
     public function GetAllDataMitraCabang(int $take): JsonResponse
     {
         $data = MitraPerusahaan::whereNotNull('barantin_cabang_id')->select('mitra_perusahaans.*');
@@ -133,11 +49,21 @@ class BarantinMitraController extends Controller
         }
         return ApiResponse::errorResponse('Data not found', 404);
     }
+
+
+    public function GetAllDataMitraByBaratinIndukID(string $barantin_id): JsonResponse
+    {
+        $data = MitraPerusahaan::where('pj_baratin_id', $barantin_id)->get();
+        if ($data->count() > 0) {
+            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data), false);
+        }
+        return ApiResponse::errorResponse('Data not found', 404);
+    }
     /**
      * @OA\Get(
-     *     path="/mitra/pj/induk/{barantin_id}",
+     *     path="/mitra/pj/{barantin_id}",
      *     tags={"Mitra Admin"},
-     *     summary="Semua Data Mitra Perusahaan induk Berdasarkan ID Barantin",
+     *     summary="Semua Data Mitra Perusahaan induk / Perusahaan Cabang / Perorangan Berdasarkan ID Barantin / ID Barantin Cabang",
      *     description="Semua Data Mitra Perusahaan Berdasarkan ID Barantin endpoint: '/barantin/{barantin_id}/mitra' barantin_id  adalah ID Barantin",
      *     operationId="getAllDataMitraByBaratinID",
      *     security={{"bearer_token":{}}},
@@ -178,55 +104,13 @@ class BarantinMitraController extends Controller
 
     public function GetAllDataMitraByBaratinID(string $barantin_id): JsonResponse
     {
-        $data = MitraPerusahaan::where('pj_baratin_id', $barantin_id)->get();
+        $data = MitraPerusahaan::where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id)->get();
         if ($data->count() > 0) {
             return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data), false);
         }
         return ApiResponse::errorResponse('Data not found', 404);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/mitra/pj/cabang/{barantin_cabang_id}",
-     *     tags={"Mitra Admin"},
-     *     summary="Semua Data Mitra Cabang Berdasarkan ID Cabang Barantin",
-     *     description="Endpoint untuk mendapatkan semua data mitra berdasarkan ID cabang Barantin",
-     *     operationId="getAllDataMitraByBaratinCabangID",
-     *     security={{"bearer_token":{}}},
-     *     @OA\Parameter(
-     *         name="barantin_cabang_id",
-     *         in="path",
-     *         description="ID Cabang Barantin",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string",
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="OK",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Data mitra cabang ditemukan"),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="nama_mitra", type="string", example="PT. Cabang Mitra Sejahtera"),
-     *                     @OA\Property(property="email", type="string", example="cabang.mitra@example.com"),
-     *                     @OA\Property(property="no_hp", type="string", example="081234567890"),
-     *                     @OA\Property(property="alamat", type="string", example="Jl. Kemerdekaan No. 45"),
-     *                     @OA\Property(property="created_at", type="string", example="2023-03-01 12:00:00"),
-     *                     @OA\Property(property="updated_at", type="string", example="2023-03-01 12:00:00"),
-     *                 )
-     *             )
-     *         )
-     *     )
-     * )
-     */
     public function GetAllDataMitraByBaratinCabangID(string $barantin_cabang_id): JsonResponse
     {
         $data = MitraPerusahaan::where('barantin_cabang_id', $barantin_cabang_id)->get();
