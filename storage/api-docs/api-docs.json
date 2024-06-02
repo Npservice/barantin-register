@@ -622,182 +622,12 @@
                 ]
             }
         },
-        "/mitra/pj/all/induk/{take}": {
+        "/mitra/pj/{barantin_id}": {
             "get": {
                 "tags": [
                     "Mitra Admin"
                 ],
-                "summary": "Semua Data Mitra Induk Perusahaan bedasaran role upt",
-                "description": "Endpoint untuk mendapatkan semua data mitra induk berdasarkan ID UPT",
-                "operationId": "getAllDataMitraInduk",
-                "parameters": [
-                    {
-                        "name": "take",
-                        "in": "path",
-                        "description": "Banyak data yang akan diambil",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "default": 25
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data mitra induk ditemukan"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "nama_mitra": {
-                                                        "type": "string",
-                                                        "example": "PT. Mitra Sejahtera"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "mitra.induk@example.com"
-                                                    },
-                                                    "no_hp": {
-                                                        "type": "string",
-                                                        "example": "081234567890"
-                                                    },
-                                                    "alamat": {
-                                                        "type": "string",
-                                                        "example": "Jl. Kemerdekaan No. 45"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "example": "2023-03-01 12:00:00"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "example": "2023-03-01 12:00:00"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/mitra/pj/all/cabang/{take}": {
-            "get": {
-                "tags": [
-                    "Mitra Admin"
-                ],
-                "summary": "Semua Data Mitra Perusahaan Cabang Berdasarkan role upt",
-                "description": "Semua Data Mitra Perusahaan Cabang Berdasarkan ID Cabang Barantin endpoint: '/barantin-cabang/{take}' take  adalah banyaknya data yang akan diambil",
-                "operationId": "getAllDataMitraCabang",
-                "parameters": [
-                    {
-                        "name": "take",
-                        "in": "path",
-                        "description": "Banyak data yang akan diambil",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "default": 25
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data mitra cabang ditemukan"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "nama_mitra": {
-                                                        "type": "string",
-                                                        "example": "PT. Cabang Mitra Sejahtera"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "cabang.mitra@example.com"
-                                                    },
-                                                    "no_hp": {
-                                                        "type": "string",
-                                                        "example": "081234567890"
-                                                    },
-                                                    "alamat": {
-                                                        "type": "string",
-                                                        "example": "Jl. Kemerdekaan No. 45"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "example": "2023-03-01 12:00:00"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "example": "2023-03-01 12:00:00"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/mitra/pj/induk/{barantin_id}": {
-            "get": {
-                "tags": [
-                    "Mitra Admin"
-                ],
-                "summary": "Semua Data Mitra Perusahaan induk Berdasarkan ID Barantin",
+                "summary": "Semua Data Mitra Perusahaan induk / Perusahaan Cabang / Perorangan Berdasarkan ID Barantin / ID Barantin Cabang",
                 "description": "Semua Data Mitra Perusahaan Berdasarkan ID Barantin endpoint: '/barantin/{barantin_id}/mitra' barantin_id  adalah ID Barantin",
                 "operationId": "getAllDataMitraByBaratinID",
                 "parameters": [
@@ -857,90 +687,6 @@
                                                     "updated_at": {
                                                         "type": "string",
                                                         "example": "2023-02-28 12:34:56"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/mitra/pj/cabang/{barantin_cabang_id}": {
-            "get": {
-                "tags": [
-                    "Mitra Admin"
-                ],
-                "summary": "Semua Data Mitra Cabang Berdasarkan ID Cabang Barantin",
-                "description": "Endpoint untuk mendapatkan semua data mitra berdasarkan ID cabang Barantin",
-                "operationId": "getAllDataMitraByBaratinCabangID",
-                "parameters": [
-                    {
-                        "name": "barantin_cabang_id",
-                        "in": "path",
-                        "description": "ID Cabang Barantin",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data mitra cabang ditemukan"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "nama_mitra": {
-                                                        "type": "string",
-                                                        "example": "PT. Cabang Mitra Sejahtera"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "cabang.mitra@example.com"
-                                                    },
-                                                    "no_hp": {
-                                                        "type": "string",
-                                                        "example": "081234567890"
-                                                    },
-                                                    "alamat": {
-                                                        "type": "string",
-                                                        "example": "Jl. Kemerdekaan No. 45"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "example": "2023-03-01 12:00:00"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "example": "2023-03-01 12:00:00"
                                                     }
                                                 },
                                                 "type": "object"
@@ -1041,21 +787,21 @@
                 ]
             }
         },
-        "/ppjk/{take}": {
+        "/ppjk/{barantin_id}": {
             "get": {
                 "tags": [
                     "PPJK Admin"
                 ],
-                "summary": "Get PPJK",
-                "description": "Get PPJK",
-                "operationId": "getPpjkAdmin",
+                "summary": "Get PPJK by  Perusahaan induk / Perusahaan Cabang / Perorangan Berdasarkan ID Barantin / ID Barantin Cabang",
+                "description": "Get PPJK by Perusahaan ID",
+                "operationId": "getPpjkByPerusahaanId",
                 "parameters": [
                     {
-                        "name": "take",
+                        "name": "barantin_id",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1301,6 +1047,116 @@
                                                 }
                                             },
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
+        },
+        "/user/mitra/store": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Membuat Mitra Baru Perusahaan Induk / Cabang dan Peorangan",
+                "description": "Endpoint untuk membuat mitra baru",
+                "operationId": "createMitra",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nama_mitra": {
+                                        "type": "string",
+                                        "example": "Nama Mitra"
+                                    },
+                                    "jenis_identitas_mitra": {
+                                        "type": "string",
+                                        "example": "KTP"
+                                    },
+                                    "nomor_identitas_mitra": {
+                                        "type": "integer",
+                                        "example": 1234567812345678
+                                    },
+                                    "alamat_mitra": {
+                                        "type": "string",
+                                        "example": "Alamat Mitra"
+                                    },
+                                    "telepon_mitra": {
+                                        "type": "string",
+                                        "example": "1234-5678-9012"
+                                    },
+                                    "negara": {
+                                        "type": "integer",
+                                        "example": 99
+                                    },
+                                    "provinsi": {
+                                        "type": "integer",
+                                        "example": 11
+                                    },
+                                    "kabupaten_kota": {
+                                        "type": "integer",
+                                        "example": 1101
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nama_mitra": {
+                                                    "type": "string",
+                                                    "example": "Nama Mitra"
+                                                },
+                                                "jenis_identitas_mitra": {
+                                                    "type": "string",
+                                                    "example": "KTP"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Mitra gagal ditambah"
                                         }
                                     },
                                     "type": "object"
