@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('pengajuan_update_pjs', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('pj_baratin_id')->nullable();
+            $table->uuid('barantin_cabang_id')->nullable();
+            $table->string('keterangan');
+            $table->string('update_token')->unique()->nullable();
+            $table->dateTime('expire_at')->nullable();
+            $table->enum('persetujuan', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu')->nullable();
+            $table->enum('status_update', ['proses', 'gagal', 'selesai'])->default('proses')->nullable();
+            $table->timestamps();
+            $table->foreign('barantin_cabang_id')->references('id')->on('barantin_cabangs')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDeleter()->cascadeOnUpdate();
+
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('pengajuan_update_pjs');
+    }
+};

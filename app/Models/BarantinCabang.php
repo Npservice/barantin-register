@@ -74,5 +74,9 @@ class BarantinCabang extends Model
     {
         return $this->hasMany(Ppjk::class);
     }
+    public function pengajuanupdatepj(): HasMany
+    {
+        return $this->hasMany(PengajuanUpdatePj::class, 'barantin_cabang_id');
+    }
 
 }

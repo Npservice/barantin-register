@@ -85,4 +85,8 @@ class PjBaratin extends Model
     {
         return $this->hasMany(BarantinCabang::class);
     }
+    public function pengajuanupdatepj(): HasMany
+    {
+        return $this->hasMany(PengajuanUpdatePj::class, 'pj_baratin_id', 'id');
+    }
 }
