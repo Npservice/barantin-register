@@ -26,13 +26,15 @@ class PjBaratinSeeder extends Seeder
             'perusahaan',
             'perorangan'
         ];
-        foreach (range(1, 50) as $index) {
-            // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
-            DB::transaction(function () use ($faker, $pemohon) {
 
-                $jenis_pemohon = $faker->randomElement($pemohon);
+        $emailUse = ['ridlo.xxxxxx@outlook.co.id', 'nandaxxxxxxx0@outlook.co.id'];
+        foreach (range(1, 50) as $index => $value) {
+            // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
+            DB::transaction(function () use ($faker, $pemohon, $index, $emailUse) {
+
+                $jenis_pemohon = $index <= 1 ? ($index === 0 ? 'perusahaan' : 'perorangan') : $faker->randomElement($pemohon);
                 $nama = $faker->name;
-                $email = $faker->unique()->safeEmail;
+                $email = $index <= 1 ? $emailUse[$index] : $faker->unique()->safeEmail;
                 $register = PreRegister::create([
                     'pemohon' => $jenis_pemohon,
                     'nama' => $nama,
@@ -89,6 +91,9 @@ class PjBaratinSeeder extends Seeder
                     'status' => 'DISETUJUI',
                     'pre_register_id' => $register->id
                 ]);
+                if ($index == 1) {
+                    $emailUse = null;
+                }
             });
         }
     }

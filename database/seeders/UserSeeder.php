@@ -14,9 +14,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $perorangan = PreRegister::where('pemohon', 'perorangan')->inRandomOrder()->first();
-        $induk = PreRegister::where('jenis_perusahaan', 'induk')->inRandomOrder()->first();
-        $cabang = PreRegister::where('jenis_perusahaan', 'cabang')->inRandomOrder()->first();
+        $perorangan = PreRegister::where('pemohon', 'perorangan')->where('email', 'nandaputraservice@outlook.co.id')->first();
+        $induk = PreRegister::where('jenis_perusahaan', 'induk')->where('email', 'ridlo.pakis@outlook.co.id')->first();
+        $cabang = PreRegister::where('jenis_perusahaan', 'cabang')->where('email', 'nandaputraservice@gmail.com')->first();
 
         $userPerorangan = User::create([
             'nama' => $perorangan->baratin->nama_perusahaan,

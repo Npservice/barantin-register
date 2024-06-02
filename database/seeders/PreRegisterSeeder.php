@@ -16,7 +16,7 @@ class PreRegisterSeeder extends Seeder
         PreRegister::create([
             'pemohon' => 'perorangan',
             'nama' => 'ridlo nanda putra',
-            'email' => 'nandaputraservice@gmail.com',
+            'email' => 'funtechnongalam@gmail.com',
         ]);
     }
 }

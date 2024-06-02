@@ -22,11 +22,12 @@ class BarantinCabangSeeder extends Seeder
 
 
 
-        foreach (range(1, 30) as $index) {
+        $emailUse = 'nandapxxxxx@gmail.com';
+        foreach (range(1, 30) as $index => $value) {
             // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
-            DB::transaction(function () use ($faker) {
+            DB::transaction(function () use ($faker, $emailUse, $index) {
                 $nama = $faker->name;
-                $email = $faker->unique()->safeEmail;
+                $email = $index == 0 ? $emailUse : $faker->unique()->safeEmail;
 
                 $induk = PreRegister::where('jenis_perusahaan', 'induk')->inRandomOrder()->first();
                 $register = PreRegister::create([
@@ -88,6 +89,7 @@ class BarantinCabangSeeder extends Seeder
                     'status' => 'DISETUJUI',
                     'pre_register_id' => $register->id
                 ]);
+                $emailUse = null;
             });
         }
     }
