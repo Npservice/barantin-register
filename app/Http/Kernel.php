@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'registerfailed' => \App\Http\Middleware\RestricRegisterFailedMidlleware::class,
         'refresh.token' => \App\Http\Middleware\RefreshTokenApiBarantin::class,
         'api.version' => \App\Http\Middleware\ApiVersionGuard::class,
+        'check.update.token' => \App\Http\Middleware\CheckDataUpdatePj::class
     ];
 }
