@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Models\PreRegister;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
@@ -54,7 +54,7 @@ class UserCabangController extends Controller
     public function store(UserRequestCabangStore $request): JsonResponse
     {
         $dokumen = DokumenPendukung::where('pre_register_id', $request->id_pre_register)->pluck('jenis_dokumen');
-        $induk = PjBaratin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
+        $induk = PjBarantin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
         if ($dokumen->contains('NITKU')) {
             $data = $request->all();
             unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);

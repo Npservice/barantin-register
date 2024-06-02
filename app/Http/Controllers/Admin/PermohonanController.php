@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Models\PreRegister;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
@@ -48,7 +48,7 @@ class PermohonanController extends Controller
      */
     public function show(Request $request, string $id): View
     {
-        $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
+        $data = PjBarantin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
         if ($preregister->pemohon === 'perorangan') {

@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('dokumen_pendukungs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('baratin_id')->nullable();
+            $table->uuid('pj_barantin_id')->nullable();
             $table->uuid('pre_register_id')->nullable();
             $table->string('jenis_dokumen');
             $table->string('nomer_dokumen');
             $table->date('tanggal_terbit');
             $table->string('file');
-            $table->foreign('baratin_id')->references('id')->on('pj_baratins')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('pj_barantin_id')->references('id')->on('pj_barantins')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('pre_register_id')->references('id')->on('pre_registers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

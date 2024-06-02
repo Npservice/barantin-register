@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Register;
 
 use App\Models\Register;
 use App\Models\MailToken;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
@@ -63,7 +63,7 @@ class PreRegisterController extends Controller
 
 
         /* create preregister */
-        $register = PreRegister::create($request->merge(['pj_baratin_id' => $request->perusahaan_induk ?? null])->except('perusahaan_induk'));
+        $register = PreRegister::create($request->merge(['pj_barantin_id' => $request->perusahaan_induk ?? null])->except('perusahaan_induk'));
         /* create register */
         foreach ($request->upt as $key => $value) {
             Register::create(['master_upt_id' => $value, 'pre_register_id' => $register->id]);
@@ -88,7 +88,7 @@ class PreRegisterController extends Controller
     public function RegisterCheck(PreRegister $preregister, Request $request): View
     {
 
-        PreRegister::find($preregister->id)->update($request->merge(['verify_email' => null, 'pj_baratin_id' => $request->perusahaan_induk ?? null])->all());
+        PreRegister::find($preregister->id)->update($request->merge(['verify_email' => null, 'pj_barantin_id' => $request->perusahaan_induk ?? null])->all());
 
 
         foreach ($request->upt as $key => $upt) {
@@ -100,8 +100,8 @@ class PreRegisterController extends Controller
                 $register = Register::find($prereg->id);
                 // cek upt_id di register sama dengan upt yang dipilih
                 if ($register && $register->master_upt_id == $upt) {
-                    // Jika upt sudah terdaftar di register, update status dan pj_baratin_id
-                    $register->update(['status' => null, 'pj_baratin_id' => null, 'barantin_cabang_id' => null]);
+                    // Jika upt sudah terdaftar di register, update status dan pj_barantin_id
+                    $register->update(['status' => null, 'pj_barantin_id' => null, 'barantin_cabang_id' => null]);
                     $found = true; // tandai upt sudah ditemukan
                     break; // keluar dari perulangan kedua
                 }
@@ -131,12 +131,12 @@ class PreRegisterController extends Controller
      */
     public function RegisterUlang(RegisterUlangRequestStore $request): View
     {
-        $baratin = PjBaratin::where('kode_perusahaan', $request->username)->where('email', $request->email)->first();
+        $barantin = PjBarantin::where('kode_perusahaan', $request->username)->where('email', $request->email)->first();
         $pre_register = null;
         $generate = null;
 
-        if ($baratin) {
-            $pre_register = PreRegister::create(['nama' => $baratin->nama_perusahaan, 'email' => $baratin->email, 'status' => $baratin->status, 'pemohon' => $request->pemohon]);
+        if ($barantin) {
+            $pre_register = PreRegister::create(['nama' => $barantin->nama_perusahaan, 'email' => $barantin->email, 'status' => $barantin->status, 'pemohon' => $request->pemohon]);
             $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
         } else {
             DB::transaction(function () use ($request, &$pre_register, &$generate) {

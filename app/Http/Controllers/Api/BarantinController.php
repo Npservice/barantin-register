@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\BarantinCabang;
@@ -75,7 +75,7 @@ class BarantinController extends Controller
 
         $data = Register::with('preregister', 'baratin')
             ->select('registers.*')
-            ->whereHas('preregister', fn ($query) => $query->where('jenis_perusahaan', 'induk'))
+            ->whereHas('preregister', fn($query) => $query->where('jenis_perusahaan', 'induk'))
             ->where('status', 'DISETUJUI')
             ->where('blockir', 0);
 
@@ -143,7 +143,7 @@ class BarantinController extends Controller
     {
         $data = Register::with('preregister', 'baratincabang', 'baratincabang.baratininduk:id,nama_perusahaan')
             ->select('registers.*')
-            ->whereHas('preregister', fn ($query) => $query->where('jenis_perusahaan', 'cabang'))
+            ->whereHas('preregister', fn($query) => $query->where('jenis_perusahaan', 'cabang'))
             ->where('status', 'DISETUJUI')
             ->where('blockir', 0);
         if (request()->user()->upt_id != $this->uptPusatId) {
@@ -208,7 +208,7 @@ class BarantinController extends Controller
     {
         $data = Register::with('preregister', 'baratin')
             ->select('registers.*')
-            ->whereHas('preregister', fn ($query) => $query->where('pemohon', 'perorangan'))
+            ->whereHas('preregister', fn($query) => $query->where('pemohon', 'perorangan'))
             ->where('status', 'DISETUJUI')
             ->where('blockir', 0);
         if (request()->user()->upt_id != $this->uptPusatId) {
@@ -283,7 +283,7 @@ class BarantinController extends Controller
      */
     public function detilDataBarantinPerusahaanIndukBarantinID(string $barantin_id)
     {
-        $data = PjBaratin::with(['preregister'])->whereHas('preregister', fn ($query) => $query->where('jenis_perusahaan', 'induk'))->find($barantin_id);
+        $data = PjBarantin::with(['preregister'])->whereHas('preregister', fn($query) => $query->where('jenis_perusahaan', 'induk'))->find($barantin_id);
         if ($data) {
             return ApiResponse::successResponse('barantin detail data perusahaan induk', self::renderResponseDataBarantinDetil($data, 'induk'), false);
         }
@@ -351,7 +351,7 @@ class BarantinController extends Controller
      */
     public function detilDataBarantinPeroranganByBarantinID(string $barantin_id)
     {
-        $data = PjBaratin::with(['preregister'])->whereHas('preregister', fn ($query) => $query->where('pemohon', 'perorangan'))->find($barantin_id);
+        $data = PjBarantin::with(['preregister'])->whereHas('preregister', fn($query) => $query->where('pemohon', 'perorangan'))->find($barantin_id);
         if ($data) {
             return ApiResponse::successResponse('barantin detail data perorangan', self::renderResponseDataBarantinDetil($data, 'perorangan'), false);
         }
@@ -427,7 +427,7 @@ class BarantinController extends Controller
         ];
         switch ($jenisPerusahaan) {
             case 'induk':
-                return  self::insertAfterKey($dataArray, 'nomor_identitas', 'NITKU', $data->baratin->nitku ?? '000000');
+                return self::insertAfterKey($dataArray, 'nomor_identitas', 'NITKU', $data->baratin->nitku ?? '000000');
             case 'cabang':
                 $newArray = self::insertAfterKey($dataArray, 'jenis_perusahaan', 'perusahaan_induk', $data->baratincabang->baratininduk->nama_perusahaan);
                 $newArray = self::insertAfterKey($newArray, 'nomor_identitas', 'NITKU', $data->baratincabang->nitku);

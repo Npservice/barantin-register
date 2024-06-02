@@ -12,8 +12,7 @@ class MitraPerusahaan extends Model
     use HasFactory, HasUuids;
     protected $guarded = ['id', 'create_at', 'updated_at'];
     protected $fillable = [
-        'pj_baratin_id',
-        'barantin_cabang_id',
+        'pj_barantin_id',
         'nama_mitra',
         'jenis_identitas_mitra',
         'nomor_identitas_mitra',
@@ -24,12 +23,8 @@ class MitraPerusahaan extends Model
         'master_kota_kab_id',
     ];
 
-    public function baratin(): BelongsTo
+    public function barantin(): BelongsTo
     {
-        return $this->belongsTo(PjBaratin::class, 'pj_baratin_id');
-    }
-    public function baratincabang(): BelongsTo
-    {
-        return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id');
+        return $this->belongsTo(PjBarantin::class, 'pj_barantin_id');
     }
 }

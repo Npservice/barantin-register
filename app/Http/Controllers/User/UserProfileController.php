@@ -28,7 +28,7 @@ class UserProfileController extends Controller
             'keterangan' => ['required', 'max:255', new KeteranganUpdateRule],
         ]);
         $res = PengajuanUpdatePj::create([
-            'pj_baratin_id' => auth()->user()->baratin->id ?? null,
+            'pj_barantin_id' => auth()->user()->baratin->id ?? null,
             'barantin_cabang_id' => auth()->user()->baratincabang->id ?? null,
             'keterangan' => $request->keterangan,
         ]);

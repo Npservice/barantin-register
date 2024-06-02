@@ -49,12 +49,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function baratin(): HasOne
+    public function barantin(): HasOne
     {
-        return $this->hasOne(PjBaratin::class);
-    }
-    public function baratincabang(): HasOne
-    {
-        return $this->hasOne(BarantinCabang::class);
+        return $this->hasOne(PjBarantin::class);
     }
 }

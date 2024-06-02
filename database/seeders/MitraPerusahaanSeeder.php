@@ -20,7 +20,7 @@ class MitraPerusahaanSeeder extends Seeder
         foreach (range(1, 50) as $i) {
             $induk = PreRegister::where('jenis_perusahaan', 'induk')->inRandomOrder()->first();
             MitraPerusahaan::create([
-                'pj_baratin_id' => $induk->baratin->id, // Sesuaikan dengan rentang ID yang sesuai
+                'pj_barantin_id' => $induk->barantin->id, // Sesuaikan dengan rentang ID yang sesuai
                 'nama_mitra' => $faker->company,
                 'jenis_identitas_mitra' => $faker->randomElement(['KTP', 'SIM', 'Passport']), // Sesuaikan dengan jenis identitas yang ada
                 'nomor_identitas_mitra' => $faker->unique()->numerify('##########'), // Contoh nomor identitas acak
@@ -31,20 +31,6 @@ class MitraPerusahaanSeeder extends Seeder
                 'master_kota_kab_id' => $faker->numberBetween(1, 100), // Sesuaikan dengan rentang ID yang sesuai
             ]);
         }
-        /* CABANG MITRA */
-        foreach (range(1, 50) as $i) {
-            $cabang = PreRegister::where('jenis_perusahaan', 'cabang')->inRandomOrder()->first();
-            MitraPerusahaan::create([
-                'barantin_cabang_id' => $cabang->baratincabang->id, // Sesuaikan dengan rentang ID yang sesuai
-                'nama_mitra' => $faker->company,
-                'jenis_identitas_mitra' => $faker->randomElement(['KTP', 'SIM', 'Passport']), // Sesuaikan dengan jenis identitas yang ada
-                'nomor_identitas_mitra' => $faker->unique()->numerify('##########'), // Contoh nomor identitas acak
-                'alamat_mitra' => $faker->address,
-                'telepon_mitra' => $faker->phoneNumber,
-                'master_negara_id' => 99, // Sesuaikan dengan rentang ID yang sesuai
-                'master_provinsi_id' => 11, // Sesuaikan dengan rentang ID yang sesuai
-                'master_kota_kab_id' => 1101, // Sesuaikan dengan rentang ID yang sesuai
-            ]);
-        }
+
     }
 }

@@ -12,8 +12,7 @@ class Ppjk extends Model
     use HasFactory, HasUuids;
     protected $guarded = ['id', 'create_at', 'updated_at'];
     protected $fillable = [
-        'pj_baratin_id',
-        'barantin_cabang_id',
+        'pj_barantin_id',
         'nama_ppjk',
         'jenis_identitas_ppjk',
         'nomor_identitas_ppjk',
@@ -36,13 +35,9 @@ class Ppjk extends Model
         'status_ppjk'
     ];
 
-    public function baratin(): BelongsTo
+    public function barantin(): BelongsTo
     {
-        return $this->belongsTo(PjBaratin::class, 'pj_baratin_id');
-    }
-    public function baratincabang(): BelongsTo
-    {
-        return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id');
+        return $this->belongsTo(PjBarantin::class, 'pj_barantin_id');
     }
 
 }

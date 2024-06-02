@@ -49,7 +49,7 @@ class UserPpjkController extends Controller
             'master_negara_id' => 99,
             'master_provinsi_id' => $request->provinsi,
             'master_kota_kab_id' => $request->kabupaten_kota,
-            'pj_baratin_id' => auth()->user()->baratin->id ?? null,
+            'pj_barantin_id' => auth()->user()->baratin->id ?? null,
             'barantin_cabang_id' => auth()->user()->baratincabang->id ?? null,
         ])->except(['provinsi', 'kabupaten_kota']);
         $res = Ppjk::create($data);
@@ -156,13 +156,13 @@ class UserPpjkController extends Controller
             'master_provinsi_id',
             'master_kota_kab_id',
             'barantin_cabang_id',
-            'pj_baratin_id',
+            'pj_barantin_id',
             'status_ppjk'
         );
         if (auth()->user()->role === 'cabang') {
             return $select->where('barantin_cabang_id', auth()->user()->baratincabang->id);
         }
-        return $select->where('pj_baratin_id', auth()->user()->baratin->id);
+        return $select->where('pj_barantin_id', auth()->user()->baratin->id);
 
     }
 }

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class PjBaratin extends Model
+class PjBarantin extends Model
 {
     use HasFactory, HasUuids;
     protected $guarded = ['id', 'create_at', 'updated_at'];
@@ -65,7 +65,7 @@ class PjBaratin extends Model
     {
         return $this->hasMany(Register::class, 'id', 'pj_barantin_id');
     }
-    public function preRegister(): BelongsTo
+    public function preregister(): BelongsTo
     {
         return $this->belongsTo(PreRegister::class, 'pre_register_id', 'id');
     }
@@ -81,12 +81,8 @@ class PjBaratin extends Model
     {
         return $this->hasMany(Ppjk::class);
     }
-    public function baratinCabang(): HasMany
-    {
-        return $this->hasMany(BarantinCabang::class);
-    }
     public function pengajuanupdatepj(): HasMany
     {
-        return $this->hasMany(PengajuanUpdatePj::class, 'pj_baratin_id', 'id');
+        return $this->hasMany(PengajuanUpdatePj::class, 'pj_barantin_id', 'id');
     }
 }

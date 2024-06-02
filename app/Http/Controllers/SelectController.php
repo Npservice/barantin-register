@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\BarantinApiHelper;
@@ -70,7 +70,7 @@ class SelectController extends Controller
         $pj_barantin_id = Register::where('status', 'DISETUJUI')->distinct('pj_barantin_id')->pluck('pj_barantin_id');
 
 
-        $perushaan = PjBaratin::select('id', 'nama_perusahaan')->whereIn('id', $pj_barantin_id)->get();
+        $perushaan = PjBarantin::select('id', 'nama_perusahaan')->whereIn('id', $pj_barantin_id)->get();
 
         return response()->json($perushaan);
     }

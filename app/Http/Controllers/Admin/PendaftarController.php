@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Admin;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Models\PreRegister;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
-use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
 use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
@@ -43,7 +42,7 @@ class PendaftarController extends Controller
      */
     public function show(Request $request, string $id): View
     {
-        $data = PjBaratin::find($id) ?? BarantinCabang::with(['baratininduk:nama_perusahaan,id'])->find($id);
+        $data = PjBarantin::find($id);
         $register = Register::find($request->register_id);
         $preregister = PreRegister::find($data->pre_register_id);
         $upt = BarantinApiHelper::getMasterUptByID($register->master_upt_id);
@@ -92,7 +91,7 @@ class PendaftarController extends Controller
                 }
             });
         $action = $pemohon == 'cabang' ? 'admin.pendaftar.action.cabang' : 'admin.pendaftar.action.induk';
-        $barantinKategori = $pemohon == 'cabang' ? 'baratincabang' : 'baratin';
+        $barantinKategori = $pemohon == 'cabang' ? 'barantincabang' : 'barantin';
         return $this->columnDaerahRender($datatable, $action, $barantinKategori);
     }
 
@@ -113,7 +112,7 @@ class PendaftarController extends Controller
             return $upt['nama_satpel'] ?? null . ' - ' . $upt['nama'] ?? null;
         })
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::getMasterNegaraByID($row->baratin->negara_id ?? $row->baratincabang->negara_id ?? null);
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->barantin->negara_id ?? $row->barantincabang->negara_id ?? null);
                 return $negara['nama'] ?? null;
             })
             ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
@@ -122,7 +121,7 @@ class PendaftarController extends Controller
                 $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id ?? null);
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->barantin->provinsi_id ?? $row->barantincabang->provinsi_id ?? null);
                 return $provinsi['nama'] ?? null;
             })
             ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
@@ -131,7 +130,7 @@ class PendaftarController extends Controller
                 $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota ?? $row->baratincabang->kota ?? null, $row->baratin->provinsi_id ?? $row->baratincabang->provinsi_id ?? null);
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota ?? $row->barantincabang->kota ?? null, $row->barantin->provinsi_id ?? $row->barantincabang->provinsi_id ?? null);
                 return $kota['nama'] ?? null;
             })
             ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {
@@ -161,12 +160,12 @@ class PendaftarController extends Controller
     public function QueryRegisterCabang(): Builder
     {
         return Register::with([
-            'baratincabang.baratininduk:nama_perusahaan,id',
-            'baratincabang' => function ($query) {
-                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_baratin_id');
+            'barantincabang.barantininduk:nama_perusahaan,id',
+            'barantincabang' => function ($query) {
+                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_barantin_id');
             }
         ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI')
-            ->whereHas('baratincabang', function ($query) {
+            ->whereHas('barantincabang', function ($query) {
                 $query->where('persetujuan_induk', 'DISETUJUI');
             });
     }
@@ -174,7 +173,7 @@ class PendaftarController extends Controller
     {
         return Register::with([
 
-            'baratin' => function ($query) {
+            'barantin' => function ($query) {
                 $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
             }
         ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('pj_barantin_id')->where('registers.status', 'DISETUJUI');
@@ -192,7 +191,7 @@ class PendaftarController extends Controller
                 $query->where('pj_barantin_id', $register->pj_barantin_id)->orWhere('barantin_cabang_id', $register->barantin_cabang_id);
             })->exists();
             if ($cek) {
-                $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 0]) : $register->baratincabang->user()->update(['status_user' => 0]);
+                $res = $register->barantin ? $register->barantin->user()->update(['status_user' => 0]) : $register->barantincabang->user()->update(['status_user' => 0]);
             }
         });
         if ($res) {
@@ -208,7 +207,7 @@ class PendaftarController extends Controller
         DB::transaction(function () use ($id, &$res) {
             $register = Register::find($id);
             $register->update(['blockir' => 0]);
-            $res = $register->baratin ? $register->baratin->user()->update(['status_user' => 1]) : $register->baratincabang->user()->update(['status_user' => 1]);
+            $res = $register->barantin ? $register->barantin->user()->update(['status_user' => 1]) : $register->barantincabang->user()->update(['status_user' => 1]);
         });
 
         if ($res) {
@@ -219,7 +218,7 @@ class PendaftarController extends Controller
 
     public function datatablePendukung(string $id): JsonResponse
     {
-        $model = DokumenPendukung::where('baratin_id', $id)->orWhere('barantin_cabang_id', $id);
+        $model = DokumenPendukung::where('barantin_id', $id)->orWhere('barantin_cabang_id', $id);
 
         return DataTables::eloquent($model)
             ->addIndexColumn()
@@ -232,7 +231,7 @@ class PendaftarController extends Controller
     {
         $register = Register::find($id);
         $pre_register = $register->preregister;
-        $barantin = $register->baratin ?? $register->baratincabang;
+        $barantin = $register->barantin ?? $register->barantincabang;
 
 
         // Tentukan role berdasarkan pemohon dan jenis perusahaan

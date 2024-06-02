@@ -13,8 +13,7 @@ class PengajuanUpdatePj extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     protected $fillable = [
-        'pj_baratin_id',
-        'barantin_cabang_id',
+        'pj_barantin_id',
         'keterangan',
         'update_token',
         'expire_at',
@@ -22,14 +21,8 @@ class PengajuanUpdatePj extends Model
         'status_update'
     ];
 
-    public function baratin(): BelongsTo
+    public function barantin(): BelongsTo
     {
-        return $this->belongsTo(PjBaratin::class, 'pj_baratin_id', 'id');
+        return $this->belongsTo(PjBarantin::class, 'pj_barantin_id', 'id');
     }
-
-    public function barantincabang(): BelongsTo
-    {
-        return $this->belongsTo(BarantinCabang::class, 'barantin_cabang_id', 'id');
-    }
-
 }

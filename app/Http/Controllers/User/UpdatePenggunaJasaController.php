@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
@@ -37,7 +37,7 @@ class UpdatePenggunaJasaController extends Controller
     public function UpdateForm(string $barantin_id, string $token): View
     {
         $data = PengajuanUpdatePj::where('update_token', $token)->where(function ($query) use ($barantin_id) {
-            $query->where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
+            $query->where('pj_barantin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
         })->where('persetujuan', 'disetujui')->first();
         $view = isset($data->baratin->preregister) ? ($data->baratin->preregister->pemohon === 'perusahaan' ? 'user.update.partial.induk' : 'user.update.partial.perorangan') : 'user.update.partial.cabang';
         return view($view, compact('data'));
@@ -45,7 +45,7 @@ class UpdatePenggunaJasaController extends Controller
 
     public function StoreRegisterPerorangan(RequestUpdatePerorangan $request, string $id)
     {
-        $dokumen = DokumenPendukung::where('baratin_id', $id)->pluck('jenis_dokumen');
+        $dokumen = DokumenPendukung::where('pj_barantin_id', $id)->pluck('jenis_dokumen');
         if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
             $data = $request->all();
             unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['lingkup_aktifitas']);
@@ -59,10 +59,10 @@ class UpdatePenggunaJasaController extends Controller
                 'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
             ]);
             DB::transaction(function () use ($data, $id, $request) {
-                $pjBaratin = PjBaratin::find($id);
+                $pjBaratin = PjBarantin::find($id);
                 $pjBaratin->update($data->all());
                 $pjBaratin->preregister()->update(['email' => $request->email]);
-                PengajuanUpdatePj::where('pj_baratin_id', $id)->where('status_update', 'proses')->update(['status_update' => 'selesai']);
+                PengajuanUpdatePj::where('pj_barantin_id', $id)->where('status_update', 'proses')->update(['status_update' => 'selesai']);
             });
             return response()->json(['status' => true, 'message' => 'Update Perorangan Berhasil Dilakukan'], 200);
         }
@@ -71,7 +71,7 @@ class UpdatePenggunaJasaController extends Controller
     public function StoreRegisterPerusahaanInduk(RequestUpdatePerusahaanInduk $request, string $id)
     {
 
-        $dokumen = DokumenPendukung::where('baratin_id', $id)->pluck('jenis_dokumen');
+        $dokumen = DokumenPendukung::where('pj_barantin_id', $id)->pluck('jenis_dokumen');
         if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
             $data = $request->all();
             unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['nitku'], $data['lingkup_aktifitas']);
@@ -88,48 +88,48 @@ class UpdatePenggunaJasaController extends Controller
             ]);
 
             DB::transaction(function () use ($data, $id, $request) {
-                $pjBaratin = PjBaratin::find($id);
+                $pjBaratin = PjBarantin::find($id);
                 $pjBaratin->update($data->all());
                 $pjBaratin->preregister()->update(['email' => $request->email]);
-                PengajuanUpdatePj::where('pj_baratin_id', $id)->where('status_update', 'proses')->update(['status_update' => 'selesai']);
+                PengajuanUpdatePj::where('pj_barantin_id', $id)->where('status_update', 'proses')->update(['status_update' => 'selesai']);
             });
             return response()->json(['status' => true, 'message' => 'Update Perusahaan induk Berhasil Dilakukan'], 200);
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NPWP, NIB'], 422);
     }
-    public function StoreRegisterPerusahaanCabang(RequestUpdatePerusahaanCabang $request, string $id)
-    {
+    // public function StoreRegisterPerusahaanCabang(RequestUpdatePerusahaanCabang $request, string $id)
+    // {
 
-        $dokumen = DokumenPendukung::where('barantin_cabang_id', $id)->pluck('jenis_dokumen');
+    //     $dokumen = DokumenPendukung::where('barantin_cabang_id', $id)->pluck('jenis_dokumen');
 
-        if ($dokumen->contains('NITKU')) {
-            $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['lingkup_aktifitas']);
-            $data = collect($data);
-            $data = $data->merge([
-                'fax' => $request->nomor_fax,
-                'negara_id' => 99,
-                'provinsi_id' => $request->provinsi,
-                'nama_perusahaan' => $request->pemohon,
-                'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
-            ]);
-            DB::transaction(function () use ($data, $id, $request) {
-                $cabang = BarantinCabang::find($id);
-                $cabang->update($data->all());
-                $cabang->preregister()->update(['email' => $request->email]);
-                PengajuanUpdatePj::where('barantin_cabang_id', $id)->where('status_update', 'proses')->update(['status_update' => 'selesai']);
-            });
-            return response()->json(['status' => true, 'message' => 'Update Perusahaan cabang Berhasil Dilakukan'], 200);
-        }
-        return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
-    }
+    //     if ($dokumen->contains('NITKU')) {
+    //         $data = $request->all();
+    //         unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['lingkup_aktifitas']);
+    //         $data = collect($data);
+    //         $data = $data->merge([
+    //             'fax' => $request->nomor_fax,
+    //             'negara_id' => 99,
+    //             'provinsi_id' => $request->provinsi,
+    //             'nama_perusahaan' => $request->pemohon,
+    //             'kota' => $request->kota,
+    //             'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
+    //         ]);
+    //         DB::transaction(function () use ($data, $id, $request) {
+    //             $cabang = BarantinCabang::find($id);
+    //             $cabang->update($data->all());
+    //             $cabang->preregister()->update(['email' => $request->email]);
+    //             PengajuanUpdatePj::where('barantin_cabang_id', $id)->where('status_update', 'proses')->update(['status_update' => 'selesai']);
+    //         });
+    //         return response()->json(['status' => true, 'message' => 'Update Perusahaan cabang Berhasil Dilakukan'], 200);
+    //     }
+    //     return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
+    // }
 
     public function DokumenPendukungStore(string $id, RequestUpdateDokumenPendukung $request): JsonResponse
     {
         $file = Storage::disk('public')->put('file_pendukung/' . $id, $request->file('file_dokumen'));
         $data = $request->only(['jenis_dokumen', 'nomer_dokumen', 'tanggal_terbit']);
-        $data = collect($data)->merge([$request->jenis_perusahaan === 'cabang' ? 'barantin_cabang_id' : 'baratin_id' => $id, 'file' => $file]);
+        $data = collect($data)->merge([$request->jenis_perusahaan === 'cabang' ? 'barantin_cabang_id' : 'pj_barantin_id' => $id, 'file' => $file]);
 
         $dokumen = DokumenPendukung::create($data->all());
 
@@ -142,7 +142,7 @@ class UpdatePenggunaJasaController extends Controller
 
     public function DokumenPendukungDataTable(string $id): JsonResponse
     {
-        $model = DokumenPendukung::where('baratin_id', $id)->orWhere('barantin_cabang_id', $id);
+        $model = DokumenPendukung::where('pj_barantin_id', $id)->orWhere('barantin_cabang_id', $id);
 
         return DataTables::eloquent($model)
             ->addIndexColumn()

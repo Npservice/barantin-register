@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Register;
 
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
@@ -59,7 +59,7 @@ class RegisterController extends Controller
         $baratan = $baratan_cek ?? null;
         if ($register->pemohon === 'perusahaan') {
             if ($register->jenis_perusahaan === 'cabang') {
-                $induk = PjBaratin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($register->pj_baratin_id);
+                $induk = PjBarantin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($register->pj_barantin_id);
                 return view('register.form.partial.cabang', compact('register', 'baratan', 'induk'));
             }
             return view('register.form.partial.induk', compact('register', 'baratan'));
@@ -78,7 +78,7 @@ class RegisterController extends Controller
         if (request()->ajax()) {
             $model = Register::with([
                 'preregister:nama,id',
-                'baratin'
+                'barantin'
             ])
                 ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'updated_at')
                 ->whereNotNull('pj_barantin_id')
@@ -96,13 +96,13 @@ class RegisterController extends Controller
                     $query->whereIn('master_upt_id', $idUpt);
                 })
                 ->addColumn('kota', function ($row) {
-                    $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->baratin->kota, $row->baratin->provinsi_id);
+                    $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
                     return $kota['nama'];
                 })
                 ->filterColumn('kota', function ($query, $keyword) {
                     $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
                     $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                    $query->whereHas('baratin', fn ($query) => $query->whereIn('kota', $idKota));
+                    $query->whereHas('barantin', fn($query) => $query->whereIn('kota', $idKota));
                 })
                 ->addIndexColumn()->toJson();
         }
@@ -229,7 +229,7 @@ class RegisterController extends Controller
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
-        $induk = PjBaratin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
+        $induk = PjBarantin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
         if ($dokumen->contains('NITKU')) {
             $data = $request->all();
             unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
@@ -243,7 +243,7 @@ class RegisterController extends Controller
                 'provinsi_id' => $request->provinsi,
                 'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $id,
-                'pj_baratin_id' => $induk->id,
+                'pj_barantin_id' => $induk->id,
                 'kota' => $request->kota,
                 'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
             ]);
@@ -255,7 +255,7 @@ class RegisterController extends Controller
     }
     /**
      * Menyimpan data registrasi perusahaan induk perorangan menggunakan transaksi database.
-     * Fungsi ini bertanggung jawab untuk membuat entri baru untuk PjBaratin dan memperbarui data pra-registrasi.
+     * Fungsi ini bertanggung jawab untuk membuat entri baru untuk Pjbarantin dan memperbarui data pra-registrasi.
      * Selain itu, fungsi ini juga mengelola status registrasi UPT berdasarkan kondisi yang ada.
      *
      * @param Request $request Data request yang diterima
@@ -266,20 +266,20 @@ class RegisterController extends Controller
     {
         DB::transaction(
             function () use ($data, $id, $request) {
-                $baratin = PjBaratin::create($data->all());
-                PreRegister::find($id)->update(['nama' => $baratin->nama_perusahaan]);
+                $barantin = PjBarantin::create($data->all());
+                PreRegister::find($id)->update(['nama' => $barantin->nama_perusahaan]);
                 $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
                 foreach ($request->upt as $upt) {
                     if (in_array($upt, $register_upt_user)) {
                         $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
                         if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
-                            Register::find($register_upt_user_select->id)->update(['pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU']);
+                            Register::find($register_upt_user_select->id)->update(['pj_barantin_id' => $barantin->id, 'status' => 'MENUNGGU']);
                         }
                     } else {
-                        Register::create(['master_upt_id' => $upt, 'pj_barantin_id' => $baratin->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
+                        Register::create(['master_upt_id' => $upt, 'pj_barantin_id' => $barantin->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
                     }
                 }
-                DokumenPendukung::where('pre_register_id', $id)->update(['baratin_id' => $baratin->id, 'pre_register_id' => null]);
+                DokumenPendukung::where('pre_register_id', $id)->update(['pj_barantin_id' => $barantin->id, 'pre_register_id' => null]);
             }
         );
         return;
@@ -295,29 +295,29 @@ class RegisterController extends Controller
      * @param string $id ID pra-registrasi
      * @param Collection $data Data yang akan disimpan
      */
-    public function SaveRegisterCabang(Request $request, $id, $data): void
-    {
-        DB::transaction(
-            function () use ($data, $id, $request) {
-                $baratin_cabang = BarantinCabang::create($data->all());
-                PreRegister::find($id)->update(['nama' => $baratin_cabang->nama_perusahaan]);
-                $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
+    // public function SaveRegisterCabang(Request $request, $id, $data): void
+    // {
+    //     DB::transaction(
+    //         function () use ($data, $id, $request) {
+    //             $barantin_cabang = BarantinCabang::create($data->all());
+    //             PreRegister::find($id)->update(['nama' => $barantin_cabang->nama_perusahaan]);
+    //             $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
 
-                foreach ($request->upt as $upt) {
-                    if (in_array($upt, $register_upt_user)) {
-                        $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
-                        if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
-                            Register::find($register_upt_user_select->id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU']);
-                        }
-                    } else {
-                        Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
-                    }
-                }
-                DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'pre_register_id' => null]);
-            }
-        );
-        return;
-    }
+    //             foreach ($request->upt as $upt) {
+    //                 if (in_array($upt, $register_upt_user)) {
+    //                     $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
+    //                     if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
+    //                         Register::find($register_upt_user_select->id)->update(['barantin_cabang_id' => $barantin_cabang->id, 'status' => 'MENUNGGU']);
+    //                     }
+    //                 } else {
+    //                     Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $barantin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
+    //                 }
+    //             }
+    //             DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $barantin_cabang->id, 'pre_register_id' => null]);
+    //         }
+    //     );
+    //     return;
+    // }
 
     /**
      * Menyimpan dokumen pendukung ke dalam database.

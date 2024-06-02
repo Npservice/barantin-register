@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->boolean('blockir')->default(0)->nullable();
             $table->timestamps();
 
-            $table->foreign('pj_barantin_id')->references('id')->on('pj_baratins')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('pj_barantin_id')->references('id')->on('pj_barantins')->cascadeOnDelete()->cascadeOnUpdate();
 
 
         });

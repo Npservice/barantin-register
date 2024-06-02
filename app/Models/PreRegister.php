@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -20,16 +20,11 @@ class PreRegister extends Model
         'email',
         'verify_email',
         'jenis_perusahaan',
-        'pj_baratin_id'
     ];
 
-    public function baratin(): HasOne
+    public function barantin(): HasOne
     {
-        return $this->hasOne(PjBaratin::class);
-    }
-    public function baratinCabang(): HasOne
-    {
-        return $this->hasOne(BarantinCabang::class);
+        return $this->hasOne(PjBarantin::class, 'pre_register_id');
     }
     public function register(): HasMany
     {

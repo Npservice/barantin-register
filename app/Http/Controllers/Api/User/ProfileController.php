@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\BarantinCabang;
@@ -31,7 +31,7 @@ class ProfileController extends Controller
      */
     public function getProfileUser()
     {
-        $data = PjBaratin::find(auth('sanctum')->user()->baratin->id) ??  BarantinCabang::find(auth('sanctum')->user()->baratincabang->id) ?? null;
+        $data = PjBarantin::find(auth('sanctum')->user()->baratin->id) ?? BarantinCabang::find(auth('sanctum')->user()->baratincabang->id) ?? null;
         if ($data) {
 
             if ($data->preregister->pemohon == 'perorangan') {

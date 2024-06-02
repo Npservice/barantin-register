@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
             PjBaratanKppSeeder::class,
             PjBaratinSeeder::class,
             PreRegisterSeeder::class,
-            BarantinCabangSeeder::class,
             MitraPerusahaanSeeder::class,
             UserSeeder::class,
             PpjkSeeder::class,

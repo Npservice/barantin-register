@@ -12,8 +12,7 @@ return new class extends Migration {
     {
         Schema::create('mitra_perusahaans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pj_baratin_id')->nullable();
-            $table->uuid('barantin_cabang_id')->nullable();
+            $table->uuid('pj_barantin_id')->nullable();
 
             $table->string('nama_mitra')->nullable();
             $table->string('jenis_identitas_mitra')->nullable();
@@ -25,10 +24,7 @@ return new class extends Migration {
             $table->bigInteger('master_provinsi_id')->unsigned()->nullable();
             $table->bigInteger('master_kota_kab_id')->unsigned()->nullable();
 
-
-
-            $table->foreign('barantin_cabang_id')->references('id')->on('barantin_cabangs')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDeleter()->cascadeOnUpdate();
+            $table->foreign('pj_barantin_id')->references('id')->on('pj_barantins')->cascadeOnDeleter()->cascadeOnUpdate();
 
 
 

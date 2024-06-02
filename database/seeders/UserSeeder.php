@@ -14,38 +14,38 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $perorangan = PreRegister::where('pemohon', 'perorangan')->where('email', 'nandaputraservice@outlook.co.id')->first();
-        $induk = PreRegister::where('jenis_perusahaan', 'induk')->where('email', 'ridlo.pakis@outlook.co.id')->first();
-        $cabang = PreRegister::where('jenis_perusahaan', 'cabang')->where('email', 'nandaputraservice@gmail.com')->first();
+        $perorangan = PreRegister::where('pemohon', 'perorangan')->inRandomOrder()->first();
+        $induk = PreRegister::where('jenis_perusahaan', 'induk')->inRandomOrder()->first();
+        $cabang = PreRegister::where('jenis_perusahaan', 'cabang')->inRandomOrder()->first();
 
         $userPerorangan = User::create([
-            'nama' => $perorangan->baratin->nama_perusahaan,
-            'email' => $perorangan->baratin->email,
+            'nama' => $perorangan->barantin->nama_perusahaan,
+            'email' => $perorangan->barantin->email,
             'username' => 'perorangan',
             'role' => 'perorangan',
             'status_user' => 1,
             'password' => 12345678
         ]);
-        $perorangan->baratin()->update(['user_id' => $userPerorangan->id]);
+        $perorangan->barantin()->update(['user_id' => $userPerorangan->id]);
 
         $userInduk = User::create([
-            'nama' => $induk->baratin->nama_perusahaan,
-            'email' => $induk->baratin->email,
+            'nama' => $induk->barantin->nama_perusahaan,
+            'email' => $induk->barantin->email,
             'username' => 'induk',
             'role' => 'induk',
             'status_user' => 1,
             'password' => 12345678
         ]);
-        $induk->baratin()->update(['user_id' => $userInduk->id]);
+        $induk->barantin()->update(['user_id' => $userInduk->id]);
 
         $userCabang = User::create([
-            'nama' => $cabang->baratincabang->nama_perusahaan,
-            'email' => $cabang->baratincabang->email,
+            'nama' => $cabang->barantin->nama_perusahaan,
+            'email' => $cabang->barantin->email,
             'username' => 'cabang',
             'role' => 'cabang',
             'status_user' => 1,
             'password' => 12345678
         ]);
-        $cabang->baratincabang()->update(['user_id' => $userCabang->id]);
+        $cabang->barantin()->update(['user_id' => $userCabang->id]);
     }
 }

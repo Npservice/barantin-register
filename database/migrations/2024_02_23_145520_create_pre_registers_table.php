@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->enum('pemohon', ['perorangan', 'perusahaan']);
             $table->enum('jenis_perusahaan', ['cabang', 'induk'])->nullable();
-            $table->uuid('pj_baratin_id')->nullable();
             $table->string('nama')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('verify_email')->nullable();

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Register;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\BarantinCabang;

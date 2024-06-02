@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\KotaRule;
-use App\Models\PjBaratin;
+use App\Models\PjBarantin;
 use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
@@ -28,7 +28,7 @@ class RequestUpdatePerorangan extends FormRequest
     public function rules(): array
     {
         $pjBarantinId = $this->route('id');
-        $pjBarantin = PjBaratin::find($pjBarantinId);
+        $pjBarantin = PjBarantin::find($pjBarantinId);
         $preRegisterId = $pjBarantin ? $pjBarantin->pre_register_id : null;
         return [
             // 'upt' => ['required', new UptRule],

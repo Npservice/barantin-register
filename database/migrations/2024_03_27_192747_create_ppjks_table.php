@@ -12,8 +12,7 @@ return new class extends Migration {
     {
         Schema::create('ppjks', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pj_baratin_id')->nullable();
-            $table->uuid('barantin_cabang_id')->nullable();
+            $table->uuid('pj_barantin_id')->nullable();
 
             $table->enum('jenis_perusahaan', ['PEMILIK BARANG', 'PPJK', 'EMKL', 'EMKU', 'LAINNYA'])->nullable()->default('PPJK');
             $table->string('nama_ppjk')->nullable();
@@ -36,8 +35,7 @@ return new class extends Migration {
             $table->string('alamat_tdd_ppjk')->nullable();
             $table->enum('status_ppjk', ['AKTIF', 'NONAKTIF'])->nullable()->default('NONAKTIF');
 
-            $table->foreign('pj_baratin_id')->references('id')->on('pj_baratins')->cascadeOnDeleter()->cascadeOnUpdate();
-            $table->foreign('barantin_cabang_id')->references('id')->on('barantin_cabangs')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('pj_barantin_id')->references('id')->on('pj_barantins')->cascadeOnDeleter()->cascadeOnUpdate();
 
 
 
