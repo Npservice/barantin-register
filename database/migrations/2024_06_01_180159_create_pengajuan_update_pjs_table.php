@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->dateTime('expire_at')->nullable();
             $table->enum('persetujuan', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu')->nullable();
             $table->enum('status_update', ['proses', 'gagal', 'selesai'])->default('proses')->nullable();
+            $table->json('temp_update')->nullable();
             $table->timestamps();
             $table->foreign('pj_barantin_id')->references('id')->on('pj_barantins')->cascadeOnDeleter()->cascadeOnUpdate();
 
