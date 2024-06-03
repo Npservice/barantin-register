@@ -18,7 +18,8 @@ class PengajuanUpdatePj extends Model
         'update_token',
         'expire_at',
         'persetujuan',
-        'status_update'
+        'status_update',
+        'temp_update'
     ];
 
     public function barantin(): BelongsTo
