@@ -16,7 +16,7 @@ class KeteranganUpdateRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $data = PengajuanUpdatePj::where('status_update', 'proses')->where(function ($query) {
-            $query->where('pj_baratin_id', auth()->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth()->user()->baratincabang->id ?? null);
+            $query->where('pj_barantin_id', auth()->user()->barantin->id);
         })->exists();
         if ($data) {
             $fail('Anda sudah mengajukan update data.');

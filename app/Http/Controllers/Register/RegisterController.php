@@ -8,7 +8,6 @@ use App\Models\PreRegister;
 use App\Models\PjBaratanKpp;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
-use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
 use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
@@ -19,10 +18,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Collection as Collect;
 use App\Http\Requests\DokumenPendukungRequestStore;
 use App\Http\Requests\RegisterRequesPerorangantStore;
-use App\Http\Requests\RegisterRequestPerusahaanIndukStore;
-use App\Http\Requests\RegisterRequestPerusahaanCabangStore;
+use App\Http\Requests\RegisterRequestPerusahaanStore;
+
 
 class RegisterController extends Controller
 {
@@ -38,7 +38,6 @@ class RegisterController extends Controller
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
         $baratan = PjBaratanKpp::where('email', $register->email)->value('id');
-
         if ($baratan) {
             return view('register.form.index', compact('id', 'baratan'));
         }
@@ -55,95 +54,14 @@ class RegisterController extends Controller
     {
         $register = PreRegister::find($id);
         $this->CheckRegister($register);
-        $baratan_cek = PjBaratanKpp::find($request->baratan_id);
-        $baratan = $baratan_cek ?? null;
+        $baratan = PjBaratanKpp::find($request->baratan_id) ?? null;
+
+        $view = 'register.form.partial.perorangan';
         if ($register->pemohon === 'perusahaan') {
-            if ($register->jenis_perusahaan === 'cabang') {
-                $induk = PjBarantin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($register->pj_barantin_id);
-                return view('register.form.partial.cabang', compact('register', 'baratan', 'induk'));
-            }
-            return view('register.form.partial.induk', compact('register', 'baratan'));
+            $view = 'register.form.partial.perusahaan';
         }
-        return view('register.form.partial.perorangan', compact('register', 'baratan'));
+        return view($view, compact('register', 'baratan'));
     }
-    /**
-     * Menangani permintaan untuk mendapatkan status registrasi.
-     * Fungsi ini mengembalikan respons JSON jika permintaan dilakukan melalui AJAX,
-     * dan mengembalikan tampilan halaman status jika tidak.
-     *
-     * @return View|JsonResponse
-     */
-    public function StatusRegister(): View|JsonResponse
-    {
-        if (request()->ajax()) {
-            $model = Register::with([
-                'preregister:nama,id',
-                'barantin'
-            ])
-                ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'updated_at')
-                ->whereNotNull('pj_barantin_id')
-                ->whereNotNull('status')
-                ->orderBy('created_at', 'DESC');
-
-            return DataTables::eloquent($model)
-                ->addColumn('upt', function ($row) {
-                    $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
-                    return $upt['nama_satpel'] . ' - ' . $upt['nama'];
-                })
-                ->filterColumn('upt', function ($query, $keyword) {
-                    $upt = collect(BarantinApiHelper::getDataMasterUpt()->original);
-                    $idUpt = JsonFilterHelper::searchDataByKeyword($upt, $keyword, 'nama_satpel', 'nama')->pluck('id');
-                    $query->whereIn('master_upt_id', $idUpt);
-                })
-                ->addColumn('kota', function ($row) {
-                    $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
-                    return $kota['nama'];
-                })
-                ->filterColumn('kota', function ($query, $keyword) {
-                    $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
-                    $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                    $query->whereHas('barantin', fn($query) => $query->whereIn('kota', $idKota));
-                })
-                ->addIndexColumn()->toJson();
-        }
-        return view('register.status.index');
-    }
-    /**
-     * Menampilkan halaman pesan untuk proses registrasi.
-     * Fungsi ini mengembalikan view yang berisi pesan-pesan terkait proses registrasi.
-     *
-     * @return View Mengembalikan view pesan registrasi.
-     */
-    public function RegisterMessage(): View
-    {
-        return view('register.message');
-    }
-
-    /**
-     * Memeriksa status registrasi dan validasi email.
-     * Fungsi ini akan menghentikan proses jika email belum terverifikasi atau registrasi masih dalam proses.
-     *
-     * @param mixed $register Data registrasi yang akan diperiksa.
-     * @return RedirectResponse|bool Mengembalikan true jika pemeriksaan berhasil, atau mengarahkan kembali jika terdapat masalah.
-     */
-    public function CheckRegister(mixed $register): RedirectResponse|bool
-    {
-        if (!$register || !$register->verify_email) {
-            abort(redirect()->route('register.message')->with(['message_token' => 'Email tidak terverifikasi silahkan register ulang']));
-        }
-        /* ambil dat terbaru untuk pengecekan bahwa status sudah fix */
-        $register_cek = Register::where('pre_register_id', $register->id)->orderBy('updated_at', 'DESC')->first();
-
-        if (isset($register_cek)) {
-            if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
-                abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih atau yang terdaftar sebelumnya']));
-            }
-        }
-
-        return true;
-    }
-
-
     /**
      * Menyimpan data registrasi perorangan.
      * Fungsi ini akan memeriksa keberadaan dokumen KTP atau PASSPORT sebelum melanjutkan proses registrasi.
@@ -156,23 +74,13 @@ class RegisterController extends Controller
      */
     public function StoreRegisterPerorangan(RegisterRequesPerorangantStore $request, string $id)
     {
-        $register = PreRegister::find($id);
-        $this->CheckRegister($register);
+        $preRegister = PreRegister::find($id);
+        $this->CheckRegister($preRegister);
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
+
         if ($dokumen->contains('KTP') || $dokumen->contains('PASSPORT')) {
-            $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['lingkup_aktifitas']);
-            $data = collect($data);
-            $data = $data->merge([
-                'fax' => $request->nomor_fax,
-                'negara_id' => 99,
-                'provinsi_id' => $request->provinsi,
-                'nama_perusahaan' => $request->pemohon,
-                'pre_register_id' => $id,
-                'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
-            ]);
-            $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
+            $data = self::inputRender($request, $preRegister->id);
+            self::saveBarantin($request->upt, $data);
             return response()->json(['status' => true, 'message' => 'Register Perorangan Berhasil Dilakukan'], 200);
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen KTP/PASSPORT'], 422);
@@ -183,72 +91,36 @@ class RegisterController extends Controller
      * Jika dokumen lengkap, data akan diproses dan disimpan.
      * Jika tidak, akan dikembalikan respons dengan pesan kesalahan.
      *
-     * @param RegisterRequestPerusahaanIndukStore $request Data request yang diterima
+     * @param RegisterRequestPerusahaanStore $request Data request yang diterima
      * @param string $id ID pra-registrasi
      * @return \Illuminate\Http\JsonResponse
      */
-    public function StoreRegisterPerusahaanInduk(RegisterRequestPerusahaanIndukStore $request, string $id)
+    public function StoreRegisterPerusahaan(RegisterRequestPerusahaanStore $request, string $id)
     {
-        $register = PreRegister::find($id);
-        $this->CheckRegister($register);
+        $preRegister = PreRegister::find($id);
+        $this->CheckRegister($preRegister);
         $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
-        if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
-            $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon'], $data['nitku']);
-            $data = collect($data);
-            $data = $data->merge([
-                'fax' => $request->nomor_fax,
-                'negara_id' => 99,
-                'nitku' => $request->nitku ?? '000000',
-                'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
-                'provinsi_id' => $request->provinsi,
-                'nama_perusahaan' => $request->pemohon,
-                'pre_register_id' => $id,
-                'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
-            ]);
 
-            $this->SaveRegisterPerusahaanIndukPerorangan($request, $id, $data);
+        if ($request->identifikasi_perusahaan == 'induk') {
+            return self::isPerusahaanInduk($dokumen, $request, $preRegister->id);
+        }
+        return self::isPerusahaanCabang($dokumen, $request, $preRegister->id);
+
+    }
+    public static function isPerusahaanInduk(Collect $dokumen, Request $request, string $preRegisterId): JsonResponse
+    {
+        if ($dokumen->contains('NPWP') && $dokumen->contains('NIB')) {
+            $data = self::inputRender($request, $preRegisterId);
+            self::saveBarantin($request->upt, $data);
             return response()->json(['status' => true, 'message' => 'Register Perusahaan induk Berhasil Dilakukan'], 200);
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NPWP, NIB'], 422);
     }
-    /**
-     * Menangani penyimpanan data registrasi untuk perusahaan cabang.
-     *
-     * Fungsi ini akan memeriksa keberadaan dokumen pendukung yang diperlukan dan
-     * menggabungkan data yang diperlukan sebelum menyimpannya ke dalam database.
-     * Jika dokumen yang diperlukan tidak lengkap, fungsi akan mengembalikan pesan error.
-     *
-     * @param RegisterRequestPerusahaanCabangStore $request Data request yang diterima
-     * @param string $id ID pra-registrasi
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function StoreRegisterPerusahaanCabang(RegisterRequestPerusahaanCabangStore $request, string $id)
+    public static function isPerusahaanCabang(Collect $dokumen, Request $request, string $preRegisterId)
     {
-        $register = PreRegister::find($id);
-        $this->CheckRegister($register);
-        $dokumen = DokumenPendukung::where('pre_register_id', $id)->pluck('jenis_dokumen');
-        $induk = PjBarantin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
         if ($dokumen->contains('NITKU')) {
-            $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
-            $data = collect($data);
-            $data = $data->merge([
-                'fax' => $request->nomor_fax,
-                'jenis_identitas' => $induk->jenis_identitas,
-                'nomor_identitas' => $induk->nomor_identitas,
-                'negara_id' => 99,
-                'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
-                'provinsi_id' => $request->provinsi,
-                'nama_perusahaan' => $request->pemohon,
-                'pre_register_id' => $id,
-                'pj_barantin_id' => $induk->id,
-                'kota' => $request->kota,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
-            ]);
-
-            $this->SaveRegisterCabang($request, $id, $data);
+            $data = self::inputRender($request, $preRegisterId);
+            self::saveBarantin($request->upt, $data);
             return response()->json(['status' => true, 'message' => 'Register Perusahaan cabang Berhasil Dilakukan'], 200);
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
@@ -258,67 +130,38 @@ class RegisterController extends Controller
      * Fungsi ini bertanggung jawab untuk membuat entri baru untuk Pjbarantin dan memperbarui data pra-registrasi.
      * Selain itu, fungsi ini juga mengelola status registrasi UPT berdasarkan kondisi yang ada.
      *
-     * @param Request $request Data request yang diterima
-     * @param string $id ID pra-registrasi
-     * @param Collection $data Data yang akan disimpan
+     * @param array $uptp untuk upt yang
+     * @param array $data Data yang akan disimpan
      */
-    public function SaveRegisterPerusahaanIndukPerorangan(Request $request, string $id, $data): void
+    public static function saveBarantin(array $upt, array $data): void
     {
         DB::transaction(
-            function () use ($data, $id, $request) {
-                $barantin = PjBarantin::create($data->all());
-                PreRegister::find($id)->update(['nama' => $barantin->nama_perusahaan]);
-                $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
-                foreach ($request->upt as $upt) {
-                    if (in_array($upt, $register_upt_user)) {
-                        $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
-                        if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
-                            Register::find($register_upt_user_select->id)->update(['pj_barantin_id' => $barantin->id, 'status' => 'MENUNGGU']);
-                        }
-                    } else {
-                        Register::create(['master_upt_id' => $upt, 'pj_barantin_id' => $barantin->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
-                    }
+            function () use ($data, $upt) {
+                $barantin = PjBarantin::updateOrcreate(['email' => $data['email']], $data);
+                PreRegister::find($data['pre_register_id'])->update(['nama' => $barantin->nama_perusahaan]);
+                foreach ($upt as $index => $value) {
+                    Register::updateOrCreate(['pre_register_id' => $data['pre_register_id'], 'master_upt_id' => $value], ['pj_barantin_id' => $barantin->id, 'status' => 'MENUNGGU', 'keterangan' => null]);
                 }
-                DokumenPendukung::where('pre_register_id', $id)->update(['pj_barantin_id' => $barantin->id, 'pre_register_id' => null]);
+                DokumenPendukung::where('pre_register_id', $data['pre_register_id'])->update(['pj_barantin_id' => $barantin->id, 'pre_register_id' => null]);
             }
         );
         return;
     }
 
-    /**
-     * Menyimpan data registrasi cabang menggunakan transaksi database.
-     *
-     * Fungsi ini bertanggung jawab untuk membuat entri baru untuk cabang Barantin
-     * dan memperbarui data pra-registrasi serta mengelola status registrasi UPT.
-     *
-     * @param Request $request Data request yang diterima
-     * @param string $id ID pra-registrasi
-     * @param Collection $data Data yang akan disimpan
-     */
-    // public function SaveRegisterCabang(Request $request, $id, $data): void
-    // {
-    //     DB::transaction(
-    //         function () use ($data, $id, $request) {
-    //             $barantin_cabang = BarantinCabang::create($data->all());
-    //             PreRegister::find($id)->update(['nama' => $barantin_cabang->nama_perusahaan]);
-    //             $register_upt_user = Register::where('pre_register_id', $id)->pluck('master_upt_id')->toArray();
+    public static function inputRender(Request $request, string $preRegisterId)
+    {
+        $request->merge([
+            'negara_id' => 99,
+            'nitku' => $request->nitku ?? '000000',
+            'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
+            'provinsi_id' => $request->provinsi,
+            'pre_register_id' => $preRegisterId,
+            'kota' => $request->kota,
+            'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
+        ]);
 
-    //             foreach ($request->upt as $upt) {
-    //                 if (in_array($upt, $register_upt_user)) {
-    //                     $register_upt_user_select = Register::where('pre_register_id', $id)->where('master_upt_id', $upt)->first();
-    //                     if (!$register_upt_user_select->status || $register_upt_user_select->status === 'DITOLAK') {
-    //                         Register::find($register_upt_user_select->id)->update(['barantin_cabang_id' => $barantin_cabang->id, 'status' => 'MENUNGGU']);
-    //                     }
-    //                 } else {
-    //                     Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $barantin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
-    //                 }
-    //             }
-    //             DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $barantin_cabang->id, 'pre_register_id' => null]);
-    //         }
-    //     );
-    //     return;
-    // }
-
+        return $request->except(['upt', 'negara', 'provinsi', 'nitku', 'identifikasi_perusahaan']);
+    }
     /**
      * Menyimpan dokumen pendukung ke dalam database.
      *
@@ -384,5 +227,82 @@ class RegisterController extends Controller
             return AjaxResponse::SuccessResponse('dokumen pendukung berhasil dihapus', 'datatable-dokumen-pendukung');
         }
         return AjaxResponse::ErrorResponse('dokumen pendukung gagal dihapus', 200);
+    }
+    /**
+     * Memeriksa status registrasi dan validasi email.
+     * Fungsi ini akan menghentikan proses jika email belum terverifikasi atau registrasi masih dalam proses.
+     *
+     * @param mixed $register Data registrasi yang akan diperiksa.
+     * @return RedirectResponse|bool Mengembalikan true jika pemeriksaan berhasil, atau mengarahkan kembali jika terdapat masalah.
+     */
+    public function CheckRegister(mixed $register): RedirectResponse|bool
+    {
+        if (!$register || !$register->verify_email) {
+            abort(redirect()->route('register.message')->with(['message_token' => 'Email tidak terverifikasi silahkan register ulang']));
+        }
+        /* ambil dat terbaru untuk pengecekan bahwa status sudah fix */
+        $register_cek = Register::where('pre_register_id', $register->id)->orderBy('updated_at', 'DESC')->first();
+
+        if (isset($register_cek)) {
+            if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
+                abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih atau yang terdaftar sebelumnya']));
+            }
+        }
+
+        return true;
+    }
+    /**
+     * Menangani permintaan untuk mendapatkan status registrasi.
+     * Fungsi ini mengembalikan respons JSON jika permintaan dilakukan melalui AJAX,
+     * dan mengembalikan tampilan halaman status jika tidak.
+     *
+     * @return View|JsonResponse
+     */
+    public function StatusRegister()//: View|JsonResponse
+    {
+        if (request()->ajax()) {
+            $model = Register::with([
+                'preregister:nama,id,pemohon,jenis_perusahaan',
+                'barantin:nama_perusahaan,id,nama_tdd,jabatan_tdd,jenis_perusahaan,kota,provinsi_id'
+            ])
+                ->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'pre_register_id', 'updated_at')
+                ->whereNotNull('pj_barantin_id')
+                ->whereNotNull('status')
+                ->orderBy('created_at', 'DESC');
+            // return $model->get();
+            return DataTables::eloquent($model)
+                ->addColumn('upt', function ($row) {
+                    $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
+                    return $upt['nama_satpel'] . ' - ' . $upt['nama'];
+                })
+                ->filterColumn('upt', function ($query, $keyword) {
+                    $upt = collect(BarantinApiHelper::getDataMasterUpt()->original);
+                    $idUpt = JsonFilterHelper::searchDataByKeyword($upt, $keyword, 'nama_satpel', 'nama')->pluck('id');
+                    $query->whereIn('master_upt_id', $idUpt);
+                })
+                ->addColumn('kota', function ($row) {
+                    $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
+                    return $kota['nama'] ?? null;
+                })
+                ->filterColumn('kota', function ($query, $keyword) {
+                    $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
+                    $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
+                    $query->whereHas('barantin', fn($query) => $query->whereIn('kota', $idKota));
+                })
+                ->addIndexColumn()->toJson();
+        }
+        return view('register.status.index');
+    }
+
+    /**
+     * Menampilkan halaman pesan untuk proses registrasi.
+     * Fungsi ini mengembalikan view yang berisi pesan-pesan terkait proses registrasi.
+     *
+     * @return View Mengembalikan view pesan registrasi.
+     */
+
+    public function RegisterMessage(): View
+    {
+        return view('register.message');
     }
 }

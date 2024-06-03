@@ -37,25 +37,25 @@
 
 
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
+                        <label for="pemohon" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
                             <input class="form-control" readonly value="{{ $register->pemohon }}" type="text" id="" name="">
                             <div class="invalid-feedback" id="feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Perusahaan</label>
+                        <label for="identifikasi_perusahaan" class="col-sm-3 col-form-label">Identifikasi Perusahaan</label>
                         <div class="col-sm-9">
-                            <input class="form-control" readonly value="INDUK" type="text" id="" name="">
-                            <div class="invalid-feedback" id="feedback"></div>
+                            <input class="form-control" readonly value="{{ $register->jenis_perusahaan }}" name="identifikasi_perusahaan" id="identifikasi_perusahaan" type="text" id="" name="">
+                            <div class="invalid-feedback" id="identifikasi_perusahaan-feedback"></div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                         <div class="col-sm-9">
-                            <input class="form-control" value="{{ $register->nama }}" type="text" id="pemohon" name="pemohon">
-                            <div class="invalid-feedback" id="pemohon-feedback"></div>
+                            <input class="form-control" value="{{ $register->nama }}" type="text" id="nama_perusahaan" name="nama_perusahaan">
+                            <div class="invalid-feedback" id="nama_perusahaan-feedback"></div>
                         </div>
                     </div>
 
@@ -135,8 +135,8 @@
                     <div class="row mb-3">
                         <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax" name="nomor_fax" value="{{ $baratan->fax ?? '' }}">
-                            <div class="invalid-feedback" id="nomor_fax-feedback"></div>
+                            <input class="form-control" type="text" placeholder="Fax" id="fax" name="fax" value="{{ $baratan->fax ?? '' }}">
+                            <div class="invalid-feedback" id="fax-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -284,6 +284,7 @@
                         <select type="text" class="form-select form-control-dokumen" id="jenis_dokumen" name="jenis_dokumen">
                             <option value="">select item</option>
                             <option value="NPWP">NPWP 16 DIGIT</option>
+                            <option value="NITKU">NITKU</option>
                             <option value="SIUP">SIUP / IUI / IUT / SIUP JPT</option>
                             <option value="surat_keterangan_domisili">Surat Keterangan Domisili</option>
                             <option value="KTP">KTP</option>
@@ -340,7 +341,7 @@
     </ul>
 </div>
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
-<script src="{{ asset('assets/js/page/form/induk.js') }}"></script>
+<script src="{{ asset('assets/js/page/form/perusahaan.js') }}"></script>
 <script>
     UptSelect('{{ $baratan->upt_id ?? null }}', '{{ $register->id ?? null }}')
     NegaraSelect('{{ $baratan->negara_id ?? 99 }}')

@@ -13,7 +13,7 @@ Route::prefix('register')->name('register.')->middleware('guest')->group(functio
     Route::post('ulang', [PreRegisterController::class, 'RegisterUlang'])->name('ulang');
 
     Route::get('verify/{id}/{token}', [PreRegisterController::class, 'TokenVerify'])->name('verify');
-    Route::post('regenerate', [PreRegisterController::class, 'Regenerate'])->name('regenerate');
+    Route::match(['POST', 'GET'], 'regenerate', [PreRegisterController::class, 'Regenerate'])->name('regenerate');
 
     /* RegisterController Handler */
     Route::get('message', [RegisterController::class, 'RegisterMessage'])->name('message');
@@ -23,8 +23,7 @@ Route::prefix('register')->name('register.')->middleware('guest')->group(functio
 
     Route::prefix('store')->name('store.')->group(function () {
         Route::post('perorangan/{id}', [RegisterController::class, 'StoreRegisterPerorangan'])->name('perorangan');
-        Route::post('induk/{id}', [RegisterController::class, 'StoreRegisterPerusahaanInduk'])->name('induk');
-        Route::post('cabang/{id}', [RegisterController::class, 'StoreRegisterPerusahaanCabang'])->name('cabang');
+        Route::post('perusahaan/{id}', [RegisterController::class, 'StoreRegisterPerusahaan'])->name('perusahaan');
     });
 
 

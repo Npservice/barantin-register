@@ -1,82 +1,81 @@
-let id_pre_register = $('#datatable-dokumen-pendukung').data('pre-register');
+let id_pre_register = $("#datatable-dokumen-pendukung").data("pre-register");
 
-$('.select-item').select2({
-    placeholder: 'select item',
+$(".select-item").select2({
+    placeholder: "select item",
     minimumResultsForSearch: -1,
-})
-$('.negara-select').on('change', function () {
+});
+$(".negara-select").on("change", function () {
     let val = $(this).val();
     console.log(val);
     if (val == 99) {
-        $('#kota-form').removeClass('d-none');
-        $('#provinsi-form').removeClass('d-none');
+        $("#kota-form").removeClass("d-none");
+        $("#provinsi-form").removeClass("d-none");
     } else {
-        $('#kota-form').addClass('d-none');
-        $('#provinsi-form').addClass('d-none');
+        $("#kota-form").addClass("d-none");
+        $("#provinsi-form").addClass("d-none");
     }
 });
-$('#lingkup_aktivitas').change(function () {
+$("#lingkup_aktivitas").change(function () {
     var selectedOptions = $(this).val();
-    if (selectedOptions && selectedOptions.includes('3')) {
-        $('#nama_alias').removeClass('d-none');
+    if (selectedOptions && selectedOptions.includes("3")) {
+        $("#nama_alias").removeClass("d-none");
     } else {
-        $('#nama_alias').addClass('d-none');
+        $("#nama_alias").addClass("d-none");
     }
 });
 
-$('#file_dokumen').dropify()
+$("#file_dokumen").dropify();
 
-var phoneInput = $('#telepon');
+var phoneInput = $("#telepon");
 IMask(phoneInput[0], {
-    mask: '0000-0000-0000',
-    lazy: false
+    mask: "0000-0000-0000",
+    lazy: false,
 });
-var phoneInputCp = $('#telepon_cp');
+var phoneInputCp = $("#telepon_cp");
 IMask(phoneInputCp[0], {
-    mask: '0000-0000-0000',
-    lazy: false
+    mask: "0000-0000-0000",
+    lazy: false,
 });
-var FaxInput = $('#nomor_fax');
+var FaxInput = $("#fax");
 IMask(FaxInput[0], {
-    mask: '(000) 000-0000',
-    lazy: false
+    mask: "(000) 000-0000",
+    lazy: false,
 });
 
 $('input[name="kuasa"]').change(function () {
     let val = $(this).val();
-    if (val === 'ya') {
-        $('#form-kuasa').removeClass('d-none');
-        return
+    if (val === "ya") {
+        $("#form-kuasa").removeClass("d-none");
+        return;
     }
-    $('#form-kuasa').addClass('d-none');
-
+    $("#form-kuasa").addClass("d-none");
 });
-let table_dokumen_pendukung = $('#datatable-dokumen-pendukung').DataTable({
+let table_dokumen_pendukung = $("#datatable-dokumen-pendukung").DataTable({
     processing: true,
     serverSide: true,
-    ajax: '/register/pendukung/datatable/' + id_pre_register,
+    ajax: "/register/pendukung/datatable/" + id_pre_register,
     searching: false,
     ordering: false,
     lengthChange: false,
     columns: [
         {
-            data: 'DT_RowIndex'
+            data: "DT_RowIndex",
         },
         {
-            data: 'jenis_dokumen'
+            data: "jenis_dokumen",
         },
         {
-            data: 'nomer_dokumen'
+            data: "nomer_dokumen",
         },
         {
-            data: 'tanggal_terbit'
+            data: "tanggal_terbit",
         },
         {
-            data: 'file',
+            data: "file",
         },
         {
-            data: 'action'
-        }
+            data: "action",
+        },
     ],
     language: {
         paginate: {
@@ -85,17 +84,14 @@ let table_dokumen_pendukung = $('#datatable-dokumen-pendukung').DataTable({
         },
     },
     drawCallback: function () {
-        $(".dataTables_paginate > .pagination").addClass(
-            "pagination-rounded"
-        );
+        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
 });
 
-$('#button-pendukung').click(function () {
-
+$("#button-pendukung").click(function () {
     form_data = new FormData();
-    let file = $('#file_dokumen').prop('files')[0];
-    form_data.append('file_dokumen', file ?? '');
+    let file = $("#file_dokumen").prop("files")[0];
+    form_data.append("file_dokumen", file ?? "");
 
     let form = $("#form-pendukung").serializeArray();
     $.each(form, function (key, value) {
@@ -104,7 +100,7 @@ $('#button-pendukung').click(function () {
 
     $.ajax({
         data: form_data,
-        url: '/register/pendukung/store/' + id_pre_register,
+        url: "/register/pendukung/store/" + id_pre_register,
         processData: false,
         contentType: false,
         type: "POST",
@@ -118,7 +114,7 @@ $('#button-pendukung').click(function () {
             if (response.status) {
                 notif("success", response.message);
                 table_dokumen_pendukung.draw();
-                $('#form-pendukung').trigger("reset");
+                $("#form-pendukung").trigger("reset");
                 $(".dropify-clear").trigger("click");
                 $("#button-pendukung").removeClass("disabled").html("tambah");
             } else {
@@ -137,7 +133,7 @@ $('#button-pendukung').click(function () {
                         .addClass("d-block")
                         .html(value);
                 });
-                notif('error', 'data tidak valid.');
+                notif("error", "data tidak valid.");
                 return;
             }
             notif("error", "terjadi kesalahan");
@@ -145,13 +141,12 @@ $('#button-pendukung').click(function () {
     });
 });
 
-$('#button-submit').click(function () {
-
+$("#button-submit").click(function () {
     form_data = new FormData();
 
     let form_ttd = $("#form-penandatangan").serializeArray();
     let form_cp = $("#form-cp").serializeArray();
-    let form_register = $('#form-register').serializeArray();
+    let form_register = $("#form-register").serializeArray();
 
     $.each(form_ttd, function (key, value) {
         form_data.append(value.name, value.value);
@@ -165,7 +160,7 @@ $('#button-submit').click(function () {
 
     $.ajax({
         data: form_data,
-        url: '/register/store/cabang/' + id_pre_register,
+        url: "/register/store/perusahaan/" + id_pre_register,
         processData: false,
         contentType: false,
         type: "POST",
@@ -179,7 +174,7 @@ $('#button-submit').click(function () {
             if (response.status) {
                 notif("success", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
-                location.reload()
+                location.reload();
             } else {
                 notif("error", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
@@ -188,7 +183,7 @@ $('#button-submit').click(function () {
         error: function (response) {
             $("#button-submit").removeClass("disabled").html("Submit");
             var respon = response.responseJSON;
-            var error = respon.errors ?? '';
+            var error = respon.errors ?? "";
             if (respon && error) {
                 $.each(error, function (key, value) {
                     $("#" + key).addClass("is-invalid");
@@ -196,17 +191,13 @@ $('#button-submit').click(function () {
                         .addClass("d-block")
                         .html(value);
                 });
-                notif('error', 'data tidak valid.');
+                notif("error", "data tidak valid.");
                 return;
             }
             notif("error", respon.message ?? "terjadi kesalahan");
         },
     });
 });
-
-
-
-
 
 // $('#datatable-kuasa').DataTable({
 //     language: {

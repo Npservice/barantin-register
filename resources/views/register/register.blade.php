@@ -53,21 +53,6 @@
                     </span>
                 @enderror
             </div>
-
-            <div class="form-group mb-3 row d-none" id="perusahaan-induk-select">
-                <label>Perusahaan Induk</label>
-                <div class="col-12">
-                    <select id="perusahaan-induk" type="text"
-                        class="induk-select @error('perusahaan_induk') is-invalid @enderror" name="perusahaan_induk">
-                    </select>
-                </div>
-                @error('perusahaan_induk')
-                    <span class="invalid-feedback d-block" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
-            </div>
-
             <div class="form-group mb-3 row">
                 <label for="upt">UPT Karantina</label>
                 <div class="col-12">

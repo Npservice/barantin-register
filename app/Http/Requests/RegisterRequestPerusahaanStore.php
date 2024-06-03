@@ -9,9 +9,10 @@ use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
 use App\Rules\LingkupAktifitasRule;
+use App\Rules\UniquePerusahaanInduk;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequestPerusahaanIndukStore extends FormRequest
+class RegisterRequestPerusahaanStore extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,15 +35,16 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
                 new UptRule
             ],
             'jenis_identitas' => ['required', Rule::in(['NPWP'])],
-            'pemohon' => 'required',
+            'nama_perusahaan' => 'required',
             'nomor_identitas' => [
                 'required',
                 'numeric',
-                'unique:pj_baratins,nomor_identitas',
-                new NomerIdentitasRule(request()->input('jenis_identitas'))
+                new NomerIdentitasRule(request()->input('jenis_identitas')),
+                new UniquePerusahaanInduk(request()->input('identifikasi_perusahaan'))
+
             ],
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
-            'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
+            'fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
 
             'email' => 'required|exists:pre_registers,email',
             'lingkup_aktivitas' => [
@@ -53,7 +55,7 @@ class RegisterRequestPerusahaanIndukStore extends FormRequest
                 $lingkup_aktivitas = request()->input('lingkup_aktivitas');
                 return $lingkup_aktivitas && in_array(3, $lingkup_aktivitas);
             }),
-
+            'nitku' => 'required_if:identifikasi_perusahaan,cabang|unique:pj_barantins,nitku',
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],
             // 'negara' => 'required|exists:master_negaras,id',
             'kota' => ['required', new KotaRule(request()->input('provinsi'))],

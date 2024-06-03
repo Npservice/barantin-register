@@ -1,8 +1,7 @@
 @extends('layouts.horizontal.master')
 @section('title', 'Status Register')
 @push('css')
-    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 @endpush
 @section('content')
     <div class="container-fluid">
@@ -14,13 +13,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="status-datatable" class="table table-bordered dt-responsive nowrap w-100"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table id="status-datatable" class="table table-bordered dt-responsive nowrap w-100" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Nama Perusahaan</th>
                                         <th>Pemohon</th>
+                                        <th>Perusahaan</th>
+                                        <th>Nama Pemohon</th>
                                         <th>Jabatan</th>
                                         <th>Kota</th>
                                         <th>Kantor Karangtina</th>
