@@ -137,7 +137,7 @@ class RegisterController extends Controller
     {
         DB::transaction(
             function () use ($data, $upt) {
-                $barantin = PjBarantin::updateOrcreate(['email' => $data['email']], $data);
+                $barantin = PjBarantin::create($data);
                 PreRegister::find($data['pre_register_id'])->update(['nama' => $barantin->nama_perusahaan]);
                 foreach ($upt as $index => $value) {
                     Register::updateOrCreate(['pre_register_id' => $data['pre_register_id'], 'master_upt_id' => $value], ['pj_barantin_id' => $barantin->id, 'status' => 'MENUNGGU', 'keterangan' => null]);
@@ -232,19 +232,19 @@ class RegisterController extends Controller
      * Memeriksa status registrasi dan validasi email.
      * Fungsi ini akan menghentikan proses jika email belum terverifikasi atau registrasi masih dalam proses.
      *
-     * @param mixed $register Data registrasi yang akan diperiksa.
+     * @param mixed $preRegister Data registrasi yang akan diperiksa.
      * @return RedirectResponse|bool Mengembalikan true jika pemeriksaan berhasil, atau mengarahkan kembali jika terdapat masalah.
      */
-    public function CheckRegister(mixed $register): RedirectResponse|bool
+    public function CheckRegister(mixed $preRegister): RedirectResponse|bool
     {
-        if (!$register || !$register->verify_email) {
+        if (!$preRegister || !$preRegister->verify_email) {
             abort(redirect()->route('register.message')->with(['message_token' => 'Email tidak terverifikasi silahkan register ulang']));
         }
         /* ambil dat terbaru untuk pengecekan bahwa status sudah fix */
-        $register_cek = Register::where('pre_register_id', $register->id)->orderBy('updated_at', 'DESC')->first();
+        $register = Register::where('pre_register_id', $preRegister->id)->orderBy('updated_at', 'DESC')->first();
 
-        if (isset($register_cek)) {
-            if ($register_cek->status == 'MENUNGGU' || $register_cek->status == 'DISETUJUI') {
+        if (isset($register)) {
+            if ($register->status == 'MENUNGGU' || $register->status == 'DISETUJUI') {
                 abort(redirect()->route('register.message')->with(['message_waiting' => 'Data sedang di proses upt yang dipilih atau yang terdaftar sebelumnya']));
             }
         }
