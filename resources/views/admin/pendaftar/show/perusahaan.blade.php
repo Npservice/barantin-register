@@ -22,24 +22,20 @@
                     {{-- blokir user --}}
                     @if ($data->user_id)
                         @if ($register->blockir)
-                            <button class="btn btn-success btn-sm me-2"
-                                onclick="Open('{{ route('admin.pendaftar.open.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Aktifkan
+                            <button class="btn btn-success btn-sm me-2" onclick="Open('{{ route('admin.pendaftar.open.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $register->id) }}')">Aktifkan
                                 User</button>
                         @else
-                            <button class="btn btn-warning btn-sm me-2"
-                                onclick="Block('{{ route('admin.pendaftar.block.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Blokir
+                            <button class="btn btn-warning btn-sm me-2" onclick="Block('{{ route('admin.pendaftar.block.akses', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $register->id) }}')">Blokir
                                 User</button>
                         @endif
                     @endif
                     {{-- create user --}}
                     @if (auth()->guard('admin')->user()->upt_id == $uptPusatId)
                         @if ($data->user_id)
-                            <button class="btn btn-primary btn-sm me-2"
-                                onclick="UserSetting('{{ route('admin.pendaftar.send.user', $data->user_id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Kirim
+                            <button class="btn btn-primary btn-sm me-2" onclick="UserSetting('{{ route('admin.pendaftar.send.user', $data->user_id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $register->id) }}')">Kirim
                                 username & password</button>
                         @else
-                            <button class="btn btn-info btn-sm me-2 "
-                                onclick="CreateUser('{{ route('admin.pendaftar.create.user', $register->id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $data->id) }}?register_id={{ $register->id }}')">Buat
+                            <button class="btn btn-info btn-sm me-2 " onclick="CreateUser('{{ route('admin.pendaftar.create.user', $register->id) }}','{{ $data->nama_perusahaan }}','{{ route('admin.pendaftar.show', $register->id) }}')">Buat
                                 username & password</button>
                         @endif
                     @endif
@@ -53,16 +49,21 @@
                         <label for="" class="form-label fw-bold h6 mt-0 mb-0">Data</label>
                         <hr class="mt-0 mb-3">
                         <div class="row mb-3">
-                            <label for="upt" class="col-sm-3 col-form-label">Perusahaan Induk</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telepon" disabled value="{{ $data->baratininduk->nama_perusahaan ?? '' }}" name="telepon"
-                                    aria-describedby="inputGroupPrepend" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
                             <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                             <div class="col-sm-9">
                                 <input class="form-control" disabled value="{{ $data->nama_perusahaan ?? '' }}" type="text" id="pemohon" name="pemohon">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Pemohon</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" disabled value="{{ $data->preregister->pemohon ?? '' }}" type="text">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Indentifikasi</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" disabled value="{{ $data->preregister->jenis_perusahaan ?? '' }}" type="text">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -72,14 +73,12 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
-                                Identitas</label>
+                            <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis Identitas</label>
                             <div class="col">
                                 <input value="{{ $data->jenis_identitas ?? '' }}" disabled class="form-control select-item" type="text" placeholder="Jenis Identitas">
                             </div>
                             <div class="col">
-                                <input class="form-control" type="number" disabled value="{{ $data->nomor_identitas ?? '' }}" placeholder="Nomor Identitas" id="nomor_identitas"
-                                    name="nomor_identitas">
+                                <input class="form-control" type="number" disabled value="{{ $data->nomor_identitas ?? '' }}" placeholder="Nomor Identitas" id="nomor_identitas" name="nomor_identitas">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -139,7 +138,7 @@
                         <div class="row mb-3" id="provinsi-form">
                             <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                             <div class="col-sm-9">
-                                <input class="form-control provinsi-select" disabled value="@provinsi($data->provinsi_ids)" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
+                                <input class="form-control provinsi-select" disabled value="@provinsi($data->provinsi_id)" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 
@@ -153,7 +152,7 @@
                         <div class="row mb-5">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control provinsi-select" disabled value="" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">{{ $data->alamat ?? '' }}</textarea>
+                                <input class="form-control provinsi-select" disabled value="{{ $data->alamat ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
                     </div>
@@ -165,16 +164,14 @@
                             <div class="row mb-3">
                                 <label for="nama" class="col-sm-3 col-form-label">Nama</label>
                                 <div class="col-sm-9">
-                                    <input class="form-control provinsi-select" disabled value="{{ $data->nama_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
-                                        name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->nama_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="jenis_identitas" class="col-sm-3 col-form-label">Jenis
                                     Identitas</label>
                                 <div class="col">
-                                    <input class="form-control provinsi-select" disabled value="{{ $data->jenis_identitas_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
-                                        name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->jenis_identitas_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                                 </div>
                                 <div class="col">
                                     <input class="form-control provinsi-select" disabled value="{{ $data->nomor_identitas_tdd ?? '' }}" type="text" id="provinsi" name="provinsi">
@@ -184,15 +181,14 @@
                             <div class="row mb-3">
                                 <label for="jabatan" class="col-sm-3 col-form-label">Jabatan</label>
                                 <div class="col-sm-9">
-                                    <input class="form-control provinsi-select" disabled value="{{ $data->jabatan_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi"
-                                        name="provinsi">
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->jabatan_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                                 </div>
                             </div>
 
                             <div class="row mb-5">
                                 <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control provinsi-select" disabled value="" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">{{ $data->alamat_tdd ?? '' }}</textarea>
+                                    <input class="form-control provinsi-select" disabled value="{{ $data->alamat_tdd ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                                 </div>
                             </div>
                         </div>
@@ -211,7 +207,7 @@
                         <div class="row mb-3">
                             <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                             <div class="col-sm-9">
-                                <textarea class="form-control provinsi-select" disabled value="" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">{{ $data->alamat_cp ?? '' }}</textarea>
+                                <input class="form-control provinsi-select" disabled value="{{ $data->alamat_cp ?? '' }}" type="text" placeholder="Provinsi" id="provinsi" name="provinsi">
                             </div>
                         </div>
 

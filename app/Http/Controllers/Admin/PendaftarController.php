@@ -34,6 +34,9 @@ class PendaftarController extends Controller
     }
     public function index(): View|JsonResponse
     {
+        if (request()->ajax()) {
+            return $this->datatable();
+        }
         return view('admin.pendaftar.index');
     }
 
@@ -42,26 +45,17 @@ class PendaftarController extends Controller
      */
     public function show(Request $request, string $id): View
     {
-        $data = PjBarantin::find($id);
-        $register = Register::find($request->register_id);
-        $preregister = PreRegister::find($data->pre_register_id);
+        $register = Register::find($id);
+        $data = $register->barantin;
+        $preregister = $register->preregister;
         $upt = BarantinApiHelper::getMasterUptByID($register->master_upt_id);
 
-        $dataMaster = [
-            'upt' => $upt['nama_satpel'] . ' - ' . $upt['nama'],
-            'provinsi' => BarantinApiHelper::getMasterProvinsiByID($data->provinsi_id)['nama'],
-            'kota' => BarantinApiHelper::getMasterKotaByIDProvinsiID($data->kota, $data->provinsi_id)['nama'],
-            'negara' => BarantinApiHelper::getMasterNegaraByID($data->negara_id)['nama'],
-        ];
+        $view = 'admin.pendaftar.show.perorangan';
 
-        if ($preregister->pemohon === 'perorangan') {
-            return view('admin.pendaftar.show.perorangan', compact('data', 'register', 'dataMaster'));
-        } else {
-            if ($preregister->jenis_perusahaan === 'induk' || !$preregister->jenis_perusahaan) {
-                return view('admin.pendaftar.show.induk', compact('data', 'register', 'dataMaster'));
-            }
-            return view('admin.pendaftar.show.cabang', compact('data', 'register', 'dataMaster'));
+        if ($preregister->pemohon === 'perusahaan') {
+            $view = 'admin.pendaftar.show.perusahaan';
         }
+        return view($view, compact('data', 'register'));
     }
 
     /**
@@ -77,22 +71,16 @@ class PendaftarController extends Controller
     }
 
 
-    public function datatable(string $pemohon): JsonResponse
+    public function datatable(): JsonResponse
     {
-        $model = $this->datatableQueryCheckUser($pemohon);
+        $model = $this->queryRegister();
+        $uptId = auth()->guard('admin')->user()->upt_id;
+        if ($uptId != $this->uptPusatId) {
+            $model = $model->where('master_upt_id', $uptId);
+        }
+        $datatable = DataTables::eloquent($model)->addIndexColumn();
 
-        $datatable = DataTables::eloquent($model)->addIndexColumn()
-            ->filterColumn('updated_at', function ($query, $keyword) {
-                $range = explode(' - ', $keyword);
-                if (count($range) === 2) {
-                    $startDate = Carbon::parse($range[0])->startOfDay();
-                    $endDate = Carbon::parse($range[1])->endOfDay();
-                    $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
-                }
-            });
-        $action = $pemohon == 'cabang' ? 'admin.pendaftar.action.cabang' : 'admin.pendaftar.action.induk';
-        $barantinKategori = $pemohon == 'cabang' ? 'barantincabang' : 'barantin';
-        return $this->columnDaerahRender($datatable, $action, $barantinKategori);
+        return $this->columnDaerahRender($datatable);
     }
 
     /**
@@ -105,76 +93,55 @@ class PendaftarController extends Controller
      * @param string $action Nama view untuk kolom aksi.
      * @return mixed DataTable yang telah dimodifikasi dengan kolom tambahan.
      */
-    private function columnDaerahRender($datatable, string $action, string $barantinKategori)
+    private function columnDaerahRender($datatable)
     {
         return $datatable->addColumn('upt', function ($row) {
-            $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id ?? null);
-            return $upt['nama_satpel'] ?? null . ' - ' . $upt['nama'] ?? null;
+            $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
+            return $upt['nama_satpel'] . ' - ' . $upt['nama'];
         })
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::getMasterNegaraByID($row->barantin->negara_id ?? $row->barantincabang->negara_id ?? null);
+                $negara = BarantinApiHelper::getMasterNegaraByID($row->barantin->negara_id);
                 return $negara['nama'] ?? null;
             })
-            ->filterColumn('negara', function ($query, $keyword) use ($barantinKategori) {
+            ->filterColumn('negara', function ($query, $keyword) {
                 $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
                 $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('negara_id', $idNegara));
+                $query->whereHas('barantin', fn($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->barantin->provinsi_id ?? $row->barantincabang->provinsi_id ?? null);
+                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->barantin->provinsi_id);
                 return $provinsi['nama'] ?? null;
             })
-            ->filterColumn('provinsi', function ($query, $keyword) use ($barantinKategori) {
+            ->filterColumn('provinsi', function ($query, $keyword) {
                 $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
                 $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
+                $query->whereHas('barantin', fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota ?? $row->barantincabang->kota ?? null, $row->barantin->provinsi_id ?? $row->barantincabang->provinsi_id ?? null);
+                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
                 return $kota['nama'] ?? null;
             })
-            ->filterColumn('kota', function ($query, $keyword) use ($barantinKategori) {
+            ->filterColumn('kota', function ($query, $keyword) {
                 $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
                 $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                $query->whereHas($barantinKategori, fn($query) => $query->whereIn('kota', $idKota));
+                $query->whereHas('barantin', fn($query) => $query->whereIn('kota', $idKota));
+            })->filterColumn('updated_at', function ($query, $keyword) {
+                $range = explode(' - ', $keyword);
+                if (count($range) === 2) {
+                    $startDate = Carbon::parse($range[0])->startOfDay();
+                    $endDate = Carbon::parse($range[1])->endOfDay();
+                    $query->whereBetween('registers.updated_at', [$startDate, $endDate]);
+                }
             })
-            ->addColumn('action', $action)->make(true);
+            ->addColumn('action', 'admin.pendaftar.action')->make(true);
     }
 
-    private function datatableQueryCheckUser(string $pemohon)
-    {
-        $uptId = auth()->guard('admin')->user()->upt_id;
-
-        $model = $pemohon === 'cabang' ? $this->queryRegisterCabang() : $this->queryRegisterPeoranganAndInduk();
-
-        $model = $model->whereHas('preregister', function ($query) use ($pemohon) {
-            $query->where('pemohon', $pemohon == 'cabang' || $pemohon == 'perusahaan' ? 'perusahaan' : 'perorangan');
-        });
-
-        if ($uptId != $this->uptPusatId) {
-            $model = $model->where('master_upt_id', $uptId);
-        }
-
-        return $model;
-    }
-    public function QueryRegisterCabang(): Builder
+    public function queryRegister(): Builder
     {
         return Register::with([
-            'barantincabang.barantininduk:nama_perusahaan,id',
-            'barantincabang' => function ($query) {
-                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'nitku', 'pj_barantin_id');
-            }
-        ])->select('registers.id', 'master_upt_id', 'barantin_cabang_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('barantin_cabang_id')->where('registers.status', 'DISETUJUI')
-            ->whereHas('barantincabang', function ($query) {
-                $query->where('persetujuan_induk', 'DISETUJUI');
-            });
-    }
-    public function QueryRegisterPeoranganAndInduk(): Builder
-    {
-        return Register::with([
-
+            'barantin.preregister:id,pemohon,jenis_perusahaan',
             'barantin' => function ($query) {
-                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id');
+                $query->select('id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'kota', 'provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'pre_register_id');
             }
         ])->select('registers.id', 'master_upt_id', 'pj_barantin_id', 'status', 'keterangan', 'registers.updated_at', 'blockir', 'registers.pre_register_id')->whereNotNull('pj_barantin_id')->where('registers.status', 'DISETUJUI');
     }
@@ -218,7 +185,7 @@ class PendaftarController extends Controller
 
     public function datatablePendukung(string $id): JsonResponse
     {
-        $model = DokumenPendukung::where('barantin_id', $id)->orWhere('barantin_cabang_id', $id);
+        $model = DokumenPendukung::where('pj_barantin_id', $id);
 
         return DataTables::eloquent($model)
             ->addIndexColumn()
@@ -231,7 +198,7 @@ class PendaftarController extends Controller
     {
         $register = Register::find($id);
         $pre_register = $register->preregister;
-        $barantin = $register->barantin ?? $register->barantincabang;
+        $barantin = $register->barantin;
 
 
         // Tentukan role berdasarkan pemohon dan jenis perusahaan

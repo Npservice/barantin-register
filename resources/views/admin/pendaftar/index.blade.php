@@ -1,8 +1,7 @@
 @extends('layouts.vertical.master')
 @section('title', 'Pendaftar')
 @push('css')
-    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endpush
@@ -13,7 +12,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Pendaftar</h4>
+                        <h4 class="mb-sm-0">Pengguna Jasa Terdaftar</h4>
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
@@ -56,8 +55,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label class="form-label">UPT</label>
-                                                <select type="text" class="form-control upt-select-filter"
-                                                    id="filter-upt"></select>
+                                                <select type="text" class="form-control upt-select-filter" id="filter-upt"></select>
                                             </div>
                                         </div>
                                     @endif
@@ -71,32 +69,38 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <div class="text-start">
-                                <button class="btn btn-info btn-sm"
-                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.perorangan') }}')">Perorangan</button>
-                                <button class="btn btn-warning btn-sm mx-3"
-                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.induk') }}')">
-                                    <div class="d-none d-md-block">
-                                        Perusahaan Induk
-                                    </div>
-                                    <div class="d-block d-sm-none">
-                                        P Induk
-                                    </div>
-                                </button>
-                                <button class="btn btn-success btn-sm"
-                                    onclick="TableLoaded('{{ route('admin.pendaftar.datatable.cabang') }}')">
-                                    <div class="d-none d-md-block">
-                                        Perusahaan Cabang
-                                    </div>
-                                    <div class="d-block d-sm-none">
-                                        P Cabang
-                                    </div>
-                                </button>
+                        <div class="card-body">
+                            <div class="text-start mb-3">
+                                <h5></h5>
                             </div>
-                        </div>
-                        <div class="card-body" id="table-loaded">
-
+                            <div class="table-responsive">
+                                <table id="pendaftar-datatable" class="table table-bordered dt-responsive nowrap w-100" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Opsi</th>
+                                            <th>Status</th>
+                                            <th>Blokir</th>
+                                            <th>Pemohon</th>
+                                            <th>Identifikasi</th>
+                                            <th>UPT</th>
+                                            <th>Nama Perusahaan</th>
+                                            <th>Jenis Identitas</th>
+                                            <th>Nomor Identitas</th>
+                                            <th>Telepon</th>
+                                            <th>Fax</th>
+                                            <th>Email</th>
+                                            <th>Negara</th>
+                                            <th>Provinsi</th>
+                                            <th>Kota/Kab</th>
+                                            <th>Alamat</th>
+                                            <th>Status Import</th>
+                                            <th>Tgl Register</th>
+                                            <th>Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div> <!-- end col -->
@@ -138,10 +142,12 @@
 @endpush
 @push('custom-js')
     <script script src="{{ asset('assets/js/page/filter.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            UptSelectFilter();
-            TableLoaded('{{ route('admin.pendaftar.datatable.perorangan') }}')
-        })
-    </script>
+    <script script src="{{ asset('assets/js/page/datatable/pendaftar.js') }}"></script>
+    @if (auth()->guard('admin')->user()->upt_id == $uptPusatId)
+        <script>
+            $(document).ready(function() {
+                UptSelectFilter();
+            })
+        </script>
+    @endif
 @endpush

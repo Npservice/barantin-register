@@ -45,14 +45,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             Route::prefix('datatable')->name('datatable.')->group(function () {
                 Route::get('/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('pendukung');
-                Route::get('data/{pemohon}', [PendaftarController::class, 'datatable'])->name('pemohon');
-
-                Route::middleware('ajax')->group(function () {
-                    Route::view('perorangan', 'admin.pendaftar.table.perorangan')->name('perorangan');
-                    Route::view('induk', 'admin.pendaftar.table.induk')->name('induk');
-                    Route::view('cabang', 'admin.pendaftar.table.cabang')->name('cabang');
-                });
-
             });
 
             Route::post('/block/akses/{id}', [PendaftarController::class, 'BlockAccessPendaftar'])->name('block.akses');
@@ -66,7 +58,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::resource('pendaftar', PendaftarController::class)->only(['index', 'show']);
-        Route::resource('admin-user', AdminUserController::class)->except('show');
         Route::resource('permohonan', PermohonanController::class)->only(['index', 'destroy', 'show']);
 
     });
