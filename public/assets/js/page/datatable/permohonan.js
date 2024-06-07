@@ -1,7 +1,7 @@
 table = $("#permohonan-datatable").DataTable({
     processing: true,
     serverSide: true,
-    ajax: "/admin/permohonan/datatable/data/perusahaan",
+    ajax: "/admin/permohonan",
     language: {
         paginate: {
             previous: "<i class='mdi mdi-chevron-left'>",
@@ -21,7 +21,10 @@ table = $("#permohonan-datatable").DataTable({
             orderable: false,
             width: 60,
         },
-        { data: "status", name: "status" },
+        {
+            data: "status",
+            name: "status",
+        },
         {
             data: "blockir",
             name: "blockir",
@@ -30,49 +33,60 @@ table = $("#permohonan-datatable").DataTable({
             },
         },
         {
+            data: "barantin.preregister.pemohon",
+            name: "barantin.preregister.pemohon",
+        },
+        {
+            data: "barantin.preregister.jenis_perusahaan",
+            name: "barantin.preregister.jenis_perusahaan",
+        },
+        {
             data: "upt",
-            name: "upt"
+            name: "master_upt_id",
         },
         {
-            data: "baratin.nama_perusahaan",
-            name: "baratin.nama_perusahaan"
+            data: "barantin.nama_perusahaan",
+            name: "barantin.nama_perusahaan",
         },
         {
-            data: "baratin.jenis_identitas",
-            name: "baratin.jenis_identitas"
+            data: "barantin.jenis_identitas",
+            name: "barantin.jenis_identitas",
         },
         {
-            data: "baratin.nomor_identitas",
-            name: "baratin.nomor_identitas"
+            data: "barantin.nomor_identitas",
+            name: "barantin.nomor_identitas",
         },
         {
-            data: "baratin.telepon",
-            name: "baratin.telepon"
+            data: "barantin.telepon",
+            name: "barantin.telepon",
         },
         {
-            data: "baratin.fax",
-            name: "baratin.fax"
+            data: "barantin.fax",
+            name: "barantin.fax",
         },
         {
-            data: "baratin.email",
-            name: "baratin.email"
+            data: "barantin.email",
+            name: "barantin.email",
         },
         {
-            data: "negara", name: "negara"
+            data: "negara",
+            name: "negara",
         },
         {
-            data: "provinsi", name: "provinsi"
+            data: "provinsi",
+            name: "provinsi",
         },
         {
-            data: "kota", name: "kota"
+            data: "kota",
+            name: "kota",
         },
         {
-            data: "baratin.alamat",
-            name: "baratin.alamat"
+            data: "barantin.alamat",
+            name: "barantin.alamat",
         },
         {
-            data: "baratin.status_import",
-            name: "baratin.status_import",
+            data: "barantin.status_import",
+            name: "barantin.status_import",
             orderable: false,
             render: function (data) {
                 switch (data) {
@@ -124,8 +138,9 @@ function BlokirStatus(data) {
 $("#filter-status-import").select2();
 $("#filter-status-import").change(function () {
     var val = $(this).val();
-    if (val === "all") return table.column("baratin.status_import:name").search("").draw();
-    return table.column("baratin.status_import:name").search(val).draw();
+    if (val === "all")
+        return table.column("barantin.status_import:name").search("").draw();
+    return table.column("barantin.status_import:name").search(val).draw();
 });
 $("#tanggal-register").daterangepicker();
 $("#tanggal-register").on("apply.daterangepicker", function (ev, picker) {
@@ -139,8 +154,9 @@ $("#tanggal-register").on("apply.daterangepicker", function (ev, picker) {
 $("#tanggal-register").on("cancel.daterangepicker", function (ev, picker) {
     table.column("updated_at:name").search("").draw();
 });
-$('#filter-upt').change(function () {
+$("#filter-upt").change(function () {
     var val = $(this).val();
-    if (val === "all") return table.column("upt:name").search("").draw();
-    return table.column("upt:name").search(val).draw();
+    if (val === "all")
+        return table.column("master_upt_id:name").search("").draw();
+    return table.column("master_upt_id:name").search(val).draw();
 });

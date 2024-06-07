@@ -30,19 +30,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('permohonan')->name('permohonan.')->group(function () {
             Route::prefix('datatable')->name('datatable.')->group(function () {
                 Route::get('/dokumen/{id}', [PermohonanController::class, 'datatablePendukung'])->name('pendukung');
-                Route::get('data/{pemohon}', [PermohonanController::class, 'datatable'])->name('pemohon');
-
-                Route::middleware('ajax')->group(function () {
-                    Route::view('perorangan', 'admin.permohonan.table.perorangan')->name('perorangan');
-                    Route::view('induk', 'admin.permohonan.table.induk')->name('induk');
-                    Route::view('cabang', 'admin.permohonan.table.cabang')->name('cabang');
-                });
-
             });
             Route::post('/confirm/register/{id}', [PermohonanController::class, 'confirmRegister'])->name('confirm.register');
         });
         Route::prefix('pendaftar')->name('pendaftar.')->group(function () {
-
             Route::prefix('datatable')->name('datatable.')->group(function () {
                 Route::get('/dokumen/{id}', [PendaftarController::class, 'datatablePendukung'])->name('pendukung');
             });

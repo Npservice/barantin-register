@@ -89,7 +89,7 @@ class PjBaratinSeeder extends Seeder
                 Register::create([
                     'pj_barantin_id' => $baratin->id,
                     'master_upt_id' => 2100,
-                    'status' => 'DISETUJUI',
+                    'status' => $faker->randomElement(['DISETUJUI', 'DITOLAK', 'MENUNGGU']),
                     'pre_register_id' => $register->id
                 ]);
                 if ($index == 1) {
