@@ -3,9 +3,9 @@
          <div class="col-md-12 col-sm-12">
              <form class="form-data">
                  <div class="mb-3">
-                     <label for="Keterangan" class="form-label">Keterangan</label>
-                     <textarea class="form-control" type="text" placeholder="Keterangan" id="keterangan" name="keterangan"></textarea>
-                     <div class="invalid-feedback" id="keterangan-feedback"></div>
+                     <label for="alasan_perubahan" class="form-label">Alasan Perubahan</label>
+                     <textarea class="form-control" type="text" id="alasan_perubahan" name="alasan_perubahan"></textarea>
+                     <div class="invalid-feedback" id="alasan_perubahan-feedback"></div>
                  </div>
              </form>
          </div>

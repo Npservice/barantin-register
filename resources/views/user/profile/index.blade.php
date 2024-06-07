@@ -33,24 +33,20 @@
                                 <div class="row mb-3">
                                     <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control" disabled value="{{ auth()->user()->baratin->nama_perusahaan ?? auth()->user()->baratincabang->nama_perusahaan }}" type="text"
-                                            id="pemohon" name="pemohon">
+                                        <input class="form-control" disabled value="{{ auth()->user()->barantin->nama_perusahaan }}" type="text" id="pemohon" name="pemohon">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="email" class="col-sm-3 col-form-label">Jenis Perusahaan</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control" disabled value="{{ auth()->user()->baratin->jenis_perusahaan ?? auth()->user()->baratincabang->jenis_perusahaan }}" type="text"
-                                            id="pemohon" name="pemohon">
+                                        <input class="form-control" disabled value="{{ auth()->user()->barantin->jenis_perusahaan }}" type="text" id="pemohon" name="pemohon">
                                     </div>
                                 </div>
                                 @if (auth()->user()->role === 'cabang' || auth()->user()->role === 'induk')
                                     <div class="row mb-3">
                                         <label for="fax" class="col-sm-3 col-form-label">Nama Alias</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control" type="text" disabled
-                                                value="{{ auth()->user()->baratin->nama_alias_perusahaan ?? (isset(auth()->user()->baratincabang->nama_alias_perusahaan) ? auth()->user()->baratincabang->nama_alias_perusahaan : null) }}"
-                                                id="nomor_fax" name="nomor_fax">
+                                            <input class="form-control" type="text" disabled value="{{ auth()->user()->barantin->nama_alias_perusahaan }}" id="nomor_fax" name="nomor_fax">
                                         </div>
                                     </div>
                                 @endif
@@ -58,56 +54,50 @@
                                     <label for="jenis_identitas" class="col-md-3 col-sm-3 col-xs-12 col-form-label">Jenis
                                         Identitas</label>
                                     <div class="col">
-                                        <input value="{{ auth()->user()->baratin->jenis_identitas ?? auth()->user()->baratincabang->baratininduk->jenis_identitas }}" disabled
-                                            class="form-control select-item" type="text">
+                                        <input value="{{ auth()->user()->barantin->jenis_identitas }}" disabled class="form-control select-item" type="text">
                                     </div>
                                     <div class="col">
-                                        <input class="form-control" type="number" disabled
-                                            value="{{ auth()->user()->baratin->nomor_identitas ?? auth()->user()->baratincabang->baratininduk->nomor_identitas }}" id="nomor_identitas"
-                                            name="nomor_identitas">
+                                        <input class="form-control" type="number" disabled value="{{ auth()->user()->barantin->nomor_identitas }}" id="nomor_identitas" name="nomor_identitas">
                                     </div>
                                 </div>
                                 @if (auth()->user()->role === 'cabang' || auth()->user()->role === 'induk')
                                     <div class="row mb-3">
                                         <label for="email" class="col-sm-3 col-form-label">NITKU</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control" disabled value="{{ auth()->user()->baratin->nitku ?? (auth()->user()->baratincabang->nitku ?? '000000') }}" type="text"
-                                                id="pemohon" name="pemohon">
+                                            <input class="form-control" disabled value="{{ auth()->user()->barantin->nitku ?? '000000' }}" type="text" id="pemohon" name="pemohon">
                                         </div>
                                     </div>
                                 @endif
                                 <div class="row mb-3">
                                     <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="telepon" disabled value="{{ auth()->user()->baratin->telepon ?? auth()->user()->baratincabang->telepon }}"
-                                            name="telepon" aria-describedby="inputGroupPrepend" required>
+                                        <input type="text" class="form-control" id="telepon" disabled value="{{ auth()->user()->barantin->telepon }}" name="telepon"
+                                            aria-describedby="inputGroupPrepend" required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control" type="text" disabled value="{{ auth()->user()->baratin->fax ?? auth()->user()->baratincabang->fax }}" id="nomor_fax"
-                                            name="nomor_fax">
+                                        <input class="form-control" type="text" disabled value="{{ auth()->user()->barantin->fax }}" id="nomor_fax" name="nomor_fax">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="email" class="col-sm-3 col-form-label">Email</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control" disabled value="{{ auth()->user()->baratin->email ?? auth()->user()->baratincabang->email }}" type="email" id="email"
-                                            name="email">
+                                        <input class="form-control" disabled value="{{ auth()->user()->barantin->email }}" type="email" id="email" name="email">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="status_import" class="col-sm-3 col-form-label">Status Import</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control select-item" disabled value="@statusimport(auth()->user()->baratin->status_import ?? auth()->user()->baratincabang->status_import)">
+                                        <input class="form-control select-item" disabled value="@statusimport(auth()->user()->barantin->status_import)">
                                         <div class="invalid-feedback" id="status_import-feedback"></div>
                                     </div>
                                 </div>
                                 <div class="row mb-5">
                                     <label for="status_import" class="col-sm-3 col-form-label">Lingkup Aktifitas</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control select-item" disabled value="@aktifitas(auth()->user()->baratin->lingkup_aktifitas ?? auth()->user()->baratincabang->lingkup_aktifitas)">
+                                        <input class="form-control select-item" disabled value="@aktifitas(auth()->user()->barantin->lingkup_aktifitas)">
                                         <div class="invalid-feedback" id="status_import-feedback"></div>
                                     </div>
                                 </div>
@@ -118,28 +108,28 @@
                                 <div class="row mb-3">
                                     <label for="negara" class="col-sm-3 col-form-label">Negara</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control negara-select" type="text" id="negara" name="negara" disabled value="@negara(auth()->user()->baratin->negara_id ?? auth()->user()->baratincabang->negara_id)">
+                                        <input class="form-control negara-select" type="text" id="negara" name="negara" disabled value="@negara(auth()->user()->barantin->negara_id)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3" id="provinsi-form">
                                     <label for="provinsi" class="col-sm-3 col-form-label">Provinsi</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control provinsi-select" disabled value="@provinsi(auth()->user()->baratin->provinsi_id ?? auth()->user()->baratincabang->provinsi_id)" type="text">
+                                        <input class="form-control provinsi-select" disabled value="@provinsi(auth()->user()->barantin->provinsi_id)" type="text">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3" id="kota-form">
                                     <label for="kota" class="col-sm-3 col-form-label">Kota/Kab</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control provinsi-select" disabled value="@kota(auth()->user()->baratin->kota ?? auth()->user()->baratincabang->kota)" type="text">
+                                        <input class="form-control provinsi-select" disabled value="@kota(auth()->user()->barantin->kota)" type="text">
                                     </div>
                                 </div>
 
                                 <div class="row mb-5">
                                     <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                     <div class="col-sm-9">
-                                        <textarea class="form-control provinsi-select" disabled>{{ auth()->user()->baratin->alamat ?? auth()->user()->baratincabang->alamat }}</textarea>
+                                        <textarea class="form-control provinsi-select" disabled>{{ auth()->user()->barantin->alamat }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -151,35 +141,31 @@
                                     <div class="row mb-3">
                                         <label for="nama" class="col-sm-3 col-form-label">Nama</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control provinsi-select" disabled value="{{ auth()->user()->baratin->nama_tdd ?? auth()->user()->baratincabang->nama_tdd }}"
-                                                type="text">
+                                            <input class="form-control provinsi-select" disabled value="{{ auth()->user()->barantin->nama_tdd }}" type="text">
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <label for="jenis_identitas" class="col-sm-3 col-form-label">Jenis
                                             Identitas</label>
                                         <div class="col">
-                                            <input class="form-control provinsi-select" disabled
-                                                value="{{ auth()->user()->baratin->jenis_identitas_tdd ?? auth()->user()->baratincabang->jenis_identitas_tdd }}">
+                                            <input class="form-control provinsi-select" disabled value="{{ auth()->user()->barantin->jenis_identitas_tdd }}">
                                         </div>
                                         <div class="col">
-                                            <input class="form-control provinsi-select" disabled
-                                                value="{{ auth()->user()->baratin->nomor_identitas_tdd ?? auth()->user()->baratincabang->nomor_identitas_tdd }}">
+                                            <input class="form-control provinsi-select" disabled value="{{ auth()->user()->barantin->nomor_identitas_tdd }}">
                                         </div>
                                     </div>
 
                                     <div class="row mb-3">
                                         <label for="jabatan" class="col-sm-3 col-form-label">Jabatan</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control provinsi-select" disabled value="{{ auth()->user()->baratin->jabatan_tdd ?? auth()->user()->baratincabang->jabatan_tdd }}"
-                                                type="text">
+                                            <input class="form-control provinsi-select" disabled value="{{ auth()->user()->barantin->jabatan_tdd }}" type="text">
                                         </div>
                                     </div>
 
                                     <div class="row mb-5">
                                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                         <div class="col-sm-9">
-                                            <textarea class="form-control provinsi-select" disabled>{{ auth()->user()->baratin->alamat_tdd ?? auth()->user()->baratincabang->alamat_tdd }}</textarea>
+                                            <textarea class="form-control provinsi-select" disabled>{{ auth()->user()->barantin->alamat_tdd }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -191,21 +177,21 @@
                                 <div class="row mb-3">
                                     <label for="nama" class="col-sm-3 col-form-label">Nama</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control provinsi-select" disabled value="{{ auth()->user()->baratin->nama_cp ?? auth()->user()->baratincabang->nama_cp }}" type="text">
+                                        <input class="form-control provinsi-select" disabled value="{{ auth()->user()->barantin->nama_cp }}" type="text">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                                     <div class="col-sm-9">
-                                        <textarea class="form-control provinsi-select" disabled>{{ auth()->user()->baratin->alamat_cp ?? auth()->user()->baratincabang->alamat_cp }}</textarea>
+                                        <textarea class="form-control provinsi-select" disabled>{{ auth()->user()->barantin->alamat_cp }}</textarea>
                                     </div>
                                 </div>
 
                                 <div class="row mb-5">
                                     <label for="telepon" class="col-sm-3 col-form-label">Telepon</label>
                                     <div class="col-sm-9">
-                                        <input class="form-control provinsi-select" disabled value="{{ auth()->user()->baratin->telepon_cp ?? auth()->user()->baratincabang->telepon_cp }}">
+                                        <input class="form-control provinsi-select" disabled value="{{ auth()->user()->barantin->telepon_cp }}">
                                     </div>
                                 </div>
                             </div>

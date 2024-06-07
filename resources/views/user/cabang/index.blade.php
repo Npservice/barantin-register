@@ -39,7 +39,6 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Opsi</th>
-                                            <th>Persetujuan Kantor Induk</th>
                                             <th>Nama Perusahaan</th>
                                             <th>Jenis Identitas Induk</th>
                                             <th>Nomor Identitas Induk</th>

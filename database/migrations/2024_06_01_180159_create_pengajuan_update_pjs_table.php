@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('pengajuan_update_pjs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('pj_barantin_id')->nullable();
+            $table->uuid('pj_barantin_id');
             $table->string('keterangan');
             $table->string('update_token')->unique()->nullable();
             $table->dateTime('expire_at')->nullable();

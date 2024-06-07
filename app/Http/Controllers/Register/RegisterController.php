@@ -156,11 +156,10 @@ class RegisterController extends Controller
             'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
             'provinsi_id' => $request->provinsi,
             'pre_register_id' => $preRegisterId,
-            'kota' => $request->kota,
             'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
         ]);
 
-        return $request->except(['upt', 'negara', 'provinsi', 'nitku', 'identifikasi_perusahaan']);
+        return $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan']);
     }
     /**
      * Menyimpan dokumen pendukung ke dalam database.

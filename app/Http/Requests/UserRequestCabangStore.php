@@ -29,15 +29,16 @@ class UserRequestCabangStore extends FormRequest
     public function rules(): array
     {
         return [
-            'id_induk' => 'required|exists:pj_baratins,id',
+            'id_induk' => 'required|exists:pj_barantins,id',
             'id_pre_register' => 'required|exists:pre_registers,id',
+            'nama_perusahaan' => 'required',
             'upt' => [
                 'required',
                 new UptRule,
             ],
-            'nitku' => 'required|unique:barantin_cabangs,nitku|digits:6',
+            'nitku' => 'required|unique:pj_barantins,nitku|digits:6',
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
-            'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
+            'fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
 
             'email' => 'required|email',
             'lingkup_aktivitas' => [

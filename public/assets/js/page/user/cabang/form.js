@@ -38,7 +38,7 @@ IMask(phoneInputCp[0], {
     mask: '0000-0000-0000',
     lazy: false
 });
-var FaxInput = $('#nomor_fax');
+var FaxInput = $('#fax');
 IMask(FaxInput[0], {
     mask: '(000) 000-0000',
     lazy: false

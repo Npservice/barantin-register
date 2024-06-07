@@ -25,12 +25,11 @@ class UserProfileController extends Controller
     public function RequestUpdate(Request $request)
     {
         $request->validate([
-            'keterangan' => ['required', 'max:255', new KeteranganUpdateRule],
+            'alasan_perubahan' => ['required', 'max:255', new KeteranganUpdateRule],
         ]);
         $res = PengajuanUpdatePj::create([
-            'pj_barantin_id' => auth()->user()->baratin->id ?? null,
-            'barantin_cabang_id' => auth()->user()->baratincabang->id ?? null,
-            'keterangan' => $request->keterangan,
+            'pj_barantin_id' => auth()->user()->barantin->id ?? null,
+            'keterangan' => $request->alasan_perubahan,
         ]);
         if ($res) {
             return AjaxResponse::SuccessResponse('Update profile berhasil diajukan. Anda akan menerima email bila persetujuan anda diterima');

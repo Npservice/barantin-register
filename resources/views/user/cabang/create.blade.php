@@ -64,7 +64,7 @@
                                <form class="row" id="form-register">
                                    <div class="col-md-6 col-sm-12">
                                        <input type="hidden"name='id_pre_register' id="id_pre_register" value="{{ $register->id }}">
-                                       <input type="hidden" name="id_induk" id="id_induk" value="{{ auth()->user()->baratin->id ?? '' }}">
+                                       <input type="hidden" name="id_induk" id="id_induk" value="{{ auth()->user()->barantin->id ?? '' }}">
                                        <div class="row mb-3">
                                            <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
                                            <div class="col-sm-9">
@@ -73,10 +73,9 @@
                                            </div>
                                        </div>
                                        <div class="row mb-3">
-                                           <label for="email" class="col-sm-3 col-form-label">Jenis
-                                               Perusahaan</label>
+                                           <label for="email" class="col-sm-3 col-form-label">Identifikasi</label>
                                            <div class="col-sm-9">
-                                               <input class="form-control" readonly value="CABANG" type="text" id="" name="">
+                                               <input class="form-control" readonly value="cabang" type="text" id="" name="">
                                                <div class="invalid-feedback" id="feedback"></div>
                                            </div>
                                        </div>
@@ -84,7 +83,7 @@
                                            <label for="email" class="col-sm-3 col-form-label">Perusahaan
                                                Induk</label>
                                            <div class="col-sm-9">
-                                               <input class="form-control" readonly value="{{ auth()->user()->baratin->nama_perusahaan }}" type="text" id="" name="">
+                                               <input class="form-control" readonly value="{{ auth()->user()->barantin->nama_perusahaan }}" type="text" id="" name="">
                                                <div class="invalid-feedback" id="feedback"></div>
                                            </div>
                                        </div>
@@ -92,8 +91,8 @@
                                            <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan
                                                Cabang</label>
                                            <div class="col-sm-9">
-                                               <input class="form-control" value="{{ $register->nama ?? '' }}" type="text" id="pemohon" name="pemohon">
-                                               <div class="invalid-feedback" id="pemohon-feedback"></div>
+                                               <input class="form-control" value="{{ $register->nama ?? '' }}" type="text" id="nama_perusahaan" name="nama_perusahaan">
+                                               <div class="invalid-feedback" id="nama_perusahaan-feedback"></div>
                                            </div>
                                        </div>
 
@@ -102,12 +101,12 @@
                                                Perusahaan Induk</label>
                                            <div class="col">
                                                <input class="form-control" readonly type="text" name="jenis_identitas" id="enis_identitas"
-                                                   value="{{ auth()->user()->baratin->jenis_identitas }}" placeholder="Jenis Identitas">
+                                                   value="{{ auth()->user()->barantin->jenis_identitas }}" placeholder="Jenis Identitas">
                                                <div class="invalid-feedback" id="jenis_identitas-feedback"></div>
                                            </div>
                                            <div class="col">
                                                <input class="form-control" type="number" placeholder="Nomor Identitas" id="nomor_identitas" name="nomor_identitas" readonly
-                                                   value="{{ auth()->user()->baratin->nomor_identitas }}">
+                                                   value="{{ auth()->user()->barantin->nomor_identitas }}">
                                                <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
                                            </div>
                                        </div>
@@ -174,8 +173,8 @@
                                        <div class="row mb-3">
                                            <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                                            <div class="col-sm-9">
-                                               <input class="form-control" type="text" placeholder="Fax" id="nomor_fax" name="nomor_fax" value="{{ $baratan->fax ?? '' }}">
-                                               <div class="invalid-feedback" id="nomor_fax-feedback"></div>
+                                               <input class="form-control" type="text" placeholder="Fax" id="fax" name="fax" value="{{ $baratan->fax ?? '' }}">
+                                               <div class="invalid-feedback" id="fax-feedback"></div>
                                            </div>
                                        </div>
                                        <div class="row mb-3">

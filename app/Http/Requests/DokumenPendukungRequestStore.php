@@ -49,6 +49,11 @@ class DokumenPendukungRequestStore extends FormRequest
                             $fail('Nomor dokumen harus berupa 16 digit.');
                         }
                     }
+                    if ($jenis_dokumen === 'NITKU') {
+                        if (!preg_match('/^[0-9]{6}$/', $val)) {
+                            $fail('Nomor dokumen harus berupa 6 digit.');
+                        }
+                    }
 
                 }
             ],

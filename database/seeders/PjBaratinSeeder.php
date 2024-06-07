@@ -48,14 +48,14 @@ class PjBaratinSeeder extends Seeder
                     'pre_register_id' => $register->id,
                     'password' => bcrypt('password'), // assuming password is always 'password'
                     'nama_perusahaan' => $faker->company,
-                    'jenis_identitas' => $faker->randomElement(['KTP', 'NPWP', 'PASSPORT']),
-                    'nomor_identitas' => $faker->unique()->numerify('################'),
+                    'jenis_identitas' => $register->pemohon === 'perusahaan' ? 'NPWP' : $faker->randomElement(['KTP', 'NPWP', 'PASSPORT']),
+                    'nomor_identitas' => $register->jenis_perusahaan === 'cabang' ? PjBarantin::inRandomOrder()->where('nitku', '000000')->value('nomor_identitas') ?? $faker->unique()->numerify('################') : $faker->unique()->numerify('################'),
                     'alamat' => $faker->address,
                     'telepon' => $faker->phoneNumber,
                     'nama_cp' => $faker->name,
                     'alamat_cp' => $faker->address,
                     'telepon_cp' => $faker->phoneNumber,
-                    'nitku' => $faker->unique()->randomNumber(6),
+                    'nitku' => $register->jenis_perusahaan === 'induk' ? '000000' : $faker->unique()->randomNumber(6),
                     'kota' => 1101,
                     'provinsi_id' => 11,
                     'negara_id' => 99, // assuming flat 99 for country

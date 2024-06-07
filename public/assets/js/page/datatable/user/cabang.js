@@ -25,13 +25,6 @@ let table = $("#user-cabang-datatable").DataTable({
             width: 60,
         },
         {
-            data: "persetujuan_induk",
-            name: "persetujuan_induk",
-            render: function (data) {
-                return StatusPersetujuan(data);
-            },
-        },
-        {
             data: "nama_perusahaan",
             name: "nama_perusahaan",
         },

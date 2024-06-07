@@ -7,7 +7,6 @@ use App\Models\PjBarantin;
 use App\Models\PreRegister;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
-use App\Models\BarantinCabang;
 use App\Models\DokumenPendukung;
 use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
@@ -47,47 +46,42 @@ class UserCabangController extends Controller
             'pemohon' => 'perusahaan',
             'verify_email' => now(),
             'jenis_perusahaan' => 'cabang',
-            'pj_baratin_id' => auth()->user()->baratin->id
         ]);
         return view('user.cabang.create', compact('register'));
     }
+
     public function store(UserRequestCabangStore $request): JsonResponse
     {
         $dokumen = DokumenPendukung::where('pre_register_id', $request->id_pre_register)->pluck('jenis_dokumen');
-        $induk = PjBarantin::select('nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'id')->find($request->id_induk);
+
         if ($dokumen->contains('NITKU')) {
-            $data = $request->all();
-            unset($data['upt'], $data['nomor_fax'], $data['negara'], $data['provinsi'], $data['kota'], $data['pemohon']);
-            $data = collect($data);
-            $data = $data->merge([
-                'fax' => $request->nomor_fax,
-                'jenis_identitas' => $induk->jenis_identitas,
-                'nomor_identitas' => $induk->nomor_identitas,
+            $request->merge([
                 'negara_id' => 99,
-                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
                 'nama_alias_perusahaan' => $request->nama_alias_perusahaan,
                 'provinsi_id' => $request->provinsi,
-                'nama_perusahaan' => $request->pemohon,
                 'pre_register_id' => $request->id_pre_register,
-                'pj_baratin_id' => $induk->id,
-                'kota' => $request->kota,
-                'persetujuan_induk' => 'DISETUJUI',
+                'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
+                'jenis_identitas' => auth()->user()->barantin->jenis_identitas,
+                'nomor_identitas' => auth()->user()->barantin->nomor_identitas,
             ]);
-            $this->SaveRegisterCabang($request, $request->id_pre_register, $data);
+
+            $data = $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan']);
+
+            $this->SaveRegisterCabang($request->upt, $data);
             return response()->json(['status' => true, 'message' => 'Cabang berhasil dibuat silahkan tunggu konfirmasi upt yang dipilih']);
         }
         return response()->json(['status' => false, 'message' => 'silahkan lengkapi dokumen  NITKU'], 422);
     }
-    public function SaveRegisterCabang(Request $request, $id, $data): bool
+    public function SaveRegisterCabang(array $upt, array $data): bool
     {
         DB::transaction(
-            function () use ($data, $id, $request) {
-                $baratin_cabang = BarantinCabang::create($data->all());
-                PreRegister::find($id)->update(['nama' => $baratin_cabang->nama_perusahaan, 'email' => $baratin_cabang->email]);
-                foreach ($request->upt as $upt) {
-                    Register::create(['master_upt_id' => $upt, 'barantin_cabang_id' => $baratin_cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $id]);
+            function () use ($data, $upt) {
+                $cabang = PjBarantin::create($data);
+                PreRegister::find($data['pre_register_id'])->update(['nama' => $cabang->nama_perusahaan, 'email' => $cabang->email]);
+                foreach ($upt as $value) {
+                    Register::create(['master_upt_id' => $value, 'pj_barantin_id' => $cabang->id, 'status' => 'MENUNGGU', 'pre_register_id' => $data['pre_register_id']]);
                 }
-                DokumenPendukung::where('pre_register_id', $id)->update(['barantin_cabang_id' => $baratin_cabang->id, 'pre_register_id' => null]);
+                DokumenPendukung::where('pre_register_id', $data['pre_register_id'])->update(['pj_barantin_id' => $cabang->id, 'pre_register_id' => null]);
             }
         );
         return true;
@@ -108,7 +102,7 @@ class UserCabangController extends Controller
      */
     public function show(string $id)
     {
-        $data = BarantinCabang::with('baratininduk:nama_perusahaan,id')->find($id);
+        $data = PjBarantin::find($id);
         return view('user.cabang.show', compact('data'));
     }
 
@@ -148,8 +142,24 @@ class UserCabangController extends Controller
     }
     public function query()
     {
-        return BarantinCabang::select('barantin_cabangs.id', 'email', 'nama_perusahaan', 'jenis_identitas', 'nomor_identitas', 'alamat', 'nitku', 'kota', 'barantin_cabangs.provinsi_id', 'negara_id', 'telepon', 'fax', 'status_import', 'user_id', 'persetujuan_induk')
-            ->where('pj_baratin_id', auth()->user()->baratin->id);
+        return PjBarantin::select(
+            'id',
+            'email',
+            'nama_perusahaan',
+            'jenis_identitas',
+            'nomor_identitas',
+            'alamat',
+            'nitku',
+            'kota',
+            'provinsi_id',
+            'negara_id',
+            'telepon',
+            'fax',
+            'status_import',
+            'user_id'
+        )
+            ->where('nomor_identitas', auth()->user()->barantin->nomor_identitas)
+            ->whereNot('nitku', '000000');
     }
 
 
@@ -173,13 +183,13 @@ class UserCabangController extends Controller
         if ($request->response === 'create') {
             $model = DokumenPendukung::where('pre_register_id', $id);
         } else {
-            $model = DokumenPendukung::where('barantin_cabang_id', $id);
+            $model = DokumenPendukung::where('pj_barantin_id', $id);
         }
 
         return DataTables::eloquent($model)
             ->addIndexColumn()
-            ->addColumn('action', 'register.form.partial.action_pendukung_datatable')
-            ->editColumn('file', 'register.form.partial.file_pendukung_datatable')
+            ->addColumn('action', 'user.cabang.action-pendukung')
+            ->editColumn('file', 'user.cabang.file-pendukung')
             ->rawColumns(['action', 'file'])
             ->toJson();
     }
@@ -198,7 +208,7 @@ class UserCabangController extends Controller
 
     public function DatatableUptDetail(string $id): JsonResponse
     {
-        $model = Register::where('barantin_cabang_id', $id);
+        $model = Register::where('pj_barantin_id', $id);
         return DataTables::eloquent($model)
             ->addIndexColumn()
             ->addColumn('upt', function ($row) {
@@ -212,15 +222,15 @@ class UserCabangController extends Controller
             })
             ->toJson();
     }
-    public function confirmasi(Request $request, string $cabang_id): JsonResponse
-    {
-        $request->validate([
-            'status' => 'required|in:DISETUJUI,DITOLAK',
-        ]);
-        $res = BarantinCabang::find($cabang_id)->update(['persetujuan_induk' => $request->status]);
-        if ($res) {
-            return AjaxResponse::SuccessResponse('cabang berhasil disetujui', 'user-cabang-datatable');
-        }
-        return AjaxResponse::ErrorResponse('cabang gagal disetujui', 200);
-    }
+    // public function confirmasi(Request $request, string $cabang_id): JsonResponse
+    // {
+    //     $request->validate([
+    //         'status' => 'required|in:DISETUJUI,DITOLAK',
+    //     ]);
+    //     $res = PjBarantin::find($cabang_id)->update(['persetujuan_induk' => $request->status]);
+    //     if ($res) {
+    //         return AjaxResponse::SuccessResponse('cabang berhasil disetujui', 'user-cabang-datatable');
+    //     }
+    //     return AjaxResponse::ErrorResponse('cabang gagal disetujui', 200);
+    // }
 }
