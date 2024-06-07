@@ -49,8 +49,7 @@ class UserMitraController extends Controller
             'master_negara_id' => $request->negara,
             'master_provinsi_id' => $request->provinsi,
             'master_kota_kab_id' => $request->kabupaten_kota,
-            'pj_barantin_id' => auth()->user()->baratin->id ?? null,
-            'barantin_cabang_id' => auth()->user()->baratincabang->id ?? null
+            'pj_barantin_id' => auth()->user()->barantin->id ?? null,
         ])->except('negara', 'provinsi', 'kabupaten_kota');
 
         $res = MitraPerusahaan::create($data);
@@ -146,11 +145,7 @@ class UserMitraController extends Controller
     public function query()
     {
         $select = MitraPerusahaan::query();
-
-        if (auth()->user()->role === 'cabang') {
-            return $select->where('barantin_cabang_id', auth()->user()->baratincabang->id);
-        }
-        return $select->where('pj_barantin_id', auth()->user()->baratin->id);
+        return $select->where('pj_barantin_id', auth()->user()->barantin->id);
 
     }
 }

@@ -50,7 +50,7 @@ class UserUptController extends Controller
             'upt' => [
                 'required',
                 new UptRule,
-                new UptUserCheckRule(auth()->user()->baratin->id ?? auth()->user()->baratincabang->id)
+                new UptUserCheckRule(auth()->user()->barantin->id)
             ],
         ]);
 
@@ -58,12 +58,11 @@ class UserUptController extends Controller
             $res = Register::updateOrCreate(
                 [
                     'master_upt_id' => $value,
-                    'pj_barantin_id' => auth()->user()->baratin->id ?? null,
-                    'barantin_cabang_id' => auth()->user()->baratincabang->id ?? null,
+                    'pj_barantin_id' => auth()->user()->barantin->id ?? null,
                 ],
                 [
                     'status' => 'MENUNGGU',
-                    'pre_register_id' => auth()->user()->baratin->pre_register_id ?? auth()->user()->baratincabang->pre_register_id,
+                    'pre_register_id' => auth()->user()->barantin->pre_register_id,
                 ]
             );
         }
@@ -91,13 +90,8 @@ class UserUptController extends Controller
     // query model
     public function query()
     {
-        if (auth()->user()->role === 'cabang') {
-            return Register::whereHas('baratincabang', function ($query) {
-                $query->where('id', auth()->user()->baratincabang->id);
-            })->select('registers.id', 'barantin_cabang_id', 'registers.status', 'registers.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
-        }
-        return Register::whereHas('baratin', function ($query) {
-            $query->where('id', auth()->user()->baratin->id);
+        return Register::whereHas('barantin', function ($query) {
+            $query->where('id', auth()->user()->barantin->id);
         })->select('registers.id', 'pj_barantin_id', 'registers.status', 'registers.keterangan', 'master_upt_id', 'blockir', 'registers.updated_at', 'registers.created_at');
     }
 }
