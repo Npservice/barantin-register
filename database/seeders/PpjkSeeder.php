@@ -23,8 +23,8 @@ class PpjkSeeder extends Seeder
             Ppjk::create([
                 'pj_barantin_id' => $value->id,
                 'nama_ppjk' => $faker->name,
-                'jenis_identitas_ppjk' => 'KTP',
-                'nomor_identitas_ppjk' => $faker->numerify('#########'),
+                'jenis_identitas_ppjk' => 'NPWP',
+                'nomor_identitas_ppjk' => $faker->unique()->numerify('################'),
                 'email_ppjk' => $faker->email,
                 'tanggal_kerjasama_ppjk' => $faker->date(),
                 'alamat_ppjk' => $faker->address,
@@ -36,7 +36,7 @@ class PpjkSeeder extends Seeder
                 'telepon_cp_ppjk' => $faker->phoneNumber,
                 'nama_tdd_ppjk' => $faker->name,
                 'jenis_identitas_tdd_ppjk' => 'KTP',
-                'nomor_identitas_tdd_ppjk' => $faker->numerify('#########'),
+                'nomor_identitas_tdd_ppjk' => $faker->numerify('################'),
                 'jabatan_tdd_ppjk' => 'Manager',
                 'alamat_tdd_ppjk' => $faker->address,
             ]);

@@ -60,15 +60,7 @@ class MitraController extends Controller
      */
     public function getAllMitraUser()
     {
-        $register = MitraPerusahaan::query();
-
-        if (request()->user()->role != 'cabang' && request()->user()->role != 'perorangan') {
-            $data = $register->where('pj_baratin_id', auth('sanctum')->user()->baratin->id)->orderBy('created_at', 'desc');
-        } elseif (request()->user()->role == 'cabang') {
-            $data = $register->where('barantin_cabang_id', auth('sanctum')->user()->baratincabang->id)->orderBy('created_at', 'desc');
-        } else {
-            return ApiResponse::errorResponse('Data not found', 404);
-        }
+        $data = MitraPerusahaan::where('pj_barantin_id', auth('sanctum')->user()->barantin->id)->orderBy('created_at', 'desc');
         if ($data->count() > 0) {
             return ApiResponse::successResponse('Semua Mitra pengguna jasa', self::renderDataResponses($data->get()), false);
         }
@@ -217,8 +209,7 @@ class MitraController extends Controller
             'master_negara_id' => $request->negara,
             'master_provinsi_id' => $request->provinsi,
             'master_kota_kab_id' => $request->kabupaten_kota,
-            'pj_baratin_id' => request()->user()->baratin->id ?? null,
-            'barantin_cabang_id' => request()->user()->baratincabang->id ?? null
+            'pj_barantin_id' => request()->user()->barantin->id ?? null,
         ])->except('negara', 'provinsi', 'kabupaten_kota');
 
         $res = MitraPerusahaan::create($data);
@@ -250,8 +241,7 @@ class MitraController extends Controller
 
         $data = [
             "mitra_id" => $data->id,
-            "nama_perusahaan_induk" => $data->baratin->nama_perusahaan ?? null,
-            "nama_perusahaan_cabang" => $data->baratincabang->nama_perusahaan ?? null,
+            "barantin_id" => $data->barantin->id ?? null,
             "nama_mitra" => $data->nama_mitra,
             "jenis_identitas_mitra" => $data->jenis_identitas_mitra,
             "nomor_identitas_mitra" => $data->nomor_identitas_mitra,

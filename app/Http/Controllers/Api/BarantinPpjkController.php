@@ -16,30 +16,7 @@ class BarantinPpjkController extends Controller
     {
         $this->uptPusatId = env('UPT_PUSAT_ID', 1000);
     }
-    public function getPpjk(int $take)
-    {
-        $data = Ppjk::query();
-        if (auth('sanctum')->user()->upt_id != $this->uptPusatId) {
-            $registerData = Register::where('master_upt_id', auth('sanctum')->user()->upt_id)
-                ->select('pj_barantin_id', 'barantin_cabang_id')
-                ->distinct()
-                ->get()
-                ->pluck('pj_barantin_id')
-                ->merge(
-                    Register::where('master_upt_id', auth('sanctum')->user()->upt_id)
-                        ->select('pj_barantin_id', 'barantin_cabang_id')
-                        ->distinct()
-                        ->get()
-                        ->pluck('barantin_cabang_id')
-                )
-                ->all();
-            $data = Ppjk::whereIn('pj_baratin_id', $registerData)->orWhereIn('barantin_cabang_id', $registerData);
-        }
-        if ($data->exists()) {
-            return ApiResponse::successResponse('Semua PPJK pengguna jasa', self::renderResponseDatas($data->paginate($take), true), true);
-        }
-        return ApiResponse::errorResponse('data not found', 404);
-    }
+
     /**
      * @OA\Get(
      *     path="/ppjk/{barantin_id}",
@@ -66,7 +43,7 @@ class BarantinPpjkController extends Controller
      */
     public function getPpjkByBarantinId(string $barantin_id)
     {
-        $data = Ppjk::where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
+        $data = Ppjk::where('pj_barantin_id', $barantin_id);
         if ($data->exists()) {
             return ApiResponse::successResponse('Semua PPJK pengguna jasa', self::renderResponseDatas($data->get(), false), false);
         }
@@ -148,16 +125,16 @@ class BarantinPpjkController extends Controller
         $npwpPj = request()->input('npwp_pj');
 
         if ($npwpPpjk != null) {
-            $data = Register::with(['baratin', 'baratin.ppjk'])->where('master_upt_id', $kdUpt)->whereHas('baratin', function ($query) use ($npwpPj) {
+            $data = Register::with(['barantin', 'barantin.ppjk'])->where('master_upt_id', $kdUpt)->whereHas('barantin', function ($query) use ($npwpPj) {
                 $query->where('jenis_identitas', 'NPWP')->where('nomor_identitas', $npwpPj);
-            })->whereHas('baratin.ppjk', function ($query) use ($npwpPpjk) {
+            })->whereHas('barantin.ppjk', function ($query) use ($npwpPpjk) {
                 $query->where('nomor_identitas_ppjk', $npwpPpjk);
             })->first();
             $data['ppjk'] = true;
         } elseif ($npwpPj != null) {
-            $data = Register::with(['baratin'])
+            $data = Register::with(['barantin'])
                 ->where('master_upt_id', $kdUpt)
-                ->whereHas('baratin', function ($query) use ($npwpPj) {
+                ->whereHas('barantin', function ($query) use ($npwpPj) {
                     $query->where('jenis_identitas', 'NPWP')->where('nomor_identitas', $npwpPj);
                 })
                 ->first();
@@ -173,20 +150,20 @@ class BarantinPpjkController extends Controller
     {
         if (isset($data['ppjk'])) {
             $dataRes = [
-                'ppjk_id' => $data->baratin->ppjk[0]->id,
-                // 'kode_perusahaan' => $data->baratin->ppjk->kode_perusahaan,
-                'jenis_perusahaan' => $data->baratin->ppjk[0]->jenis_perusahaan,
-                'provinsi' => $data->baratin->ppjk[0]->master_provinsi_id,
-                'kota' => $data->baratin->ppjk[0]->master_kota_kab_id
+                'ppjk_id' => $data->barantin->ppjk[0]->id,
+                // 'kode_perusahaan' => $data->barantin->ppjk->kode_perusahaan,
+                'jenis_perusahaan' => $data->barantin->ppjk[0]->jenis_perusahaan,
+                'provinsi' => $data->barantin->ppjk[0]->master_provinsi_id,
+                'kota' => $data->barantin->ppjk[0]->master_kota_kab_id
             ];
             return $dataRes;
         }
         $dataRes = [
-            'barantin_id' => $data->baratin->id,
-            'kode_perusahaan' => $data->baratin->kode_perusahaan,
-            'jenis_perusahaan' => $data->baratin->jenis_perusahaan,
-            'provinsi' => $data->baratin->provinsi_id,
-            'kota' => $data->baratin->kota
+            'barantin_id' => $data->barantin->id,
+            'kode_perusahaan' => $data->barantin->kode_perusahaan,
+            'jenis_perusahaan' => $data->barantin->jenis_perusahaan,
+            'provinsi' => $data->barantin->provinsi_id,
+            'kota' => $data->barantin->kota
         ];
         return $dataRes;
     }
@@ -211,7 +188,7 @@ class BarantinPpjkController extends Controller
 
         return [
             'ppjk_id' => $data->id,
-            'barantin_id' => $data->pj_baratin_id ?? null,
+            'barantin_id' => $data->pj_barantin_id ?? null,
             'barantin_cabang_id' => $data->barantin_cabang_id ?? null,
             'nama_ppjk' => $data->nama_ppjk,
             'jenis_identitas_ppjk' => $data->jenis_identitas_ppjk,

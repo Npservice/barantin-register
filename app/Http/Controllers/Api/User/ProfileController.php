@@ -31,7 +31,7 @@ class ProfileController extends Controller
      */
     public function getProfileUser()
     {
-        $data = PjBarantin::find(auth('sanctum')->user()->baratin->id) ?? BarantinCabang::find(auth('sanctum')->user()->baratincabang->id) ?? null;
+        $data = PjBarantin::find(auth('sanctum')->user()->barantin->id);
         if ($data) {
 
             if ($data->preregister->pemohon == 'perorangan') {
@@ -50,14 +50,15 @@ class ProfileController extends Controller
         $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($data->kota, $data->provinsi_id);
 
         $dataArray = [
-            $jenisPerusahaan == 'cabang' ? 'barantin_cabang_id' : 'barantin_id' => $data->id,
+            'barantin_id' => $data->id,
             'kode_perusahaan' => $data->kode_perusahaan,
             'pemohon' => $data->preregister->pemohon,
+            'identifikas_perusahaan' => $data->preregister->jenis_perusahaan,
             'nama_perusahaan' => $data->nama_perusahaan,
             'nama_alias_perusahaan' => $data->nama_alias_perusahaan,
             'jenis_identitas' => $data->jenis_identitas,
             'nomor_identitas' => $data->nomor_identitas,
-            // 'NITKU' => $data->nitku,
+            'NITKU' => $data->nitku ?? '000000',
             'alamat' => $data->alamat,
             'provinsi' => $provinsi ? $provinsi['nama'] : null,
             'kota' => $kota ? $kota['nama'] : null,
@@ -78,19 +79,9 @@ class ProfileController extends Controller
             'status_import' => StatusImportHelper::statusRender($data->status_import),
             'lingkup_aktifitas' => StatusImportHelper::aktifitasRender($data->lingkup_aktifitas),
         ];
-        switch ($jenisPerusahaan) {
-            case 'induk':
-                $newArray = self::insertAfterKey($dataArray, 'pemohon', 'jenis_perusahaan', $data->jenis_perusahaan);
-                $newArray = self::insertAfterKey($newArray, 'nomor_identitas', 'NITKU', $data->nitku ?? '000000');
-                return $newArray;
-            case 'cabang':
-                $newArray = self::insertAfterKey($dataArray, 'pemohon', 'jenis_perusahaan', $data->jenis_perusahaan);
-                $newArray = self::insertAfterKey($newArray, 'jenis_perusahaan', 'perusahaan_induk', $data->baratininduk->nama_perusahaan);
-                $newArray = self::insertAfterKey($newArray, 'nomor_identitas', 'NITKU', $data->nitku);
-                return $newArray;
-            default;
-                return $dataArray;
-        }
+
+        return $dataArray;
+
     }
     private static function insertAfterKey($array, $key, $newKey, $newValue)
     {

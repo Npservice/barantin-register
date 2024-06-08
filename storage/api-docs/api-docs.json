@@ -177,14 +177,14 @@
                 }
             }
         },
-        "/barantin/perusahaan/induk/{take}": {
+        "/barantin/{take}": {
             "get": {
                 "tags": [
                     "Barantin Admin"
                 ],
-                "summary": "Dapatkan Data Barantin Perusahaan Induk",
-                "description": "Mengambil data Barantin Perusahaan Induk menggunakan parameter take",
-                "operationId": "getAllDataBarantinPerusahaanInduk",
+                "summary": "Dapatkan Data Barantin",
+                "description": "Mengambil data Barantin menggunakan parameter take",
+                "operationId": "getAllDataBarantin",
                 "parameters": [
                     {
                         "name": "take",
@@ -278,7 +278,7 @@
                 ]
             }
         },
-        "/barantin/perusahaan/cabang/{take}": {
+        "/barantin/{npwp}/cabang": {
             "get": {
                 "tags": [
                     "Barantin Admin"
@@ -288,7 +288,7 @@
                 "operationId": "getAllDataBarantinPerusahaanCabang",
                 "parameters": [
                     {
-                        "name": "take",
+                        "name": "npwp",
                         "in": "path",
                         "description": "Jumlah data yang ingin diambil",
                         "required": true,
@@ -311,110 +311,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "barantin data perusahaan cabang"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "nama": {
-                                                        "type": "string",
-                                                        "example": "John Doe"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "john.doe@example.com"
-                                                    },
-                                                    "no_hp": {
-                                                        "type": "string",
-                                                        "example": "08123456789"
-                                                    },
-                                                    "alamat": {
-                                                        "type": "string",
-                                                        "example": "Jl. Sudirman No. 123"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "example": "2023-02-28 12:34:56"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "example": "2023-02-28 12:34:56"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Data Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "data not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/barantin/perorangan/{take}": {
-            "get": {
-                "tags": [
-                    "Barantin Admin"
-                ],
-                "summary": "Dapatkan Data Barantin Perorangan",
-                "description": "Mengambil data Barantin dengan pemohon perorangan",
-                "operationId": "getDataBarantinPerorangan",
-                "parameters": [
-                    {
-                        "name": "take",
-                        "in": "path",
-                        "description": "Jumlah data yang ingin diambil",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "barantin data perorangan"
                                         },
                                         "data": {
                                             "type": "array",
@@ -520,14 +416,14 @@
                 ]
             }
         },
-        "/barantin/perusahaan/induk/{barantin_id}/detil": {
+        "/barantin/{barantin_id}/detil": {
             "get": {
                 "tags": [
                     "Barantin Admin"
                 ],
                 "summary": "Get Barantin Data Detail By Barantin ID",
                 "description": "Get Barantin Data Detail By Barantin ID",
-                "operationId": "7848f878c63ff8ea51f7bc1103449a6d",
+                "operationId": "77c5c941928dd6ca699f425021850623",
                 "parameters": [
                     {
                         "name": "barantin_id",
@@ -554,82 +450,14 @@
                 ]
             }
         },
-        "/barantin/perusahaan/cabang/{barantin_id}/detil": {
-            "get": {
-                "tags": [
-                    "Barantin Admin"
-                ],
-                "summary": "Get Barantin Data Detail By Barantin ID for Cabang",
-                "description": "Get Barantin Data Detail By Barantin ID for Cabang",
-                "operationId": "90fa539c3cf46a72f3796d8493ed40c1",
-                "parameters": [
-                    {
-                        "name": "barantin_id",
-                        "in": "path",
-                        "description": "Barantin ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Data Not Found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/barantin/perorangan/{barantin_id}/detil": {
-            "get": {
-                "tags": [
-                    "Barantin Admin"
-                ],
-                "summary": "Get Barantin Data Detail By Barantin ID for Perorangan",
-                "description": "Get Barantin Data Detail By Barantin ID for Perorangan",
-                "operationId": "c2496686e8c707879888722707c56e25",
-                "parameters": [
-                    {
-                        "name": "barantin_id",
-                        "in": "path",
-                        "description": "Barantin ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Data Not Found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer_token": []
-                    }
-                ]
-            }
-        },
-        "/mitra/pj/{barantin_id}": {
+        "/mitra/{barantin_id}/barantin": {
             "get": {
                 "tags": [
                     "Mitra Admin"
                 ],
                 "summary": "Semua Data Mitra Perusahaan induk / Perusahaan Cabang / Perorangan Berdasarkan ID Barantin / ID Barantin Cabang",
                 "description": "Semua Data Mitra Perusahaan Berdasarkan ID Barantin endpoint: '/barantin/{barantin_id}/mitra' barantin_id  adalah ID Barantin",
-                "operationId": "getAllDataMitraByBaratinID",
+                "operationId": "GetAllDataMitraBybarantinID",
                 "parameters": [
                     {
                         "name": "barantin_id",

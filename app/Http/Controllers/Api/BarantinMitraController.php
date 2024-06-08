@@ -20,52 +20,13 @@ class BarantinMitraController extends Controller
     {
         $this->uptPusatId = env('UPT_PUSAT_ID', 1000);
     }
-
-    public function GetAllDataMitraInduk(int $take): JsonResponse
-    {
-        $data = MitraPerusahaan::whereNull('barantin_cabang_id')->select('mitra_perusahaans.*');
-
-        if (request()->user()->upt_id != $this->uptPusatId) {
-            $id = Register::where('master_upt_id', request()->user()->upt_id)->groupBy('pj_barantin_id', 'id')->pluck('pj_barantin_id')->toArray();
-            $data = MitraPerusahaan::whereIn('pj_baratin_id', $id)->select('mitra_perusahaans.*');
-        }
-
-        if ($data->exists()) {
-            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data->paginate($take), true), true);
-        }
-        return ApiResponse::errorResponse('Data not found', 404);
-    }
-
-
-    public function GetAllDataMitraCabang(int $take): JsonResponse
-    {
-        $data = MitraPerusahaan::whereNotNull('barantin_cabang_id')->select('mitra_perusahaans.*');
-        if (request()->user()->upt_id != $this->uptPusatId) {
-            $id = Register::where('master_upt_id', request()->user()->upt_id)->groupBy('barantin_cabang_id', 'id')->pluck('barantin_cabang_id')->toArray();
-            $data = MitraPerusahaan::whereIn('barantin_cabang_id', $id)->select('mitra_perusahaans.*');
-        }
-        if ($data->exists()) {
-            return ApiResponse::successResponse('Barantin mitra cabang data', self::renderDataResponses($data->paginate($take), true), true);
-        }
-        return ApiResponse::errorResponse('Data not found', 404);
-    }
-
-
-    public function GetAllDataMitraByBaratinIndukID(string $barantin_id): JsonResponse
-    {
-        $data = MitraPerusahaan::where('pj_baratin_id', $barantin_id)->get();
-        if ($data->count() > 0) {
-            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data), false);
-        }
-        return ApiResponse::errorResponse('Data not found', 404);
-    }
     /**
      * @OA\Get(
-     *     path="/mitra/pj/{barantin_id}",
+     *     path="/mitra/{barantin_id}/barantin",
      *     tags={"Mitra Admin"},
      *     summary="Semua Data Mitra Perusahaan induk / Perusahaan Cabang / Perorangan Berdasarkan ID Barantin / ID Barantin Cabang",
      *     description="Semua Data Mitra Perusahaan Berdasarkan ID Barantin endpoint: '/barantin/{barantin_id}/mitra' barantin_id  adalah ID Barantin",
-     *     operationId="getAllDataMitraByBaratinID",
+     *     operationId="GetAllDataMitraBybarantinID",
      *     security={{"bearer_token":{}}},
      *     @OA\Parameter(
      *         name="barantin_id",
@@ -102,22 +63,13 @@ class BarantinMitraController extends Controller
      * )
      */
 
-    public function GetAllDataMitraByBaratinID(string $barantin_id): JsonResponse
+    public function GetAllDataMitraByBarantinID(string $barantin_id): JsonResponse
     {
-        $data = MitraPerusahaan::where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id)->get();
+        $data = MitraPerusahaan::where('pj_barantin_id', $barantin_id);
         if ($data->count() > 0) {
-            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data), false);
+            return ApiResponse::successResponse('Barantin mitra data', self::renderDataResponses($data->get()), false);
         }
         return ApiResponse::errorResponse('Data not found', 404);
-    }
-
-    public function GetAllDataMitraByBaratinCabangID(string $barantin_cabang_id): JsonResponse
-    {
-        $data = MitraPerusahaan::where('barantin_cabang_id', $barantin_cabang_id)->get();
-        if ($data->count() > 0) {
-            return ApiResponse::successResponse('barantin mitra data', self::renderDataResponses($data), false);
-        }
-        return ApiResponse::errorResponse('data not found', 404);
     }
 
     /**
@@ -189,8 +141,8 @@ class BarantinMitraController extends Controller
 
         $data = [
             "mitra_id" => $data->id,
-            "nama_perusahaan_induk" => $data->baratin->nama_perusahaan ?? null,
-            "nama_perusahaan_cabang" => $data->baratincabang->nama_perusahaan ?? null,
+            "nama_perusahaan_induk" => $data->barantin->nama_perusahaan ?? null,
+            "nama_perusahaan_cabang" => $data->barantincabang->nama_perusahaan ?? null,
             "nama_mitra" => $data->nama_mitra,
             "jenis_identitas_mitra" => $data->jenis_identitas_mitra,
             "nomor_identitas_mitra" => $data->nomor_identitas_mitra,

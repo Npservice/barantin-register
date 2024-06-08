@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Models\PjBarantin;
 use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\BarantinCabang;
@@ -40,7 +41,7 @@ class CabangController extends Controller
      */
     public function getCabangPerusahaanInduk()
     {
-        $data = BarantinCabang::where('pj_baratin_id', auth('sanctum')->user()->baratin->id);
+        $data = PjBarantin::where('nomor_identitas', auth('sanctum')->user()->barantin->nomor_identitas)->whereNot('nitku', '000000');
         if ($data->exists()) {
             return ApiResponse::successResponse('Cabang Perusahaaan induk berhasil ditemukan', self::renderResponseDatas($data->get()), false);
         }
@@ -48,14 +49,14 @@ class CabangController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/user/cabang/{barantin_cabang_id}",
+     *     path="/user/cabang/{barantin_id}",
      *     operationId="getDetailCabangPerusahaanInduk",
      *     tags={"User"},
      *     summary="Get Detail Cabang Perusahaan Induk",
      *     description="Get Detail Cabang Perusahaan Induk",
      *     security={{"bearer_token":{}}},
      *     @OA\Parameter(
-     *         name="barantin_cabang_id",
+     *         name="barantin_id",
      *         in="path",
      *         description="ID of the Barantin Cabang",
      *         required=true,
@@ -76,7 +77,7 @@ class CabangController extends Controller
     public function getDetailCabangPerusahaanInduk(string $barantin_cabang_id)
     {
         // return $barantin_cabang_id;
-        $data = BarantinCabang::find($barantin_cabang_id);
+        $data = PjBarantin::find($barantin_cabang_id);
         if ($data) {
             return ApiResponse::successResponse('Cabang Perusahaaan induk berhasil ditemukan', self::renderResponseData($data), false);
         }
@@ -97,12 +98,12 @@ class CabangController extends Controller
         $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($data->kota, $data->provinsi_id);
 
         return [
-            'barantin_cabang_id' => $data->id,
+            'barantin_id' => $data->id,
             'kode_perusahaan' => $data->kode_perusahaan,
             'pemohon' => $data->preregister->pemohon,
+            'identifkasi_perusahaan' => $data->preregister->jenis_perusahaan,
             'jenis_perusahaan' => $data->jenis_perusahaan,
-            'perusahaan_induk' => $data->baratininduk->nama_perusahaan,
-            'nama_perusahaan' => $data->nama_perusahaan,
+            'nama_perusahaan' => $data->nama_perusahaan ?? null,
             'nama_alias_perusahaan' => $data->nama_alias_perusahaan,
             'jenis_identitas' => $data->jenis_identitas,
             'nomor_identitas' => $data->nomor_identitas,

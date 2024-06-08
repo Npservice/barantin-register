@@ -30,7 +30,7 @@ class PpjkController extends Controller
      */
     public function getPpjk()
     {
-        $data = Ppjk::where('pj_baratin_id', auth('sanctum')->user()->baratin->id ?? null)->orWhere('barantin_cabang_id', auth('sanctum')->user()->baratincabang->id ?? null);
+        $data = Ppjk::where('pj_barantin_id', auth('sanctum')->user()->barantin->id);
         if ($data->exists()) {
             return ApiResponse::successResponse('Semua PPJK pengguna jasa', self::renderResponseDatas($data->get()), false);
         }
@@ -84,8 +84,7 @@ class PpjkController extends Controller
 
         return [
             'ppjk_id' => $data->id,
-            'barantin_id' => $data->pj_baratin_id ?? null,
-            'barantin_cabang_id' =>  $data->barantin_cabang_id ?? null,
+            'barantin_id' => $data->pj_barantin_id ?? null,
             'nama_ppjk' => $data->nama_ppjk,
             'jenis_identitas_ppjk' => $data->jenis_identitas_ppjk,
             'nomor_identitas_ppjk' => $data->nomor_identitas_ppjk,

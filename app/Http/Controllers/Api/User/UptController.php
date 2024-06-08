@@ -46,14 +46,8 @@ class UptController extends Controller
      */
     public function getAllUptUser()
     {
-        $register = Register::query();
 
-        if (request()->user()->role != 'cabang') {
-            $data = $register->where('pj_barantin_id', auth('sanctum')->user()->baratin->id)->orderBy('created_at', 'desc');
-        } else {
-            $data = $register->where('barantin_cabang_id', auth('sanctum')->user()->baratincabang->id)->orderBy('created_at', 'desc');
-        }
-
+        $data = Register::where('pj_barantin_id', auth('sanctum')->user()->barantin->id)->orderBy('created_at', 'desc');
         if ($data->exists()) {
             return ApiResponse::successResponse('Upt pengguna jasa berhasil ditemukan', self::renderResponseUpts($data->get()), false);
         }
