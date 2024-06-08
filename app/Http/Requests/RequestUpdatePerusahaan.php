@@ -2,15 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PengajuanUpdatePj;
 use App\Rules\KotaRule;
+use App\Models\PjBarantin;
 use App\Rules\ProvinsiRule;
-use App\Models\BarantinCabang;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
 use App\Rules\LingkupAktifitasRule;
+use App\Rules\UniquePerusahaanInduk;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RequestUpdatePerusahaanCabang extends FormRequest
+class RequestUpdatePerusahaan extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,35 +29,40 @@ class RequestUpdatePerusahaanCabang extends FormRequest
      */
     public function rules(): array
     {
-        $pjBarantinId = $this->route('id');
-        $pjBarantin = BarantinCabang::find($pjBarantinId);
-        $preRegisterId = $pjBarantin ? $pjBarantin->pre_register_id : null;
+
+        $update = PengajuanUpdatePj::find($this->route('id'));
+        $pjBarantinId = $update->pj_barantin_id;
+        $preRegisterId = $update->barantin->preregister->id;
         return [
-            'id_induk' => 'required|exists:pj_baratins,id',
-            'pemohon' => 'required',
-            // 'upt' => [
-            //     'required',
-            //     new UptRule
-            // ],
-            'nitku' => 'required|digits:6|unique:barantin_cabangs,nitku,' . $this->route('id'),
+
+            'jenis_identitas' => ['required', Rule::in(['NPWP'])],
+            'nama_perusahaan' => 'required',
+            'identifikasi_perusahaan' => 'required|in:cabang,induk',
+            'nomor_identitas' => [
+                'required',
+                'numeric',
+                new NomerIdentitasRule(request()->input('jenis_identitas')),
+                new UniquePerusahaanInduk(request()->input('identifikasi_perusahaan',true))
+
+            ],
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
-            'nomor_fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
+            'fax' => 'required|regex:/^\(\d{3}\) \d{3}-\d{4}$/',
+
             'email' => [
                 'required',
                 'email',
-                Rule::unique('pj_baratins', 'email')->ignore($pjBarantinId),
+                Rule::unique('pj_barantins', 'email')->ignore($pjBarantinId),
                 Rule::unique('pre_registers', 'email')->ignore($preRegisterId),
             ],
             'lingkup_aktivitas' => [
                 'required',
                 new LingkupAktifitasRule
-
             ],
             'nama_alias_perusahaan' => Rule::requiredIf(function () {
                 $lingkup_aktivitas = request()->input('lingkup_aktivitas');
                 return $lingkup_aktivitas && in_array(3, $lingkup_aktivitas);
             }),
-
+            'nitku' => 'required_if:identifikasi_perusahaan,cabang|unique:pj_barantins,nitku',
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],
             // 'negara' => 'required|exists:master_negaras,id',
             'kota' => ['required', new KotaRule(request()->input('provinsi'))],
@@ -75,8 +82,8 @@ class RequestUpdatePerusahaanCabang extends FormRequest
             ],
             'jabatan_tdd' => 'required',
             'alamat_tdd' => 'required',
-
             'jenis_perusahaan' => 'required|in:PEMILIK BARANG,PPJK,EMKL,EMKU,LAINNYA',
+
         ];
     }
 }

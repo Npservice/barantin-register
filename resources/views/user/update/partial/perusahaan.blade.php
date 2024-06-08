@@ -36,25 +36,26 @@
                 @method('PATCH')
                 <div class="col-md-6 col-sm-12">
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Pemohon</label>
+                        <label for="pemohon" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
-                            <input class="form-control" readonly value="{{ $data->baratin->preregister->pemohon }}" type="text" id="" name="">
+                            <input class="form-control" readonly value="{{ $data->barantin->preregister->pemohon }}" type="text" id="" name="">
                             <div class="invalid-feedback" id="feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Perusahaan</label>
+                        <label for="identifikasi_perusahaan" class="col-sm-3 col-form-label">Identifikasi Perusahaan</label>
                         <div class="col-sm-9">
-                            <input class="form-control" readonly value="INDUK" type="text" id="" name="">
-                            <div class="invalid-feedback" id="feedback"></div>
+                            <input class="form-control" readonly value="{{ $data->barantin->preregister->jenis_perusahaan }}" name="identifikasi_perusahaan" id="identifikasi_perusahaan" type="text"
+                                id="" name="">
+                            <div class="invalid-feedback" id="identifikasi_perusahaan-feedback"></div>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                         <div class="col-sm-9">
-                            <input class="form-control" value="{{ $data->baratin->nama_perusahaan }}" type="text" id="pemohon" name="pemohon">
-                            <div class="invalid-feedback" id="pemohon-feedback"></div>
+                            <input class="form-control" value="{{ $data->barantin->nama_perusahaan }}" type="text" id="nama_perusahaan" name="nama_perusahaan">
+                            <div class="invalid-feedback" id="nama_perusahaan-feedback"></div>
                         </div>
                     </div>
 
@@ -70,32 +71,24 @@
                         </div>
 
                         <div class="col">
-                            <input class="form-control" type="number" placeholder="Nomor Identitas" id="nomor_identitas" name="nomor_identitas" value="{{ $data->baratin->nomor_identitas ?? '' }}">
+                            <input class="form-control" type="number" placeholder="Nomor Identitas" id="nomor_identitas" name="nomor_identitas" value="{{ $data->barantin->nomor_identitas ?? '' }}">
                             <div class="invalid-feedback" id="nomor_identitas-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">NITKU</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="number" id="nitku" name="nitku" value="{{ $data->baratin->nomor_identitas ?? '' }}">
+                            <input class="form-control" type="number" id="nitku" name="nitku">
                             <div class="invalid-feedback" id="nitku-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="upt" class="col-sm-3 col-form-label">Telephon</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="telepon" name="telepon" aria-describedby="inputGroupPrepend" value="{{ $data->baratin->telepon ?? '' }}">
+                            <input type="text" class="form-control" id="telepon" name="telepon" aria-describedby="inputGroupPrepend" value="{{ $data->barantin->telepon ?? '' }}">
                             <div class="invalid-feedback" id="telepon-feedback"></div>
                         </div>
                     </div>
-
-                    {{-- <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">UPT</label>
-                        <div class="col-sm-9">
-                            <select class="form-control upt-select" id="upt" multiple name="upt[]"></select>
-                            <div class="invalid-feedback" id="upt-feedback"></div>
-                        </div>
-                    </div> --}}
                     <div class="row mb-3">
                         <label for="jenis_perusahaan" class="col-sm-3 col-form-label">Jenis Perusahaan</label>
                         <div class="col-sm-9">
@@ -125,7 +118,7 @@
                     <div class="row mb-3 d-none" id="nama_alias">
                         <label for="email" class="col-sm-3 col-form-label">Nama Alias Perusahaan</label>
                         <div class="col-sm-9">
-                            <input class="form-control" value="{{ $data->baratin->nama_alias_perusahaan ?? '' }}" type="text" id="nama_alias_perusahaan" name="nama_alias_perusahaan">
+                            <input class="form-control" value="" type="text" id="nama_alias_perusahaan" name="nama_alias_perusahaan">
                             <div class="invalid-feedback" id="nama_alias_perusahaan-feedback"></div>
                         </div>
                     </div>
@@ -134,14 +127,14 @@
                     <div class="row mb-3">
                         <label for="fax" class="col-sm-3 col-form-label">Fax</label>
                         <div class="col-sm-9">
-                            <input class="form-control" type="text" placeholder="Fax" id="nomor_fax" name="nomor_fax" value="{{ $data->baratin->fax ?? '' }}">
-                            <div class="invalid-feedback" id="nomor_fax-feedback"></div>
+                            <input class="form-control" type="text" placeholder="Fax" id="fax" name="fax" value="{{ $data->barantin->fax ?? '' }}">
+                            <div class="invalid-feedback" id="fax-feedback"></div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input class="form-control" value="{{ $data->baratin->email }}" type="email" placeholder="Email" id="email" name="email">
+                            <input class="form-control" value="{{ $data->barantin->preregister->email }}" type="email" placeholder="Email" id="email" name="email">
                             <div class="invalid-feedback" id="email-feedback"></div>
                         </div>
                     </div>
@@ -184,7 +177,7 @@
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-3 col-form-label">Alamat</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" type="text" placeholder="Alamat" id="alamat"rows="4" name="alamat">{{ $data->baratin->alamat ?? '' }}</textarea>
+                            <textarea class="form-control" type="text" placeholder="Alamat" id="alamat"rows="4" name="alamat">{{ $data->barantin->alamat ?? '' }}</textarea>
                             <div class="invalid-feedback" id="alamat-feedback"></div>
                         </div>
                     </div>
@@ -200,7 +193,7 @@
                     <div class="row mb-3">
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Nama" id="nama_cp" name="nama_cp" value="{{ $data->baratin->nama_cp ?? '' }}">
+                            <input class="form-control" type="text" placeholder="Nama" id="nama_cp" name="nama_cp" value="{{ $data->barantin->nama_cp ?? '' }}">
                             <div class="invalid-feedback" id="nama_cp-feedback"></div>
                         </div>
                     </div>
@@ -208,7 +201,7 @@
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Alamat" id="alamat_cp" name="alamat_cp" value="{{ $data->baratin->alamat_cp ?? '' }}">
+                            <input class="form-control" type="text" placeholder="Alamat" id="alamat_cp" name="alamat_cp" value="{{ $data->barantin->alamat_cp ?? '' }}">
                             <div class="invalid-feedback" id="alamat_cp-feedback"></div>
                         </div>
                     </div>
@@ -216,7 +209,7 @@
                     <div class="row mb-3">
                         <label for="telepon" class="col-sm-2 col-form-label">Telepon</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="tel" placeholder="Telepon" id="telepon_cp" name="telepon_cp" value="{{ $data->baratin->telepon_cp ?? '' }}">
+                            <input class="form-control" type="tel" placeholder="Telepon" id="telepon_cp" name="telepon_cp" value="{{ $data->barantin->telepon_cp ?? '' }}">
                             <div class="invalid-feedback" id="telepon_cp-feedback"></div>
                         </div>
                     </div>
@@ -232,7 +225,7 @@
                     <div class="row mb-3">
                         <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Nama" id="nama_tdd" name="nama_tdd" value="{{ $data->baratin->nama_tdd ?? '' }}">
+                            <input class="form-control" type="text" placeholder="Nama" id="nama_tdd" name="nama_tdd" value="{{ $data->barantin->nama_tdd ?? '' }}">
                             <div class="invalid-feedback" id="nama_tdd-feedback"></div>
                         </div>
                     </div>
@@ -249,7 +242,8 @@
                             <div class="invalid-feedback" id="jenis_identitas_tdd-feedback"></div>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="number" placeholder="Nomer Identitas" id="nomor_identitas_tdd" name="nomor_identitas_tdd" value="{{ $data->baratin->nomor_identitas_tdd ?? '' }}">
+                            <input class="form-control" type="number" placeholder="Nomer Identitas" id="nomor_identitas_tdd" name="nomor_identitas_tdd"
+                                value="{{ $data->barantin->nomor_identitas_tdd ?? '' }}">
                             <div class="invalid-feedback" id="nomor_identitas_tdd-feedback"></div>
                         </div>
                     </div>
@@ -257,7 +251,7 @@
                     <div class="row mb-3">
                         <label for="jabatan" class="col-sm-2 col-form-label">Jabatan</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Jabatan" id="jabatan_tdd" name="jabatan_tdd" value="{{ $data->baratin->jabatan_tdd ?? '' }}">
+                            <input class="form-control" type="text" placeholder="Jabatan" id="jabatan_tdd" name="jabatan_tdd" value="{{ $data->barantin->jabatan_tdd ?? '' }}">
                             <div class="invalid-feedback" id="jabatan_tdd-feedback"></div>
                         </div>
                     </div>
@@ -265,7 +259,7 @@
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" placeholder="Alamat" id="alamat_tdd" name="alamat_tdd" value="{{ $data->baratin->alamat_tdd ?? '' }}">
+                            <input class="form-control" type="text" placeholder="Alamat" id="alamat_tdd" name="alamat_tdd" value="{{ $data->barantin->alamat_tdd ?? '' }}">
                             <div class="invalid-feedback" id="alamat_tdd-feedback"></div>
                         </div>
                     </div>
@@ -278,12 +272,12 @@
             <hr class="mt-0 mb-3">
             <div>
                 <form class="row" id="form-pendukung" novalidate>
-                    <input type="hidden" id="jenis_perusahaan" name="jenis_perusahaan" value="induk">
                     <div class="col-md-4 mb-3">
                         <label for="jenis_dokumen" class="form-label">Jenis Dokumen</label>
                         <select type="text" class="form-select form-control-dokumen" id="jenis_dokumen" name="jenis_dokumen">
                             <option value="">select item</option>
                             <option value="NPWP">NPWP 16 DIGIT</option>
+                            <option value="NITKU">NITKU</option>
                             <option value="SIUP">SIUP / IUI / IUT / SIUP JPT</option>
                             <option value="surat_keterangan_domisili">Surat Keterangan Domisili</option>
                             <option value="KTP">KTP</option>
@@ -315,7 +309,8 @@
                 </div>
                 <div class="row mb-5">
                     <div class="table-responsive">
-                        <table id="datatable-dokumen-pendukung" data-id="{{ $data->baratin->id }}" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <table id="datatable-dokumen-pendukung" data-id="{{ $data->id }}" class="table table-bordered dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -340,17 +335,17 @@
     </ul>
 </div>
 <script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
-<script src="{{ asset('assets/js/page/form/update/induk.js') }}"></script>
+<script src="{{ asset('assets/js/page/form/update/perusahaan.js') }}"></script>
 <script>
-    NegaraSelect('{{ $data->baratin->negara_id ?? 99 }}')
-    ProvinsiSelect('{{ $data->baratin->provinsi_id ?? null }}')
-    KotaSelect('{{ $data->baratin->kota ?? null }}')
-    $('#status_import').val('{{ $data->baratin->status_import ?? '' }}').trigger('change')
-    $('#jenis_perusahaan').val('{{ $data->baratin->jenis_perusahaan ?? '' }}').trigger('change')
-    $('#jenis_identitas_tdd').val('{{ $data->baratin->jenis_identitas_tdd ?? '' }}').trigger('change')
-    $('#jenis_identitas').val('{{ $data->baratin->jenis_identitas ?? '' }}').trigger('change')
+    NegaraSelect('{{ $data->barantin->negara_id ?? 99 }}')
+    ProvinsiSelect('{{ $data->barantin->provinsi_id ?? null }}')
+    KotaSelect('{{ $data->barantin->kota ?? null }}')
+    $('#status_import').val('{{ $data->barantin->status_import ?? '' }}').trigger('change')
+    $('#jenis_perusahaan').val('{{ $data->barantin->jenis_perusahaan ?? '' }}').trigger('change')
+    $('#jenis_identitas_tdd').val('{{ $data->barantin->jenis_identitas_tdd ?? '' }}').trigger('change')
+    $('#jenis_identitas').val('{{ $data->barantin->jenis_identitas ?? '' }}').trigger('change')
 
-    let lingkup = '{{ $data->baratin->lingkup_aktifitas }}'
+    let lingkup = '{{ $data->barantin->lingkup_aktifitas }}'
     let lingkupArray = lingkup.split(',');
     lingkupArray = lingkupArray.map(function(value) {
         return value.trim(); // Trims any extra whitespace

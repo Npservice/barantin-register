@@ -10,7 +10,7 @@ class DokumenPendukung extends Model
 {
     use HasFactory, HasUuids;
     protected $guarded = ['id', 'created_at', 'updated_at'];
-    protected $fillable = ['pj_barantin_id', 'pre_register_id', 'jenis_dokumen', 'nomer_dokumen', 'tanggal_terbit', 'file'];
+    protected $fillable = ['pj_barantin_id', 'pre_register_id', 'jenis_dokumen', 'nomer_dokumen', 'tanggal_terbit', 'file', 'pengajuan_update_pj_id'];
 
 
 }

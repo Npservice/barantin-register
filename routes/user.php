@@ -29,8 +29,7 @@ Route::prefix('barantin')->name('barantin.')->group(function () {
         });
         Route::prefix('store')->name('store.')->group(function () {
             Route::patch('perorangan/{id}', [UpdatePenggunaJasaController::class, 'StoreRegisterPerorangan'])->name('perorangan');
-            Route::patch('induk/{id}', [UpdatePenggunaJasaController::class, 'StoreRegisterPerusahaanInduk'])->name('induk');
-            Route::patch('cabang/{id}', [UpdatePenggunaJasaController::class, 'StoreRegisterPerusahaanCabang'])->name('cabang');
+            Route::patch('perusahaan/{id}', [UpdatePenggunaJasaController::class, 'StoreRegisterPerusahaan'])->name('perusahaan');
         });
 
 

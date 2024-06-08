@@ -36,6 +36,7 @@ class RegisterRequestPerusahaanStore extends FormRequest
             ],
             'jenis_identitas' => ['required', Rule::in(['NPWP'])],
             'nama_perusahaan' => 'required',
+            'identifikasi_perusahaan' => 'nullable|in:cabang,induk',
             'nomor_identitas' => [
                 'required',
                 'numeric',

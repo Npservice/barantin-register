@@ -27,7 +27,7 @@ class PjBaratinSeeder extends Seeder
             'perorangan'
         ];
 
-        $emailUse = ['ridlo.xxxxxx@outlook.co.id', 'nandaxxxxxxx0@outlook.co.id'];
+        $emailUse = ['ridlo.pakis@outlook.co.id', 'nandaputraservice@outlook.co.id'];
         foreach (range(1, 50) as $index => $value) {
             // $provinsi_id = $faker->numberBetween(1, 34); // assuming 34 provinces in Indonesia
             DB::transaction(function () use ($faker, $pemohon, $index, $emailUse) {
@@ -40,7 +40,7 @@ class PjBaratinSeeder extends Seeder
                     'nama' => $nama,
                     'email' => $email,
                     'verify_email' => Carbon::now(),
-                    'jenis_perusahaan' => $jenis_pemohon === 'perusahaan' ? $faker->randomElement(['induk', 'cabang']) : null,
+                    'jenis_perusahaan' => $jenis_pemohon === 'perusahaan' ? ($index <= 1 ? 'induk' : $faker->randomElement(['induk', 'cabang'])) : null,
                 ]);
 
                 $baratin = PjBarantin::create([

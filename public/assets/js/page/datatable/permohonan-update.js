@@ -12,26 +12,26 @@ $("#permohonan-update-datatable").DataTable({
             width: 20,
         },
         {
-            data: "nama_perusahaan",
-            name: "nama_perusahaan",
+            data: "barantin.nama_perusahaan",
+            name: "barantin.nama_perusahaan",
         },
         {
-            data: "pemohon",
-            name: "pemohon",
+            data: "barantin.preregister.pemohon",
+            name: "barantin.preregister.pemohon",
             render: function (data) {
                 return pemohon(data);
             },
         },
         {
-            data: "perusahaan_pemohon",
-            name: "perusahaan_pemohon",
+            data: "barantin.preregister.jenis_perusahaan",
+            name: "barantin.preregister.jenis_perusahaan",
             render: function (data) {
                 return perusahaanpemohon(data);
             },
         },
         {
-            data: "jenis_perusahaan",
-            name: "jenis_perusahaan",
+            data: "barantin.jenis_perusahaan",
+            name: "barantin.jenis_perusahaan",
         },
         {
             data: "keterangan",
@@ -86,18 +86,18 @@ function persetujuan(data) {
 function perusahaanpemohon(data) {
     switch (data) {
         case "induk":
-            return '<h5><span class="badge bg-info">INDUK</span></h5>';
+            return `<h5><span class="badge bg-info">${data}</span></h5>`;
         case "cabang":
-            return '<h5><span class="badge bg-secondary">CABANG</span></h5>';
+            return `<h5><span class="badge bg-primary">${data}</span></h5>`;
         default:
-            return '<h5><span class="badge bg-warning text-dark">PERORANGAN</span></h5>';
+            return null;
     }
 }
 function pemohon(data) {
     switch (data) {
         case "perusahaan":
-            return '<h5><span class="badge bg-primary">PERUSAHAAN</span></h5>';
+            return `<h5><span class="badge bg-warning text-dark">${data}</span></h5>`;
         case "perorangan":
-            return '<h5><span class="badge bg-success">PERORANGAN</span></h5>';
+            return `<h5><span class="badge bg-secondary">${data}</span></h5>`;
     }
 }

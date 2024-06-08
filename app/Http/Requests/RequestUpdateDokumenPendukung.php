@@ -24,16 +24,13 @@ class RequestUpdateDokumenPendukung extends FormRequest
     public function rules(): array
     {
         return [
-            'jenis_perusahaan' => 'required|in:cabang,induk',
             'jenis_dokumen' => [
                 'required',
                 Rule::in('KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB', 'TDP', 'angka_pengenal_importir', 'NITKU'),
                 function ($attribute, $value, $fail) {
                     if (in_array($value, ['KTP', 'PASSPORT', 'NPWP', 'SIUP', 'surat_keterangan_domisili', 'NIB', 'NITKU'])) {
                         $id = request()->route('id');
-                        $dokumen = DokumenPendukung::where('jenis_dokumen', $value)->where(function($query) use ($id){
-                            $query->where('baratin_id', $id)->orWhere('barantin_cabang_id', $id);
-                        })->first();
+                        $dokumen = DokumenPendukung::where('jenis_dokumen', $value)->where('pengajuan_update_pj_id', $id)->first();
                         if ($dokumen) {
                             $fail('Anda hanya dapat memiliki satu jenis dokumen.');
                         }

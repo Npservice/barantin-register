@@ -28,8 +28,8 @@ function logout(url) {
     }).then(function (t) {
         t.value
             ? $.post(url, function () {
-                  window.location.href = "/";
-              })
+                window.location.href = "/";
+            })
             : t.dismiss === Swal.DismissReason.cancel;
     });
 }
@@ -425,7 +425,7 @@ function Changeprofile() {
     }).then((result) => {
         if (result.isConfirmed) {
             modal(
-                "Keterangan",
+                "Alasan Perubahan",
                 "modal-mb",
                 "static",
                 "/barantin/profile/form-keterangan-update"
@@ -497,8 +497,8 @@ function UserSetting(url, text, urlReload) {
                     notif(
                         "success",
                         "username & password berhasil " +
-                            response.nama +
-                            " diubah"
+                        response.nama +
+                        " diubah"
                     );
                     if (urlReload) {
                         ClosePageLink(urlReload);

@@ -38,8 +38,8 @@ class PermohonanUpdateDataController extends Controller
         ]);
 
         $data = PengajuanUpdatePj::find($pengajuan_id);
-        $namaPerusahaan = $data->barantin->nama_perusahaan ?? $data->barantincabang->nama_perusahaan ?? null;
-        $email = $data->barantin->email ?? $data->barantincabang->email ?? null;
+        $namaPerusahaan = $data->barantin->nama_perusahaan ?? null;
+        $email = $data->barantin->email ?? null;
         if ($request->persetujuan === 'ditolak') {
             $data->update(['persetujuan' => 'ditolak', 'status_update' => 'gagal']);
             Mail::to($email)->send(new MailPenolakanUpdateData);
@@ -51,97 +51,15 @@ class PermohonanUpdateDataController extends Controller
         Mail::to($email)->send(new MailSendLinkForUpdatePj($idBarantin, $token));
         return AjaxResponse::SuccessResponse("Perubahan data {$namaPerusahaan} disetujui", 'permohonan-update-datatable');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
     public function datatable()
     {
         $model = PengajuanUpdatePj::with(
             'barantin:id,pre_register_id,nama_perusahaan,jenis_perusahaan',
             'barantin.preregister:id,pemohon,jenis_perusahaan',
-            'barantincabang:id,pre_register_id,nama_perusahaan,jenis_perusahaan',
-            'barantincabang.preregister:id,pemohon,jenis_perusahaan'
         )->select('pengajuan_update_pjs.*');
         return DataTables::eloquent($model)
             ->addIndexColumn()
             ->addColumn('action', 'admin.permohonan-update.action')
-            ->addColumn('nama_perusahaan', function ($model) {
-                return $model->barantin->nama_perusahaan ?? $model->barantincabang->nama_perusahaan ?? null;
-            })
-            ->filterColumn('nama_perusahaan', function ($query, $keyword) {
-                $query->whereHas('barantin', function ($query) use ($keyword) {
-                    $query->where('nama_perusahaan', 'LIKE', "%{$keyword}%");
-                })->orWhereHas('barantincabang', function ($query) use ($keyword) {
-                    $query->where('nama_perusahaan', 'LIKE', "%{$keyword}%");
-                });
-            })
-            ->addColumn('jenis_perusahaan', function ($model) {
-                return $model->barantin->jenis_perusahaan ?? $model->barantincabang->jenis_perusahaan ?? null;
-            })
-            ->filterColumn('jenis_perusahaan', function ($query, $keyword) {
-                $query->whereHas('barantin', function ($query) use ($keyword) {
-                    $query->where('jenis_perusahaan', 'LIKE', "%{$keyword}%");
-                })->orWhereHas('barantincabang', function ($query) use ($keyword) {
-                    $query->where('jenis_perusahaan', 'LIKE', "%{$keyword}%");
-                });
-            })
-            ->addColumn('pemohon', function ($model) {
-                return $model->barantin->preregister->pemohon ?? $model->barantincabang->preregister->pemohon ?? null;
-            })
-            ->filterColumn('pemohon', function ($query, $keyword) {
-                $query->whereHas('barantin.preregister', function ($query) use ($keyword) {
-                    $query->where('pemohon', 'LIKE', "%{$keyword}%");
-                })->orWhereHas('barantincabang.preregister', function ($query) use ($keyword) {
-                    $query->where('pemohon', 'LIKE', "%{$keyword}%");
-                });
-            })
-            ->addColumn('perusahaan_pemohon', function ($model) {
-                return $model->barantin->preregister->jenis_perusahaan ?? $model->barantincabang->preregister->jenis_perusahaan ?? null;
-            })
-            ->filterColumn('perusahaan_pemohon', function ($query, $keyword) {
-                $query->whereHas('barantin.preregister', function ($query) use ($keyword) {
-                    $query->where('jenis_perusahaan', 'LIKE', "%{$keyword}%");
-                })->orWhereHas('barantincabang.preregister', function ($query) use ($keyword) {
-                    $query->where('jenis_perusahaan', 'LIKE', "%{$keyword}%");
-                });
-            })
             ->make(true);
     }
 }

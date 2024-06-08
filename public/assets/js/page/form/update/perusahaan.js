@@ -36,7 +36,7 @@ IMask(phoneInputCp[0], {
     mask: "0000-0000-0000",
     lazy: false,
 });
-var FaxInput = $("#nomor_fax");
+var FaxInput = $("#fax");
 IMask(FaxInput[0], {
     mask: "(000) 000-0000",
     lazy: false,
@@ -160,7 +160,7 @@ $("#button-submit").click(function () {
 
     $.ajax({
         data: form_data,
-        url: "/barantin/update-pjk/store/induk/" + data_id,
+        url: "/barantin/update-pjk/store/perusahaan/" + data_id,
         processData: false,
         contentType: false,
         type: "POST",
@@ -174,7 +174,7 @@ $("#button-submit").click(function () {
             if (response.status) {
                 notif("success", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");
-                location.href= '/';
+                location.href = '/';
             } else {
                 notif("error", response.message);
                 $("#button-submit").removeClass("disabled").html("Submit");

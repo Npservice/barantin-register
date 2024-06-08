@@ -28,10 +28,8 @@ class CheckDataUpdatePj
     }
     private static function cekUpdateToken(string $token, string $barantin_id)
     {
-        $data = PengajuanUpdatePj::where('update_token', $token)->where(function ($query) use ($barantin_id) {
-            $query->where('pj_baratin_id', $barantin_id)->orWhere('barantin_cabang_id', $barantin_id);
-        })->where('persetujuan', 'disetujui')->where('status_update','proses')->first();
-        if ($data ) {
+        $data = PengajuanUpdatePj::where('update_token', $token)->where('pj_barantin_id', $barantin_id)->where('persetujuan', 'disetujui')->where('status_update', 'proses')->first();
+        if ($data) {
             if (now() > $data->expire_at) {
                 $data->update(['status_update', 'gagal']);
                 if (request()->ajax()) {
