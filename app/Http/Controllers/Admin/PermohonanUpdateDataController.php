@@ -81,7 +81,12 @@ class PermohonanUpdateDataController extends Controller
     }
     public function datatablePendukung(string $id): JsonResponse
     {
+
         $model = DokumenPendukung::where('pengajuan_update_pj_id', $id);
+        if (!$model->exists()) {
+            $pengajuan = PengajuanUpdatePj::find($id);
+            $model = $model->orWhere('pj_barantin_id', $pengajuan->pj_barantin_id);
+        }
         return DataTables::eloquent($model)
             ->addIndexColumn()
             ->editColumn('file', 'register.form.partial.file_pendukung_datatable')
