@@ -561,7 +561,7 @@ function ConfirmCabang(url, type) {
         }
     });
 }
-function ConfirmUpdate(url, type) {
+function ConfirmUpdatePersetujuan(url, type) {
     Swal.fire({
         title: "Apa Anda Yakin?",
         text: "Anda ingin menyetujui update " + type,

@@ -17,7 +17,7 @@ class LingkupAktifitasRule implements ValidationRule
         $validValues = [1, 2, 3, 4]; // Daftar nilai yang valid
         foreach ($value as $item) {
             if (!in_array($item, $validValues)) {
-                $fail('One or more selected values is invalid.');
+                $fail('Lingkup aktifitas tidak valid.');
             }
         }
     }

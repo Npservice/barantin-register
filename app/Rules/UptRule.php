@@ -21,7 +21,7 @@ class UptRule implements ValidationRule
         }
 
         if (array_diff($value, $validUpts)) {
-            $fail('One or more selected upt is invalid.')->translate();
+            $fail('Satu atau lebih upt yang dipilih tidak valid.');
         }
     }
 }

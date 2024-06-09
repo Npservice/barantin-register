@@ -221,7 +221,7 @@ class BarantinController extends Controller
      */
     public function detilDataBarantinById(string $barantin_id)
     {
-        $data = PjBarantin::with(['preregister'])->whereHas('preregister', fn($query) => $query->where('jenis_perusahaan', 'induk'))->find($barantin_id);
+        $data = PjBarantin::with(['preregister'])->find($barantin_id);
         if ($data) {
             return ApiResponse::successResponse('barantin detail data perusahaan induk', self::renderResponseDataBarantinDetil($data, 'induk'), false);
         }

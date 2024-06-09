@@ -28,12 +28,9 @@
 
         <div class="d-flex">
             <div class="dropdown d-inline-block user-dropdown">
-                <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="https://avatar.iran.liara.run/public"
-                        alt="Header Avatar">
-                    <span
-                        class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->role_name?? auth()->guard('web')->user()->nama }}</span>
+                <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/user-image.png') }}" alt="Header Avatar">
+                    <span class="d-none d-xl-inline-block ms-1">{{ auth()->guard('admin')->user()->role_name ?? auth()->guard('web')->user()->nama }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
@@ -49,13 +46,11 @@
                         Lock screen</a>
                     <div class="dropdown-divider"></div> --}}
                     @auth('admin')
-                        <a class="dropdown-item text-danger" href="javascript:void(0)"
-                            onclick="logout('{{ route('admin.auth.logout') }}')">
+                        <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="logout('{{ route('admin.auth.logout') }}')">
                             <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
                     @endauth
                     @auth('web')
-                        <a class="dropdown-item text-danger" href="javascript:void(0)"
-                            onclick="logout('{{ route('barantin.auth.logout') }}')">
+                        <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="logout('{{ route('barantin.auth.logout') }}')">
                             <i class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
                     @endauth
                 </div>

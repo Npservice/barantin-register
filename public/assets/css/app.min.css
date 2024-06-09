@@ -215,7 +215,7 @@
 }
 
 body[data-topbar=dark] #page-topbar {
-    background-color: #9b460e
+    background-color: #133138
 }
 
 body[data-topbar=dark] .navbar-header .dropdown .show.header-item {
@@ -4400,7 +4400,7 @@ li.submit-form {
 
 .auth-body-bg {
     /* background-image: url(../images/auth-bg.jpg); */
-    background-color: #be800b;
+    background-color: #133138;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center

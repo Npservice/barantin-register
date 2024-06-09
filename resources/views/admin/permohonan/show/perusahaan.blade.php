@@ -33,7 +33,7 @@
                     @if (auth()->guard()->user()->upt_id)
                         @if (!$register->status || $register->status === 'MENUNGGU')
                             <a class="btn btn-primary btn-sm me-2"
-                                onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.permohonan.show', $data->id) }}?register_id={{ $register->id }}')">APROVE</a>
+                                onclick="ConfirmRegister('{{ route('admin.permohonan.confirm.register', $register->id) }}', '{{ $data->nama_perusahaan }}','{{ route('admin.permohonan.show', $register->id) }}')">APROVE</a>
                         @endif
                     @endif
                     <button class="btn btn-danger btn-sm" onclick="ClosePage()">Close</button>

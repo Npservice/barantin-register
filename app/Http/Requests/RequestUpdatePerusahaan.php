@@ -42,7 +42,7 @@ class RequestUpdatePerusahaan extends FormRequest
                 'required',
                 'numeric',
                 new NomerIdentitasRule(request()->input('jenis_identitas')),
-                new UniquePerusahaanInduk(request()->input('identifikasi_perusahaan',true))
+                new UniquePerusahaanInduk(request()->input('identifikasi_perusahaan', true))
 
             ],
             'telepon' => 'required|regex:/^\d{4}-\d{4}-\d{4}$/',
@@ -62,7 +62,7 @@ class RequestUpdatePerusahaan extends FormRequest
                 $lingkup_aktivitas = request()->input('lingkup_aktivitas');
                 return $lingkup_aktivitas && in_array(3, $lingkup_aktivitas);
             }),
-            'nitku' => 'required_if:identifikasi_perusahaan,cabang|unique:pj_barantins,nitku',
+            'nitku' => "required_if:identifikasi_perusahaan,cabang|unique:pj_barantins,nitku,{$pjBarantinId}",
             'status_import' => ['required', Rule::in([25, 26, 27, 28, 29, 30, 31, 32])],
             // 'negara' => 'required|exists:master_negaras,id',
             'kota' => ['required', new KotaRule(request()->input('provinsi'))],

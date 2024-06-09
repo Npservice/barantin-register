@@ -24,14 +24,14 @@ class UniquePerusahaanInduk implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($this->identitas == 'induk') {
-            $nomer = PjBarantin::where('nomor_identitas', $value)->value('nomor_identitas');
+            $nomer = PjBarantin::whereRelation('preregister', 'jenis_perusahaan', 'induk')->where('nomor_identitas', $value)->first();
             if ($nomer) {
-                if ($this->update && $nomer != $value) {
-                    $fail("The {$attribute} has already been taken")->translate();
-                } else {
-                    return;
+                if ($this->update && $nomer->nomor_identitas != $value) {
+                    $fail("Nomor identitas sudah ada")->translate();
                 }
-                $fail("The {$attribute} has already been taken")->translate();
+                if (!$this->update) {
+                    $fail("Nomor identitas sudah ada")->translate();
+                }
             }
         }
     }
