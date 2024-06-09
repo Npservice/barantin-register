@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MailPenolakanUpdateData extends Mailable
+class MailUpdatePersetujuan extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -27,7 +27,7 @@ class MailPenolakanUpdateData extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Mail Barantin notification update data',
+            subject: 'Barantin notification update data',
         );
     }
 
@@ -37,7 +37,7 @@ class MailPenolakanUpdateData extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.penolakan',
+            markdown: 'mail.persetujuan'
         );
     }
 

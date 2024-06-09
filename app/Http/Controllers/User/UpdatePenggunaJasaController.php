@@ -88,7 +88,7 @@ class UpdatePenggunaJasaController extends Controller
             'provinsi_id' => $request->provinsi,
             'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
         ]);
-        return $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan']);
+        return $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan', 'lingkup_aktivitas', '_method']);
     }
 
     public function DokumenPendukungStore(string $id, RequestUpdateDokumenPendukung $request): JsonResponse

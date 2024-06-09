@@ -61,6 +61,15 @@ $("#permohonan-update-datatable").DataTable({
             width: 60,
         },
     ],
+    drawCallback: function () {
+        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+    },
+    language: {
+        paginate: {
+            previous: "<i class='mdi mdi-chevron-left'>",
+            next: "<i class='mdi mdi-chevron-right'>",
+        },
+    },
 });
 
 function statusUpdate(data) {

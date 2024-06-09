@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
+use App\Models\DokumenPendukung;
 use App\Models\PengajuanUpdatePj;
+use Illuminate\Http\JsonResponse;
+use App\Mail\MailUpdatePersetujuan;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MailPenolakanUpdateData;
 use App\Mail\MailSendLinkForUpdatePj;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class PermohonanUpdateDataController extends Controller
@@ -61,5 +65,62 @@ class PermohonanUpdateDataController extends Controller
             ->addIndexColumn()
             ->addColumn('action', 'admin.permohonan-update.action')
             ->make(true);
+    }
+    public function show(string $id)
+    {
+        if (request()->input('datatable')) {
+            return $this->datatablePendukung($id);
+        }
+        $data = PengajuanUpdatePj::find($id);
+        $view = 'admin.permohonan-update.show.perorangan';
+        if ($data->barantin->preregister->pemohon == 'perusahaan') {
+            $view = 'admin.permohonan-update.show.perusahaan';
+        }
+        return view($view, compact('data'));
+
+    }
+    public function datatablePendukung(string $id): JsonResponse
+    {
+        $model = DokumenPendukung::where('pengajuan_update_pj_id', $id);
+        return DataTables::eloquent($model)
+            ->addIndexColumn()
+            ->editColumn('file', 'register.form.partial.file_pendukung_datatable')
+            ->rawColumns(['action', 'file'])
+            ->make(true);
+    }
+    public function updateData(string $pengajuan_id, Request $request)
+    {
+        $request->validate([
+            'status' => 'required|in:disetujui,ditolak'
+        ]);
+        // dd($request->all());
+        $pengajuan = PengajuanUpdatePj::find($pengajuan_id);
+
+        if ($request->status == 'ditolak') {
+            return $this->ditolak($pengajuan);
+        }
+        return $this->disetujui($pengajuan);
+
+    }
+    public function ditolak(PengajuanUpdatePj $pengajuan)
+    {
+        $pengajuan->update(['persetujuan' => 'ditolak', 'status_update' => 'gagal']);
+        Mail::to($pengajuan->barantin->email)->send(new MailPenolakanUpdateData);
+        return AjaxResponse::SuccessResponse("Perubahan data {$pengajuan->barantin->email} ditolak", 'permohonan-update-datatable');
+    }
+    public function disetujui(PengajuanUpdatePj $pengajuan)
+    {
+        $pengajuan->update(['persetujuan' => 'disetujui', 'status_update' => 'selesai']);
+        $data = json_decode($pengajuan->temp_update, true);
+        $pengajuan->barantin()->update(collect($data)->except('lingkup_aktivitas', '_method')->all());
+        foreach ($pengajuan->dokumenpendukung as $index => $value) {
+            $dokumen = DokumenPendukung::where('pj_barantin_id', $pengajuan->pj_barantin_id)->first();
+            if ($dokumen) {
+                Storage::disk('public')->delete($dokumen->file);
+            }
+            DokumenPendukung::find($value->id)->update(['pj_barantin_id' => $pengajuan->pj_barantin_id, 'pengajuan_update_pj_id' => null]);
+        }
+        Mail::to($pengajuan->barantin->email)->send(new MailUpdatePersetujuan);
+        return AjaxResponse::SuccessResponse("Perubahan data {$pengajuan->barantin->nama_perusahaan} disetujui", 'permohonan-update-datatable');
     }
 }

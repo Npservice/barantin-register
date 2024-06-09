@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    let _data_update;
+    let _data_lama;
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -589,6 +591,40 @@ function ConfirmUpdate(url, type) {
                     notif(
                         "error",
                         response.message ?? "persetujuan gagal di aprove"
+                    );
+                },
+            });
+        }
+    });
+}
+function ConfirmUpdate(url, type) {
+    Swal.fire({
+        title: "Apa Anda Yakin?",
+        text: "Anda ingin verifikasi update " + type,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Verifikasi",
+        cancelButtonText: "Tolak",
+    }).then((result) => {
+        if (result.isConfirmed || result.dismiss == "cancel") {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    status: result.isConfirmed ? 'disetujui' : 'ditolak',
+                    _method: 'PATCH'
+                },
+                success: function (response) {
+                    notif("success", response.message);
+                    TableReload(response.table);
+                    ClosePage();
+                },
+                error: function (response) {
+                    notif(
+                        "error",
+                        response.message ?? "register gagal di aprove"
                     );
                 },
             });

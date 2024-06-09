@@ -46,6 +46,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('permohon-update')->name('permohonan-update.')->group(function () {
             Route::get('', [PermohonanUpdateDataController::class, 'index'])->name('index');
             Route::post('confirm/{pengajuan_id}', [PermohonanUpdateDataController::class, 'confirmUpdate'])->name('confirm');
+            Route::get('{pengajuan_id}/show', [PermohonanUpdateDataController::class, 'show'])->name('show');
+            Route::patch('{pengajuan_id}/update', [PermohonanUpdateDataController::class, 'updateData'])->name('update');
         });
 
         Route::resource('pendaftar', PendaftarController::class)->only(['index', 'show']);

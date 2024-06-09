@@ -29,6 +29,6 @@ class PengajuanUpdatePj extends Model
     }
     public function dokumenpendukung(): HasMany
     {
-        return $this->hasMany(PengajuanUpdatePj::class, 'pengajuan_update_pj_id');
+        return $this->hasMany(DokumenPendukung::class, 'pengajuan_update_pj_id');
     }
 }

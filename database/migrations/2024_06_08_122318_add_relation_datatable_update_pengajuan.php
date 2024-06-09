@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('dokumen_pendukungs', function (Blueprint $table) {
-            $table->uuid('pengajuan_update_pj_id')->nullable()->after('pre_register_id');
+            $table->uuid('pengajuan_update_pj_id')->after('pre_register_id')->nullable();
             $table->foreign('pengajuan_update_pj_id')->references('id')->on('pengajuan_update_pjs')->cascadeOnUpdate()->cascadeOnDelete();
         });
     }
