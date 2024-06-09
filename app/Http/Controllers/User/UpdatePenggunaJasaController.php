@@ -108,7 +108,7 @@ class UpdatePenggunaJasaController extends Controller
 
     public function DokumenPendukungDataTable(string $id): JsonResponse
     {
-        $model = DokumenPendukung::where('pengajuan_update_pj_id', $id);
+        $model = DokumenPendukung::where('pengajuan_update_pj_id', $id)->orWhere('pj_barantin_id', $id);
 
         return DataTables::eloquent($model)
             ->addIndexColumn()
