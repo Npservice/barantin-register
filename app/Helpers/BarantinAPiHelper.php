@@ -24,7 +24,7 @@ class BarantinApiHelper
      */
     private static function makeApiCall(string $endpoint): JsonResponse
     {
-        $response = Http::withoutVerifying()->get(self::$baseUrl . $endpoint);
+        $response = Http::withUserAgent( 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)')->withoutVerifying()->get(self::$baseUrl . $endpoint);
 
         if ($response->successful()) {
             return response()->json($response->json()['data']);
@@ -201,7 +201,7 @@ class BarantinApiHelper
      */
     public static function loginApiBarantin(string $username, string $password)
     {
-        $response = Http::withoutVerifying()->post(self::getBaseUrl() . '/ums/login', ['username' => $username, 'password' => $password]);
+        $response = Http::withUserAgent( 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)')->withoutVerifying()->post(self::getBaseUrl() . '/ums/login', ['username' => $username, 'password' => $password]);
         return collect($response->json());
 
     }
@@ -212,7 +212,7 @@ class BarantinApiHelper
      */
     public static function refreshTokenApiBarantin(string $refreshToken)
     {
-        $response = Http::withoutVerifying()->withToken($refreshToken)->get(self::getBaseUrl() . '/ums/refresh');
+        $response = Http::withUserAgent( 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)')->withoutVerifying()->withToken($refreshToken)->get(self::getBaseUrl() . '/ums/refresh');
         return $response->json();
     }
 
