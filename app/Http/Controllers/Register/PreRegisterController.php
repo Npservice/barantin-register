@@ -73,6 +73,8 @@ class PreRegisterController extends Controller
         MailToken::where('pre_register_id', $preregister->id)->delete();
         /* generaet new token */
         $generate = MailToken::create(['pre_register_id' => $preregister->id]);
+        /*send email token*/
+        Mail::to($preregister->email)->send(new MailSendTokenPreRegister($preregister->id, $generate->token));
         return view('register.verify', compact('generate'));
 
     }

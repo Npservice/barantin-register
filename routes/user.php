@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserUptController;
 use App\Http\Controllers\User\UserPpjkController;
@@ -6,7 +7,7 @@ use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\UserMitraController;
 use App\Http\Controllers\User\Auth\LoginController;
 use App\Http\Controllers\User\UserCabangController;
-use App\Http\Controllers\user\UserProfileController;
+use App\Http\Controllers\User\UserProfileController;
 use App\Http\Controllers\User\UpdatePenggunaJasaController;
 
 Route::prefix('barantin')->name('barantin.')->group(function () {
