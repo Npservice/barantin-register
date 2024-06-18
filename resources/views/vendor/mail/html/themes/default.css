@@ -299,3 +299,11 @@ img {
 .break-all {
     word-break: break-all;
 }
+.justify-text {
+    text-align: justify;
+}
+.spacer {
+    margin-top: 20px; /* Adjust the value to increase/decrease the spacing */
+    margin-bottom: 20px;
+    background: #718096;
+}
