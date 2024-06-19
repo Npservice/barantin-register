@@ -305,7 +305,7 @@
         </li>
     </ul>
 </div>
-<script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-wizard.update.js') }}"></script>
 <script src="{{ asset('assets/js/page/form/update/perorangan.js') }}"></script>
 <script>
     UptSelect('{{ $data->barantin->upt_id ?? null }}', '{{ $data->barantin->preregister->id ?? null }}')

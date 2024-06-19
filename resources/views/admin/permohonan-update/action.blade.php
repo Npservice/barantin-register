@@ -9,7 +9,7 @@
         </button>
     @endif
 @else
-    <button class="btn btn-outline-success btn-sm" onclick="ShowPage('{{ route('admin.permohonan-update.show', $model->id) }}')">
+    <button class="btn btn-outline-primary btn-sm" onclick="ShowPage('{{ route('admin.permohonan-update.show', $model->id) }}')">
         <i class="fas fa-eye"></i>
     </button>
 @endif

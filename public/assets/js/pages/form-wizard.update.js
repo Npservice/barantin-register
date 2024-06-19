@@ -3,7 +3,7 @@ $(document).ready(function () {
         tabClass: "nav nav-pills nav-justified",
         onLast: false,
         onNext: function (tab, navigation, index) {
-            if (index >= 4) {
+            if (index >= 3) {
                 submitActive()
                 return
             }
@@ -23,7 +23,7 @@ triggerTabList.forEach(function (a, index) {
 
 $('.nav-link').click(function () {
     var tab = $(this).attr('href')
-    if (tab === '#ketentuan-form') {
+    if (tab === '#dokumen-pendukung') {
         submitActive()
     } else {
         submitNonActive()
@@ -31,15 +31,11 @@ $('.nav-link').click(function () {
 });
 
 function submitActive() {
-    $('#button-submit').attr('disabled',true)
     $('.next').addClass('d-none')
     $('.submit-form').removeClass('d-none')
 }
 function submitNonActive() {
     $('.next').removeClass('d-none')
     $('.submit-form').addClass('d-none')
-    $('input[name="ketentuan"]').prop('checked', false);
 }
-$('input[name="ketentuan"]').change(function() {
-    $('#button-submit').removeAttr('disabled')
-});
+

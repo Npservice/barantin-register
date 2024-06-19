@@ -25,6 +25,12 @@
                 <span class="step-title">Dokumen Pendukung</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a href="#ketentuan-form" class="nav-link" data-toggle="tab">
+                <span class="step-number">05</span>
+                <span class="step-title">Ketentuan</span>
+            </a>
+        </li>
     </ul>
     <div class="tab-content twitter-bs-wizard-tab-content">
         <div class="tab-pane" id="seller-details">
@@ -34,8 +40,6 @@
 
             <form class="row" id="form-register">
                 <div class="col-md-6 col-sm-12">
-
-
                     <div class="row mb-3">
                         <label for="pemohon" class="col-sm-3 col-form-label">Pemohon</label>
                         <div class="col-sm-9">
@@ -331,6 +335,24 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="tab-pane" id="ketentuan-form" >
+            <div>
+                <p class="text-justify">
+                    Dengan melakukan registrasi, Anda menyatakan bahwa semua data yang Anda input adalah benar, akurat, dan lengkap. Anda bertanggung jawab untuk menjaga keakuratan data ini dan segera memperbarui informasi yang diperlukan. Anda juga setuju untuk menjaga kerahasiaan informasi akun yang diberikan kepada Anda, termasuk nama pengguna dan kata sandi. Anda bertanggung jawab penuh atas semua aktivitas yang terjadi dalam akun Anda. Jika Anda mencurigai adanya penggunaan yang tidak sah atau pelanggaran keamanan, Anda wajib segera memberitahukan kepada kami. Kami tidak bertanggung jawab atas kerugian atau kerusakan yang timbul akibat kelalaian Anda dalam menjaga kerahasiaan akun.
+                </p>
+            </div>
+            <form class="row" id="form-ketentuan">
+                <div class="col-3 me-5">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="ketentuan" id="ketentuan" value="ketentuan">
+                        <label class="form-check-label" for="ketentuan">
+                          Ya, Saya Setuju
+                        </label>
+                        <div class="invalid-feedback" id="ketentuan-feedback"></div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <ul class="pager wizard twitter-bs-wizard-pager-link">

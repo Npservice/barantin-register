@@ -331,7 +331,7 @@
         </li>
     </ul>
 </div>
-<script src="{{ asset('assets/js/pages/form-wizard.init.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-wizard.update.js') }}"></script>
 <script src="{{ asset('assets/js/page/form/update/perusahaan.js') }}"></script>
 <script>
     NegaraSelect('{{ $data->barantin->negara_id ?? 99 }}')

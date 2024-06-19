@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\UptRule;
 use App\Rules\KotaRule;
-use App\Models\MasterUpt;
 use App\Rules\ProvinsiRule;
 use Illuminate\Validation\Rule;
 use App\Rules\NomerIdentitasRule;
@@ -70,6 +69,7 @@ class UserRequestCabangStore extends FormRequest
             'jabatan_tdd' => 'required',
             'alamat_tdd' => 'required',
             'jenis_perusahaan' => 'required|in:PEMILIK BARANG,PPJK,EMKL,EMKU,LAINNYA',
+            'ketentuan' => 'required|in:ketentuan'
 
         ];
     }

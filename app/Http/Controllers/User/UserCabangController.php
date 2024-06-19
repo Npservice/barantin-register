@@ -65,7 +65,7 @@ class UserCabangController extends Controller
                 'nomor_identitas' => auth()->user()->barantin->nomor_identitas,
             ]);
 
-            $data = $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan']);
+            $data = $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan','ketentuan']);
 
             $this->SaveRegisterCabang($request->upt, $data);
             return response()->json(['status' => true, 'message' => 'Cabang berhasil dibuat silahkan tunggu konfirmasi upt yang dipilih']);

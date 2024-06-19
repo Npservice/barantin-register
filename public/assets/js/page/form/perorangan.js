@@ -6,7 +6,6 @@ $(".select-item").select2({
 });
 $(".negara-select").on("change", function () {
     let val = $(this).val();
-    console.log(val);
     if (val == 99) {
         $("#kota-form").removeClass("d-none");
         $("#provinsi-form").removeClass("d-none");
@@ -139,6 +138,7 @@ $("#button-submit").click(function () {
     let form_ttd = $("#form-penandatangan").serializeArray();
     let form_cp = $("#form-cp").serializeArray();
     let form_register = $("#form-register").serializeArray();
+    let form_ketentuan = $("#form-ketentuan").serializeArray();
 
     $.each(form_ttd, function (key, value) {
         form_data.append(value.name, value.value);
@@ -149,7 +149,9 @@ $("#button-submit").click(function () {
     $.each(form_register, function (key, value) {
         form_data.append(value.name, value.value);
     });
-
+    $.each(form_ketentuan, function (key, value) {
+        form_data.append(value.name, value.value);
+    });
     $.ajax({
         data: form_data,
         url: "/register/store/perorangan/" + id_pre_register,

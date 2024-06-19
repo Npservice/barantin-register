@@ -117,7 +117,6 @@
 @push('custom-js')
     <script src="{{ asset('assets/js/page/select.js') }}"></script>
     <script>
-        PerusahaanIndukSelect()
         UptSelect()
         $('.form-select').select2({
             placeholder: 'select item',

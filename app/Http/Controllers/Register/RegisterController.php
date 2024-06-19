@@ -159,7 +159,7 @@ class RegisterController extends Controller
             'lingkup_aktifitas' => implode(',', $request->lingkup_aktivitas),
         ]);
 
-        return $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan', 'lingkup_aktivitas']);
+        return $request->except(['upt', 'negara', 'provinsi', 'identifikasi_perusahaan', 'lingkup_aktivitas','ketentuan']);
     }
     /**
      * Menyimpan dokumen pendukung ke dalam database.
@@ -268,7 +268,6 @@ class RegisterController extends Controller
                 ->whereNotNull('pj_barantin_id')
                 ->whereNotNull('status')
                 ->orderBy('created_at', 'DESC');
-            // return $model->get();
             return DataTables::eloquent($model)
                 ->addColumn('upt', function ($row) {
                     $upt = BarantinApiHelper::getMasterUptByID($row->master_upt_id);
