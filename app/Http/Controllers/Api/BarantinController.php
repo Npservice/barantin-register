@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Models\Register;
 use App\Models\PjBarantin;
 use App\Helpers\ApiResponse;
-use Illuminate\Http\Request;
-use App\Models\BarantinCabang;
-use App\Helpers\JsonFilterHelper;
 use App\Helpers\PaginationHelper;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\BarantinAPIHelper;
@@ -83,7 +80,7 @@ class BarantinController extends Controller
         }
 
         if ($data->exists()) {
-            return ApiResponse::successResponse('barantin data perusahaan induk', self::renderResponseDataBarantins($data->paginate($take), true, ), true);
+            return ApiResponse::successResponse('barantin data', self::renderResponseDataBarantins($data->paginate($take), true, ), true);
         }
         return ApiResponse::errorResponse('Data not found', 404);
     }
@@ -223,7 +220,7 @@ class BarantinController extends Controller
     {
         $data = PjBarantin::with(['preregister'])->find($barantin_id);
         if ($data) {
-            return ApiResponse::successResponse('barantin detail data perusahaan induk', self::renderResponseDataBarantinDetil($data, 'induk'), false);
+            return ApiResponse::successResponse('barantin detail data', self::renderResponseDataBarantinDetil($data, 'induk'), false);
         }
         return ApiResponse::errorResponse('Data not found', 404);
     }

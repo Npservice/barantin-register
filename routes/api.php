@@ -41,7 +41,11 @@ Route::prefix('v1')->name('api.')->group(function () {
     })->name('failed');
 
 
-    Route::middleware(['auth:sanctum', 'api.version:v1'])->group(function () {
+    Route::middleware(['auth:api-v1', 'api.version:v1'])->group(function () {
+
+        Route::get('refresh',[LoginController::class, 'refresh'])->name('refresh');
+        Route::get('logout',[LoginController::class, 'logout'])->name('logout');
+
         Route::prefix('barantin')->name('barantin.')->group(function () {
 
             Route::get('{take}', [BarantinController::class, 'getAllDataBarantin'])->name('all');
@@ -70,7 +74,11 @@ Route::prefix('v2')->name('api.')->group(function () {
 
         Route::post('login', [UserLoginController::class, 'loginUser'])->name('login');
 
-        Route::middleware(['auth:sanctum', 'api.version:v2'])->group(function () {
+        Route::middleware(['auth:api-v2', 'api.version:v2'])->group(function () {
+
+            Route::get('refresh',[UserLoginController::class, 'refresh'])->name('refresh');
+            Route::get('logout',[UserLoginController::class, 'logout'])->name('logout');
+
             Route::get('upt', [UptController::class, 'getAllUptUser'])->name('upt');
             Route::get('profile', [ProfileController::class, 'getProfileUser'])->name('profile');
 
