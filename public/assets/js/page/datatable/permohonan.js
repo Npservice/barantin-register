@@ -36,15 +36,15 @@ table = $("#permohonan-datatable").DataTable({
             data: "barantin.preregister.pemohon",
             name: "barantin.preregister.pemohon",
             render: function (data) {
-                return pemohonRender(data)
-            }
+                return pemohonRender(data);
+            },
         },
         {
             data: "barantin.preregister.jenis_perusahaan",
             name: "barantin.preregister.jenis_perusahaan",
             render: function (data) {
-                return identifikasiRender(data)
-            }
+                return identifikasiRender(data);
+            },
         },
         {
             data: "upt",
@@ -130,6 +130,12 @@ table = $("#permohonan-datatable").DataTable({
     drawCallback: function () {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
     },
+    dom: "lBfrtip",
+    buttons: ["pageLength", "print"],
+    lengthMenu: [
+        [10, 25, 50, -1],
+        [10, 25, 50, "All"],
+    ],
 });
 
 function BlokirStatus(data) {
@@ -142,18 +148,17 @@ function BlokirStatus(data) {
 }
 function pemohonRender(data) {
     switch (data) {
-        case 'perusahaan':
+        case "perusahaan":
             return `<h5><span class="badge bg-warning text-dark">${data}</span></h5>`;
-        case 'perorangan':
+        case "perorangan":
             return `<h5><span class="badge bg-secondary">${data}</span></h5>`;
-
     }
 }
 function identifikasiRender(data) {
     switch (data) {
-        case 'cabang':
+        case "cabang":
             return `<h5><span class="badge bg-info">${data}</span></h5>`;
-        case 'induk':
+        case "induk":
             return `<h5><span class="badge bg-primary">${data}</span></h5>`;
         default:
             return null;
@@ -167,18 +172,18 @@ $("#filter-status-import").change(function () {
         return table.column("barantin.status_import:name").search("").draw();
     return table.column("barantin.status_import:name").search(val).draw();
 });
-$("#tanggal-register").daterangepicker();
-$("#tanggal-register").on("apply.daterangepicker", function (ev, picker) {
-    var startDate = picker.startDate.format("YYYY-MM-DD");
-    var endDate = picker.endDate.format("YYYY-MM-DD");
-    table
-        .column("updated_at:name")
-        .search(startDate + " - " + endDate)
-        .draw();
-});
-$("#tanggal-register").on("cancel.daterangepicker", function (ev, picker) {
-    table.column("updated_at:name").search("").draw();
-});
+// $("#tanggal-register").daterangepicker();
+// $("#tanggal-register").on("apply.daterangepicker", function (ev, picker) {
+//     var startDate = picker.startDate.format("YYYY-MM-DD");
+//     var endDate = picker.endDate.format("YYYY-MM-DD");
+//     table
+//         .column("updated_at:name")
+//         .search(startDate + " - " + endDate)
+//         .draw();
+// });
+// $("#tanggal-register").on("cancel.daterangepicker", function (ev, picker) {
+//     table.column("updated_at:name").search("").draw();
+// });
 $("#filter-upt").change(function () {
     var val = $(this).val();
     if (val === "all")

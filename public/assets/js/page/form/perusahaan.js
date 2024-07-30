@@ -25,6 +25,15 @@ $("#lingkup_aktivitas").change(function () {
 
 $("#file_dokumen").dropify();
 
+$('input[name="tindakan_karantina"]').on("change", function () {
+    if ($(this).val() === "Ya") {
+        $("#nomor-registrasi-group").show();
+    } else {
+        $("#nomor-registrasi").val('');
+        $("#nomor-registrasi-group").hide();
+    }
+});
+
 var phoneInput = $("#telepon");
 IMask(phoneInput[0], {
     mask: "0000-0000-0000",
@@ -115,14 +124,14 @@ $("#button-pendukung").click(function () {
                 table_dokumen_pendukung.draw();
                 $("#form-pendukung").trigger("reset");
                 $(".dropify-clear").trigger("click");
-                $("#button-pendukung").removeClass("disabled").html("tambah");
+                $("#button-pendukung").removeClass("disabled").html("Tambah");
             } else {
                 notif("error", response.message);
-                $("#button-pendukung").removeClass("disabled").html("tambah");
+                $("#button-pendukung").removeClass("disabled").html("Tambah");
             }
         },
         error: function (response) {
-            $("#button-pendukung").removeClass("disabled").html("tambah");
+            $("#button-pendukung").removeClass("disabled").html("Tambah");
             var respon = response.responseJSON;
             var error = respon.errors;
             if (respon && error) {
@@ -146,6 +155,8 @@ $("#button-submit").click(function () {
     let form_ttd = $("#form-penandatangan").serializeArray();
     let form_cp = $("#form-cp").serializeArray();
     let form_register = $("#form-register").serializeArray();
+    let form_kegiatan = $("#form-kegiatan").serializeArray();
+    let form_sarpras = $("#form-sarpras").serializeArray();
     let form_ketentuan = $("#form-ketentuan").serializeArray();
 
     $.each(form_ttd, function (key, value) {
@@ -155,6 +166,12 @@ $("#button-submit").click(function () {
         form_data.append(value.name, value.value);
     });
     $.each(form_register, function (key, value) {
+        form_data.append(value.name, value.value);
+    });
+    $.each(form_kegiatan, function (key, value) {
+        form_data.append(value.name, value.value);
+    });
+    $.each(form_sarpras, function (key, value) {
         form_data.append(value.name, value.value);
     });
     $.each(form_ketentuan, function (key, value) {

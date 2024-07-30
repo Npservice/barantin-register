@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Log;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Register;
 use App\Models\PjBarantin;
 use App\Models\PreRegister;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Helpers\AjaxResponse;
 use App\Models\BarantinCabang;
+use App\Mail\MailSendRejection;
 use App\Models\DokumenPendukung;
 use App\Helpers\JsonFilterHelper;
 use Illuminate\Http\JsonResponse;
 use App\Helpers\BarantinApiHelper;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MailSendUsernamePassword;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Builder;
+use App\Helpers\Helper;
 
 class PermohonanController extends Controller
 {
@@ -97,13 +105,15 @@ class PermohonanController extends Controller
     {
         $model = $this->queryRegister();
         $uptId = auth()->guard('admin')->user()->upt_id;
+        // var_dump($model);
+        // var_dump($uptId);
+        // var_dump($this->uptPusatId);die;
         if ($uptId != $this->uptPusatId) {
             $model = $model->where('master_upt_id', $uptId);
         }
         $datatable = DataTables::eloquent($model)->addIndexColumn();
 
         return $this->columnDaerahRender($datatable);
-
     }
 
     /**
@@ -129,7 +139,7 @@ class PermohonanController extends Controller
             ->filterColumn('negara', function ($query, $keyword) {
                 $negara = collect(BarantinApiHelper::getDataMasterNegara()->original);
                 $idNegara = JsonFilterHelper::searchDataByKeyword($negara, $keyword, 'nama')->pluck('id');
-                $query->whereHas('barantin', fn($query) => $query->whereIn('negara_id', $idNegara));
+                $query->whereHas('barantin', fn ($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
                 $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->barantin->provinsi_id);
@@ -138,7 +148,7 @@ class PermohonanController extends Controller
             ->filterColumn('provinsi', function ($query, $keyword) {
                 $provinsi = collect(BarantinApiHelper::getDataMasterProvinsi()->original);
                 $idProvinsi = JsonFilterHelper::searchDataByKeyword($provinsi, $keyword, 'nama')->pluck('id');
-                $query->whereHas('barantin', fn($query) => $query->whereIn('provinsi_id', $idProvinsi));
+                $query->whereHas('barantin', fn ($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
                 $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
@@ -147,7 +157,7 @@ class PermohonanController extends Controller
             ->filterColumn('kota', function ($query, $keyword) {
                 $kota = collect(BarantinApiHelper::getDataMasterKota()->original);
                 $idKota = JsonFilterHelper::searchDataByKeyword($kota, $keyword, 'nama')->pluck('id');
-                $query->whereHas('barantin', fn($query) => $query->whereIn('kota', $idKota));
+                $query->whereHas('barantin', fn ($query) => $query->whereIn('kota', $idKota));
             })->filterColumn('updated_at', function ($query, $keyword) {
                 $range = explode(' - ', $keyword);
                 if (count($range) === 2) {
@@ -186,19 +196,97 @@ class PermohonanController extends Controller
      * @param Request $request Data request yang mengandung status dan keterangan.
      * @return JsonResponse
      */
+    public function generateRandomPassword($length = 8): string
+    {
+        return Str::random($length);
+    }
+
+    // Metode untuk membuat string acak
+    public function generateRandomString($length = 8, $pemohon, $jenis_perusahaan): string
+    {
+        return Str::random($length); // Anda bisa mengubah ini sesuai dengan kebutuhan logika Anda
+    }
+
+    public function SendUsernamePasswordEmail(string $idOrEmail): bool|JsonResponse
+    {
+        $user = User::where('email', $idOrEmail)->orWhere('id', $idOrEmail)->first();
+        $password = $this->generateRandomPassword(8);
+        $user->update(['password' => $password]);
+        Mail::to($user->email)->send(new MailSendUsernamePassword($user->username, $password));
+
+        if (request()->input('reset')) {
+            return response()->json(['table' => 'pendaftar-datatable', 'nama' => $user->nama]);
+        }
+        return true;
+    }
+
     public function confirmRegister(string $id, Request $request): JsonResponse
     {
-        $request->validate(['status' => 'required|in:DISETUJUI,DITOLAK', 'keterangan' => 'nullable']);
-        $register = Register::find($id);
+        // Validasi input request
+        $request->validate([
+            'status' => 'required|in:DISETUJUI,DITOLAK',
+            'keterangan' => 'nullable'
+        ]);
+
+        // Temukan entitas Register dengan relasi preRegister dan barantin
+        $register = Register::with('preRegister', 'barantin')->find($id);
+
         if ($register) {
-            $res = $register->update($request->all());
-            if ($res) {
-                return AjaxResponse::SuccessResponse('data register ' . $request->status, 'permohonan-datatable');
+            // Update status dan keterangan
+            $register->update($request->only(['status', 'keterangan']));
+
+            $preRegister = $register->preRegister;
+            $barantin = $register->barantin;
+
+            if ($request->status === 'DISETUJUI') {
+                $username = Str::upper(Str::random(6));
+                $password = Str::random(8);
+                // Tentukan role berdasarkan pemohon dan jenis perusahaan
+                $role = 'perorangan'; // nilai default
+                if ($preRegister->pemohon === 'perusahaan') {
+                    $role = ($preRegister->jenis_perusahaan === 'induk') ? 'induk' : 'cabang';
+                }
+
+                // Buat data pengguna
+                $userCollect = collect([
+                    'nama' => $barantin->nama_perusahaan,
+                    'email' => $barantin->email,
+                    'username' => $username,
+                    'role' => $role,
+                    'status_user' => 1,
+                    'password' => Hash::make($password),
+                ]);
+
+                // Buat pengguna baru
+                $user = User::create($userCollect->all());
+                $barantin->update(['user_id' => $user->id]);
+
+                // Kirim email dengan detail login
+                $this->SendUsernamePasswordEmail($user->id);
+
+                // Mengembalikan respons sukses
+                return AjaxResponse::SuccessResponse('User created successfully', 'permohonan-datatable');
             }
-            return AjaxResponse::ErrorResponse('register gagal di aprove', 400);
+
+            // Jika ditolak, kirim email penolakan
+            if ($request->status === 'DITOLAK') {
+                $reason = $request->keterangan ?: 'No reason provided'; // Gunakan alasan yang diberikan atau pesan default
+
+                if (filter_var($preRegister->email, FILTER_VALIDATE_EMAIL)) {
+                    Mail::to($preRegister->email)->send(new MailSendRejection($reason));
+                } else {
+                    \Log::error('Invalid email address:', ['email' => $preRegister->email]);
+                }
+
+                // Mengembalikan respons sukses setelah penolakan
+                return AjaxResponse::SuccessResponse('Data register ' . $request->status, 'permohonan-datatable');
+            }
         }
-        return AjaxResponse::ErrorResponse('data register tidak ditemukan', 400);
+
+        // Jika entitas Register tidak ditemukan
+        return AjaxResponse::ErrorResponse('Data register tidak ditemukan', 400);
     }
+
     /**
      * Menghasilkan JSON response untuk DataTables yang menampilkan dokumen pendukung.
      *
