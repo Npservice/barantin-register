@@ -59,13 +59,29 @@
                     </div>
 
                     <div class="row mb-3">
+                        <label for="kategori_perusahaan" class="col-sm-3 col-form-label">Nama Perusahaan</label>
+                        <div class="col">
+                            <select id="kategori_perusahaan" class="form-select" name="kategori_perusahaan">
+                                <option value="PT" {{ $kategori_perusahaan == 'PT' ? 'selected' : '' }}>PT</option>
+                                <option value="CV" {{ $kategori_perusahaan == 'CV' ? 'selected' : '' }}>CV</option>
+                                <option value="UD" {{ $kategori_perusahaan == 'UD' ? 'selected' : '' }}>UD</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input class="form-control" value="{{ $nama_perusahaan }}" type="text"
+                                id="nama_perusahaan" name="nama_perusahaan">
+                            <div class="invalid-feedback" id="nama_perusahaan-feedback"></div>
+                        </div>
+                    </div>
+
+                    {{-- <div class="row mb-3">
                         <label for="email" class="col-sm-3 col-form-label">Nama Perusahaan</label>
                         <div class="col-sm-9">
                             <input class="form-control" value="{{ $register->nama }}" type="text"
                                 id="nama_perusahaan" name="nama_perusahaan">
                             <div class="invalid-feedback" id="nama_perusahaan-feedback"></div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="row mb-3">
                         <label for="jenis_identitas" class="col-md-3 col-form-label">Jenis Identitas</label>
@@ -91,7 +107,7 @@
                         </div>
                         <div class="col">
                             <input class="form-control" type="number" id="nitku" placeholder="NITKU"
-                                name="nitku" maxlength="6" 
+                                name="nitku" maxlength="6"
                                 oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                             <div class="invalid-feedback" id="nitku-feedback"></div>
                         </div>
@@ -305,17 +321,79 @@
             <label for="" class="form-label fw-bold h6 mt-0 mb-0">Kegiatan Usaha</label>
             <hr class="mt-0 mb-3">
             <form class="row" id="form-kegiatan">
-                <div class="form-group">
+                <div class="form-group mb-3" style="display: flex; flex-direction: column;">
                     <label for="rerata-frekuensi">Rerata frekuensi kegiatan dalam setahun</label>
                     <input type="number" class="form-control" id="rerata-frekuensi" name="rerata_frekuensi"
                         placeholder="... kali">
                 </div>
-                <div class="form-group">
-                    <label for="daftar-komoditas">Daftar Komoditas yang diusahakan</label>
-                    <textarea class="form-control" id="daftar-komoditas" name="daftar_komoditas" rows="3"></textarea>
+                <h6>Hewan</h6>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="hewan-hidup-checkbox"
+                        onchange="toggleInput('hewan-hidup-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="hewan-hidup-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Hidup</label>
+                    <input type="text" class="form-control" id="hewan-hidup-input" name="hewan_hidup_keterangan"
+                        disabled style="flex: 1; min-width: 150px;">
+                </div>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="hewan-produk-checkbox"
+                        onchange="toggleInput('hewan-produk-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="hewan-produk-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Produk</label>
+                    <input type="text" class="form-control" id="hewan-produk-input"
+                        name="hewan_produk_keterangan" disabled style="flex: 1; min-width: 150px;">
+                </div>
+                <h6>Ikan / Hewan Air</h6>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="ikan-hidup-checkbox"
+                        onchange="toggleInput('ikan-hidup-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="ikan-hidup-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Hidup</label>
+                    <input type="text" class="form-control" id="ikan-hidup-input" name="ikan_hidup_keterangan"
+                        disabled style="flex: 1; min-width: 150px;">
+                </div>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="ikan-segar-checkbox"
+                        onchange="toggleInput('ikan-segar-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="ikan-segar-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Segar/Beku</label>
+                    <input type="text" class="form-control" id="ikan-segar-input" name="ikan_segar_keterangan"
+                        disabled style="flex: 1; min-width: 150px;">
+                </div>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="ikan-produk-checkbox"
+                        onchange="toggleInput('ikan-produk-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="ikan-produk-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Produk</label>
+                    <input type="text" class="form-control" id="ikan-produk-input" name="ikan_produk_keterangan"
+                        disabled style="flex: 1; min-width: 150px;">
+                </div>
+                <h6>Tumbuhan</h6>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="tumbuhan-benih-checkbox"
+                        onchange="toggleInput('tumbuhan-benih-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="tumbuhan-benih-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Benih</label>
+                    <input type="text" class="form-control" id="tumbuhan-benih-input"
+                        name="tumbuhan_benih_keterangan" disabled style="flex: 1; min-width: 150px;">
+                </div>
+                <div class="form-group mb-3" style="display: flex; flex-wrap: wrap; align-items: center;">
+                    <input class="form-check-input" type="checkbox" id="tumbuhan-nonbenih-checkbox"
+                        onchange="toggleInput('tumbuhan-nonbenih-input', this)" style="margin-right: 10px;">
+                    <label class="form-check-label" for="tumbuhan-nonbenih-checkbox"
+                        style="margin-right: 10px; min-width: 80px;">Non Benih</label>
+                    <input type="text" class="form-control" id="tumbuhan-nonbenih-input"
+                        name="tumbuhan_nonbenih_keterangan" disabled style="flex: 1; min-width: 150px;">
                 </div>
             </form>
         </div>
+
+        <script>
+            function toggleInput(inputId, checkbox) {
+                const input = document.getElementById(inputId);
+                input.disabled = !checkbox.checked;
+            }
+        </script>
 
         <div class="tab-pane" id="sarana-prasarana">
             <hr style="border-top: 3px solid rgb(119, 59, 3);" class="mb-1" />
