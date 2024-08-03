@@ -16,7 +16,7 @@ class UpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Tambahkan kolom jika belum ada
             if (!Schema::hasColumn('users', 'name')) {
-                $table->string('name')->after('email'); // Menambahkan kolom 'name' setelah kolom 'email'
+                $table->string('name')->after('email')->nullable(); // Menambahkan kolom 'name' setelah kolom 'email'
             } else {
                 // Jika kolom sudah ada dan Anda perlu mengubahnya
                 $table->string('name')->nullable(false)->change(); // Ubah kolom 'name' menjadi tidak nullable
