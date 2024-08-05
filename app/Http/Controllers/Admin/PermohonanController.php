@@ -135,7 +135,7 @@ class PermohonanController extends Controller
             return $upt['nama_satpel'] . ' - ' . $upt['nama'];
         })
             ->addColumn('negara', function ($row) {
-                $negara = BarantinApiHelper::getMasterNegaraByID($row->barantin->negara_id);
+                $negara = $row->barantin->negara_id ? BarantinApiHelper::getMasterNegaraByID($row->barantin->negara_id) : null;
                 return $negara['nama'] ?? null;
             })
             ->filterColumn('negara', function ($query, $keyword) {
@@ -144,7 +144,7 @@ class PermohonanController extends Controller
                 $query->whereHas('barantin', fn ($query) => $query->whereIn('negara_id', $idNegara));
             })
             ->addColumn('provinsi', function ($row) {
-                $provinsi = BarantinApiHelper::getMasterProvinsiByID($row->barantin->provinsi_id);
+                $provinsi = $row->barantin->provinsi_id ? BarantinApiHelper::getMasterProvinsiByID($row->barantin->provinsi_id):null;
                 return $provinsi['nama'] ?? null;
             })
             ->filterColumn('provinsi', function ($query, $keyword) {
@@ -153,7 +153,7 @@ class PermohonanController extends Controller
                 $query->whereHas('barantin', fn ($query) => $query->whereIn('provinsi_id', $idProvinsi));
             })
             ->addColumn('kota', function ($row) {
-                $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
+                $kota = $row->barantin->kota && $row->barantin->provinsi_id  ? BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id) :null;
                 return $kota['nama'] ?? null;
             })
             ->filterColumn('kota', function ($query, $keyword) {

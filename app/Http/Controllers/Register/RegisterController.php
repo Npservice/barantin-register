@@ -309,7 +309,7 @@ class RegisterController extends Controller
                     $query->whereIn('master_upt_id', $idUpt);
                 })
                 ->addColumn('kota', function ($row) {
-                    $kota = BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id);
+                    $kota = $row->barantin->kota && $row->barantin->provinsi_id  ? BarantinApiHelper::getMasterKotaByIDProvinsiID($row->barantin->kota, $row->barantin->provinsi_id) :null;
                     return $kota['nama'] ?? null;
                 })
                 ->filterColumn('kota', function ($query, $keyword) {
