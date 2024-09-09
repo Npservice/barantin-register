@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Register;
 
-
-use App\Jobs\EmailSenderJob;
-use App\Models\Register;
-use App\Models\MailToken;
-use App\Models\PjBarantin;
-use App\Models\PreRegister;
-use App\Models\PjBaratanKpp;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\RedirectResponse;
-use App\Mail\MailSendTokenPreRegister;
 use App\Http\Requests\PreRegisterRequestStore;
 use App\Http\Requests\RegisterUlangRequestStore;
+use App\Jobs\EmailSenderJob;
+use App\Models\MailToken;
+use App\Models\PjBarantin;
+use App\Models\PjBaratanKpp;
+use App\Models\PreRegister;
+use App\Models\Register;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PreRegisterController extends Controller
 {
@@ -26,8 +24,9 @@ class PreRegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('ajax')->only(['StatusRegister', 'RegisterForm','saveRegister']);
+        $this->middleware('ajax')->only(['StatusRegister', 'RegisterForm', 'saveRegister']);
     }
+
     public function index(): View
     {
         return view('register.register');
@@ -46,7 +45,7 @@ class PreRegisterController extends Controller
      * Jika email sudah terdaftar, akan memanggil fungsi RegisterCheck.
      * Jika belum, akan membuat data preregister baru dan mengirimkan token verifikasi ke email.
      *
-     * @param PreRegisterRequestStore $request Data request yang berisi informasi pendaftaran
+     * @param  PreRegisterRequestStore  $request  Data request yang berisi informasi pendaftaran
      * @return RedirectResponse Mengembalikan tampilan verifikasi dengan token yang baru digenerasi
      */
     public function NewRegister(PreRegisterRequestStore $request)//:RedirectResponse
@@ -61,7 +60,7 @@ class PreRegisterController extends Controller
             $namaPerusahaan = $nama;
         } else {
             $kategoriPerusahaan = $kategoriPerusahaan === '-' ? '' : $kategoriPerusahaan;
-            $namaPerusahaan = $kategoriPerusahaan ? $kategoriPerusahaan . '. ' . $nama : $nama;
+            $namaPerusahaan = $kategoriPerusahaan ? $kategoriPerusahaan.'. '.$nama : $nama;
         }
 
         // Buat array data yang akan disimpan
@@ -78,8 +77,7 @@ class PreRegisterController extends Controller
         // Update or create the preregister record
         $preregister = PreRegister::updateOrCreate(['email' => $request->email], $data);
 
-        return redirect()->route('register.email',[$preregister->id]);
-
+        return redirect()->route('register.email', [$preregister->id]);
     }
 
 
@@ -94,9 +92,8 @@ class PreRegisterController extends Controller
     public function SendEmailRegister(string $preregisterid): View
     {
         $generate = MailToken::create(['pre_register_id' => $preregisterid]);
-        EmailSenderJob::dispatch($preregisterid,$generate->token);
-        return view('register.verify',compact('generate'));
-
+        EmailSenderJob::dispatch($preregisterid, $generate->token);
+        return view('register.verify', compact('generate'));
     }
 
     /**
@@ -105,7 +102,7 @@ class PreRegisterController extends Controller
      * If the company is not found, it will attempt to find a company in a different table and proceed with the registration.
      * Finally, it sends an email with the registration token.
      *
-     * @param RegisterUlangRequestStore $request
+     * @param  RegisterUlangRequestStore  $request
      * @return View
      */
     public function RegisterUlang(RegisterUlangRequestStore $request): View
@@ -115,19 +112,24 @@ class PreRegisterController extends Controller
         $generate = null;
 
         if ($barantin) {
-            $pre_register = PreRegister::create(['nama' => $barantin->nama_perusahaan, 'email' => $barantin->email, 'status' => $barantin->status, 'pemohon' => $request->pemohon]);
+            $pre_register = PreRegister::create([
+                'nama' => $barantin->nama_perusahaan, 'email' => $barantin->email, 'status' => $barantin->status,
+                'pemohon' => $request->pemohon,
+            ]);
             $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
         } else {
             DB::transaction(function () use ($request, &$pre_register, &$generate) {
                 $baratan = PjBaratanKpp::where('kode_perusahaan', $request->username)->first();
-                $pre_register = PreRegister::create(['nama' => $baratan->nama_perusahaan, 'email' => $baratan->email, 'pemohon' => $request->pemohon]);
+                $pre_register = PreRegister::create([
+                    'nama' => $baratan->nama_perusahaan, 'email' => $baratan->email, 'pemohon' => $request->pemohon,
+                ]);
                 Register::create(['master_upt_id' => $baratan->upt_id, 'pre_register_id' => $pre_register->id]);
                 $generate = MailToken::create(['pre_register_id' => $pre_register->id]);
             });
         }
 
 
-        EmailSenderJob::dispatch($pre_register,$generate->token);
+        EmailSenderJob::dispatch($pre_register, $generate->token);
         return view('register.verify', compact('generate'));
     }
 
@@ -137,8 +139,8 @@ class PreRegisterController extends Controller
      * Jika token tidak valid atau telah kedaluwarsa, pengguna akan dialihkan ke halaman pesan dengan pemberitahuan.
      * Jika token valid, verifikasi email akan diupdate dan pengguna akan dialihkan ke formulir pendaftaran.
      *
-     * @param string $id ID dari pra-registrasi
-     * @param string $token Token yang akan diverifikasiz
+     * @param  string  $id  ID dari pra-registrasi
+     * @param  string  $token  Token yang akan diverifikasiz
      * @return RedirectResponse Mengembalikan respons pengalihan
      */
     public function TokenVerify(string $id, string $token): RedirectResponse
@@ -162,28 +164,22 @@ class PreRegisterController extends Controller
      * Fungsi ini akan memvalidasi request, menghapus token lama, dan membuat token baru.
      * Kemudian, fungsi ini akan mengirim email dengan token baru ke pengguna.
      *
-     * @param Request $request Data request yang diterima
+     * @param  Request  $request  Data request yang diterima
      * @return View Mengembalikan view untuk verifikasi
      */
-    public function Regenerate(Request $request): View
+    public function Regenerate(Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'token' => 'required|exists:mail_tokens,token',
-            'user_id' => 'required|exists:pre_registers,id'
+        $request->validate([
+            'user_id' => 'required|exists:pre_registers,id',
         ]);
-
-        $preRegister = null;
         $generate = null;
-
-        DB::transaction(function () use (&$preRegister, &$generate, $request) {
-            $preRegister = PreRegister::find($request->user_id);
-            MailToken::where('pre_register_id', $preRegister->id)->delete();
-            $generate = MailToken::create(['pre_register_id' => $preRegister->id]);
-            EmailSenderJob::dispatch($preRegister,$generate->token);
+        DB::transaction(function () use (&$generate, $request) {
+            MailToken::where('pre_register_id', $request->user_id)->delete();
+            $generate = MailToken::create(['pre_register_id' => $request->user_id]);
+            EmailSenderJob::dispatch($request->user_id, $generate->token);
         });
-        return view('register.verify', compact('generate'))->with(['message_generate' => 'Token berhasil digenerate ulang']);
+        return response()->json(['token' => $generate->token]);
     }
-
 
 
 }

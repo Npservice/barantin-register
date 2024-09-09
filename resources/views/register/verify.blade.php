@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header text-center">{{ __('Verify Your Email Address') }}</div>
+                    <div class="card-header text-center">Verifikasi Email Anda</div>
 
                     <div class="card-body">
                         @if (isset($message_generate))
@@ -14,14 +14,13 @@
                             </div>
                         @endif
 
-                        {{ __('Before proceeding, please check your email for a verification link.') }}
-                        {{ __('If you did not receive the email') }},
-                        <form class="d-inline" method="POST" action="{{ url('/register/regenerate') }}">
+                        Sebelum melanjutkan, harap periksa email Anda untuk tautan verifikasi. Jika anda tidak menerima
+                        email tekan tombol dibawah ini ,
+                        <form class="d-inline" method="POST" id="form-regenerate">
                             @csrf
-                            <input type="hidden" name="token" value="{{ $generate->token }}">
-                            <input type="hidden" name="user_id" value="{{ $generate->pre_register_id }}">
+                            <input type="hidden" name="user_id" id="user_id" value="{{ $generate->pre_register_id }}">
                         </form>
-                        <button id="timer" class="btn btn-primary btn-xs disabled w-100 mt-3"></button>
+                        <button id="button_send" class="btn btn-primary btn-xs disabled w-100 mt-3"></button>
                     </div>
                 </div>
             </div>
@@ -30,35 +29,50 @@
 @endsection
 @push('custom-js')
     <script>
-        $(document).ready(function() {
-            // Set the countdown time (5 minutes in seconds)
+        const _buttons = $('#button_send')
+        $(document).ready(function () {
+            CountDown()
+
+            _buttons.click(function () {
+                $.ajax({
+                    data: $('#form-regenerate').serialize(),
+                    url: '{{ url('/register/regenerate') }}',
+                    dataType: "json",
+                    type: "post",
+                    success: function (response) {
+                        Swal.fire({
+                            text: "email verifikasi berhasil dikirim ulang",
+                            icon: "success",
+                        })
+                        CountDown()
+                    },
+                    error: function (response) {
+                        Swal.fire({
+                            text: "email verifikasi berhasil gagal dikirim",
+                            icon: "danger",
+                        })
+                    }
+                })
+            });
+        });
+
+        function CountDown() {
+            _buttons.addClass('disabled');
             let countdownTime = 5 * 60;
 
-            // Function to update the countdown timer
             function updateTimer() {
                 const minutes = Math.floor(countdownTime / 60);
                 const seconds = countdownTime % 60;
-
-                // Format time to always show two digits
                 const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                // Display the timer using jQuery
-                $('#timer').text(formattedTime);
-
-                // Decrease the countdown time by 1 second
+                _buttons.text(formattedTime);
                 countdownTime--;
-
-                // Stop the countdown when time is up
                 if (countdownTime < 0) {
                     clearInterval(timerInterval);
-                    $('#timer').text("Kirim Ulang Kode").removeClass('disabled');
+                    _buttons.text("Kirim Ulang Kode").removeClass('disabled');
                 }
             }
 
-            // Update the timer every second
             const timerInterval = setInterval(updateTimer, 1000);
-        });
-
+        }
     </script>
-
 @endpush

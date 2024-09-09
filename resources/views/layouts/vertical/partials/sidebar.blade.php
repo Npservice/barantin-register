@@ -28,13 +28,7 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    {{-- <li class="menu-title">Master</li>
-                <li>
-                    <a href="{{ route('admin.master-upt.index') }}" class=" waves-effect">
-                        <i class="ri-calendar-2-line"></i>
-                        <span>UPT</span>
-                    </a>
-                </li> --}}
+
                     <li class="menu-title">Register</li>
                     @if (auth()->guard('admin')->user()->upt_id != $uptPusatId)
                         <li>
@@ -61,15 +55,6 @@
                         </li>
                     @endif
 
-                    {{-- @if (!auth()->guard('admin')->user()->upt_id)
-                        <li class="menu-title">User</li>
-                        <li>
-                            <a href="{{ route('admin.admin-user.index') }}" class=" waves-effect">
-                                <i class="ri-admin-line"></i>
-                                <span>Admin User</span>
-                            </a>
-                        </li>
-                    @endif --}}
                 @endauth
 
                 @auth('web')
@@ -79,14 +64,7 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    @if (auth()->guard('web')->user()->role === 'induk')
-                        <li>
-                            <a href="{{ route('barantin.cabang.index') }}" class="waves-effect">
-                                <i class="ri-dashboard-line"></i>
-                                <span>Cabang</span>
-                            </a>
-                        </li>
-                    @endif
+
                     <li>
                         <a href="{{ route('barantin.profile.index') }}" class="waves-effect">
                             <i class="ri-dashboard-line"></i>
